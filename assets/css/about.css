@@ -548,45 +548,6 @@ nav a:hover::after, nav a.active::after {
     font-weight: 500;
 }
 
-/* Partners Section */
-.partners-section {
-    padding: 80px 0;
-    background-color: var(--light-jade);
-}
-
-.partners-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 30px;
-    align-items: center;
-}
-
-.partner-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s;
-}
-
-.partner-logo:hover {
-    transform: translateY(-10px);
-}
-
-.partner-logo img {
-    max-width: 100%;
-    height: auto;
-    filter: grayscale(100%);
-    transition: filter 0.3s;
-}
-
-.partner-logo:hover img {
-    filter: grayscale(0%);
-}
-
 /* CTA Section */
 .cta-section {
     padding: 80px 0;
