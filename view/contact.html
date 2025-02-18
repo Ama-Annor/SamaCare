@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/contact.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <div class="contact">
+                <span><i class='bx bx-phone'></i> Helpline: +233 269 777 967</span>
+                <span><i class='bx bx-envelope'></i> info@samacare.com</span>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class='bx bxl-instagram'></i></a>
+                <a href="#"><i class='bx bxl-twitter'></i></a>
+                <a href="#"><i class='bx bxl-facebook'></i></a>
+                <a href="#"><i class='bx bxl-linkedin'></i></a>
+            </div> 
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+            </div>
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="features.html">Features</a>
+                <a href="about.html">About</a>
+                <a href="doctors.html">Doctors</a>
+                <a href="resources.html">Resources</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html" class="active">Contact</a>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="signup.html" class="signup-btn">Sign Up</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class='bx bx-menu'></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Get in Touch</h1>
+                <p>We're here to help with any questions about SamaCare's services.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Options -->
+    <section class="contact-options">
+        <div class="container">
+            <div class="options-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class='bx bx-envelope'></i>
+                    </div>
+                    <h3>Email Us</h3>
+                    <p>Our support team will get back to you within 24 hours.</p>
+                    <a href="mailto:support@samacare.com">support@samacare.com</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class='bx bx-phone'></i>
+                    </div>
+                    <h3>Call Us</h3>
+                    <p>Speak directly with our customer care specialists.</p>
+                    <a href="tel:+233269777967">+233 269 777 967</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class='bx bx-message-detail'></i>
+                    </div>
+                    <h3>Live Chat</h3>
+                    <p>Chat with our support team during business hours.</p>
+                    <a href="#" class="chat-button">Start Chat</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class='bx bx-help-circle'></i>
+                    </div>
+                    <h3>Help Center</h3>
+                    <p>Browse our knowledge base for quick answers.</p>
+                    <a href="resources.html">Visit Help Center</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-content">
+                    <h2>Send Us a Message</h2>
+                    <p>Fill out the form below and we'll respond as soon as possible.</p>
+                    <form class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" placeholder="Your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" placeholder="Your email" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone Number (Optional)</label>
+                                <input type="tel" id="phone" placeholder="Your phone number">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <select id="subject" required>
+                                    <option value="" disabled selected>Select a topic</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="billing">Billing Question</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" rows="5" placeholder="How can we help you?" required></textarea>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="consent" required>
+                            <label for="consent">I agree to the privacy policy and consent to SamaCare contacting me about my inquiry.</label>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+                <div class="form-image">
+                    <img src="../assets/images/contact-image.jpg" alt="Customer Support">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Office Information -->
+    <section class="office-info">
+        <div class="container">
+            <h2 class="section-title">Visit Our Office</h2>
+            <div class="office-grid">
+                <div class="office-card">
+                    <div class="office-image">
+                        <img src="../assets/images/office-accra.jpg" alt="Accra Office">
+                    </div>
+                    <div class="office-details">
+                        <h3>Accra Headquarters</h3>
+                        <p><i class='bx bx-map'></i> 25 Innovation Drive, Tech District<br>Accra, Ghana</p>
+                        <p><i class='bx bx-time'></i> Monday - Friday: 8:00 AM - 6:00 PM</p>
+                        <p><i class='bx bx-phone'></i> +233 269 777 967</p>
+                        <a href="https://maps.google.com" target="_blank" class="directions-btn">Get Directions</a>
+                    </div>
+                </div>
+                <div class="office-card">
+                    <div class="office-image">
+                        <img src="../assets/images/office-kumasi.jpg" alt="Kumasi Office">
+                    </div>
+                    <div class="office-details">
+                        <h3>Kumasi Office</h3>
+                        <p><i class='bx bx-map'></i> 47 Health Avenue, Adum<br>Kumasi, Ghana</p>
+                        <p><i class='bx bx-time'></i> Monday - Friday: 9:00 AM - 5:00 PM</p>
+                        <p><i class='bx bx-phone'></i> +233 269 777 967</p>
+                        <a href="https://maps.google.com" target="_blank" class="directions-btn">Get Directions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d254003.96507662975!2d-0.2877984759317208!3d5.596398943271945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9084b2b7a773%3A0xbed14ed8650e2dd3!2sAccra%2C%20Ghana!5e0!3m2!1sen!2sus!4v1650456150000!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+
+    <!-- FAQ Snippet -->
+    <section class="faq-snippet">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-content">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How quickly can I expect a response to my inquiry?</h3>
+                        <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We aim to respond to all inquiries within 24 hours during business days. For urgent matters, we recommend using our live chat or calling our helpline directly.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What information should I include when reporting a technical issue?</h3>
+                        <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Please include your device type, operating system version, app version, and a detailed description of the issue including any error messages. Screenshots are also very helpful.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How can I schedule a demo of SamaCare for my organization?</h3>
+                        <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>For organizational demos, please select "Partnership Opportunity" in the contact form subject line and include details about your organization and requirements. Our partnership team will reach out to schedule a personalized demo.</p>
+                    </div>
+                </div>
+                <a href="faq.html" class="view-all-faq">View all FAQs <i class='bx bx-right-arrow-alt'></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Stay Updated</h2>
+                <p>Subscribe to our newsletter for health tips, app updates, and exclusive offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+                <div class="newsletter-info">
+                    <p><i class='bx bx-check-circle'></i> No spam, just helpful content</p>
+                    <p><i class='bx bx-check-circle'></i> Unsubscribe anytime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section footer-about">
+                    <h3>About SamaCare</h3>
+                    <p>SamaCare is revolutionizing healthcare access through our intelligent health assessment app and comprehensive medical record management platform.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class='bx bxl-facebook'></i></a>
+                        <a href="#"><i class='bx bxl-twitter'></i></a>
+                        <a href="#"><i class='bx bxl-instagram'></i></a>
+                        <a href="#"><i class='bx bxl-linkedin'></i></a>
+                    </div>
+                </div>
+                <div class="footer-section footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="features.html"><i class='bx bx-chevron-right'></i> Features</a></li>
+                        <li><a href="pricing.html"><i class='bx bx-chevron-right'></i> Pricing</a></li>
+                        <li><a href="testimonials.html"><i class='bx bx-chevron-right'></i> Testimonials</a></li>
+                        <li><a href="careers.html"><i class='bx bx-chevron-right'></i> Careers</a></li>
+                        <li><a href="privacy.html"><i class='bx bx-chevron-right'></i> Privacy Policy</a></li>
+                        <li><a href="terms.html"><i class='bx bx-chevron-right'></i> Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class='bx bx-map'></i> 25 Innovation Drive, Tech District<br>Accra, Ghana</p>
+                    <p><i class='bx bx-phone'></i> +233 269 7777 967</p>
+                    <p><i class='bx bx-envelope'></i> support@samacare.com</p>
+                    <p><i class='bx bx-time-five'></i> 24/7 Customer Support</p>
+                </div>
+                <div class="footer-section footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter for health tips and platform updates.</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Enter your email">
+                        <button type="submit" class="newsletter-btn">
+                            <i class='bx bx-paper-plane'></i>
+                        </button>
+                    </form>
+                    <p>Download our mobile app:</p>
+                    <div class="app-buttons">
+                        <a href="#"><img src="../assets/images/app-store.png" alt="App Store"></a>
+                        <a href="#"><img src="../assets/images/play-store.png" alt="Play Store"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SamaCare. All rights reserved. Designed with ❤️ for better healthcare.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/contact.js"></script>
+</body>
+</html>
