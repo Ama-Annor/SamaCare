@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (isValid) {
-                // Normally you would submit the form to the server here
+                //submit the form to the server here - MCNOBERT AND SAMUELLLLL
                 
                 // For demo purposes, show a success message
                 const submitBtn = authForm.querySelector('.submit-btn');
@@ -182,9 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Processing...';
                 
-                // Simulate API call
+            
                 setTimeout(() => {
-                    // Replace with actual form submission and redirection
+                    //actual form submission and redirection
                     
                     // Reset button state
                     submitBtn.disabled = false;
@@ -328,31 +328,6 @@ document.addEventListener('DOMContentLoaded', function() {
             font-size: 20px;
         }
         
-        .biometric-btn.processing {
-            background-color: var(--light-jade);
-            border-color: var(--primary-color);
-        }
-        
-        .biometric-btn.success {
-            background-color: #d4edda;
-            border-color: #28a745;
-        }
-        
-        .biometric-btn.success i {
-            color: #28a745;
-        }
-        
-        .biometric-success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border-radius: var(--border-radius);
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
     `;
     document.head.appendChild(style);
 });
