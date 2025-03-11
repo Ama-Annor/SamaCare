@@ -1,0 +1,51 @@
+Disease,Symptom 1,Symptom 2,Symptom 3,Symptom 4,Symptom 5,Symptom 6,Symptom 7,Symptom 8,Symptom 9,Symptom 10
+Malaria,Fever,Chills,Sweating,Headache,Nausea,Vomiting,Fatigue,Muscle Pain,Diarrhea,Joint Pain
+Typhoid Fever,High Fever,Abdominal Pain,Weakness,Diarrhea,Loss of Appetite,Chills,Rash,Muscle Pain,Constipation,Fatigue
+Cholera,Severe Diarrhea,Dehydration,Vomiting,Muscle Cramps,Rapid Heart Rate,Low Blood Pressure,Thirst,Restlessness,Dry Mouth,Leg Cramps
+Pneumonia,Cough,Chest Pain,Fever,Shortness of Breath,Fatigue,Chills,Sweating,Wheezing,Loss of Appetite,Headache
+Tuberculosis,Chronic Cough,Weight Loss,Night Sweats,Fever,Fatigue,Chest Pain,Coughing Blood,Weakness,Loss of Appetite,Shortness of Breath
+Diabetes,Increased Thirst,Frequent Urination,Fatigue,Blurred Vision,Slow Wound Healing,Unexplained Weight Loss,Numbness,Tingling,Irritability,Dry Skin
+Hypertension,Headaches,Dizziness,Blurred Vision,Chest Pain,Fatigue,Nosebleeds,Shortness of Breath,Nausea,Confusion,Anxiety
+Dengue Fever,High Fever,Severe Headache,Joint and Muscle Pain,Rash,Fatigue,Nausea,Vomiting,Swollen Glands,Bleeding,Eye Pain
+Hepatitis B,Jaundice,Abdominal Pain,Dark Urine,Nausea,Fatigue,Vomiting,Joint Pain,Loss of Appetite,Fever,Swelling
+Meningitis,Stiff Neck,Severe Headache,Fever,Sensitivity to Light,Vomiting,Confusion,Seizures,Sleepiness,Skin Rash,Difficulty Concentrating
+Asthma,Shortness of Breath,Wheezing,Coughing,Chest Tightness,Fatigue,Difficulty Sleeping,Anxiety,Rapid Breathing,Sweating,Bluish Lips
+Bronchitis,Cough,Chest Discomfort,Wheezing,Fatigue,Shortness of Breath,Fever,Chills,Runny Nose,Muscle Aches,Sore Throat
+Influenza,Fever,Chills,Runny Nose,Sneezing,Cough,Sore Throat,Fatigue,Body Aches,Headache,Nausea
+HIV/AIDS,Weight Loss,Fatigue,Frequent Infections,Swollen Lymph Nodes,Night Sweats,Diarrhea,Skin Rashes,Mouth Ulcers,Persistent Cough,Joint Pain
+Ebola,High Fever,Severe Headache,Vomiting,Bleeding,Muscle Pain,Weakness,Sore Throat,Rash,Diarrhea,Confusion
+Yellow Fever,Fever,Chills,Muscle Pain,Back Pain,Nausea,Vomiting,Jaundice,Fatigue,Bleeding,Organ Failure
+Leptospirosis,Fever,Chills,Muscle Pain,Nausea,Vomiting,Headache,Jaundice,Eye Redness,Rash,Kidney Damage
+Schistosomiasis,Fever,Abdominal Pain,Diarrhea,Bloody Stool,Nausea,Vomiting,Rash,Fatigue,Cough,Joint Pain
+Lassa Fever,Fever,Sore Throat,Vomiting,Chest Pain,Weakness,Hearing Loss,Bleeding,Seizures,Swollen Face,Shock
+Tetanus,Muscle Stiffness,Lockjaw,Difficulty Swallowing,Fever,Sweating,High Blood Pressure,Rapid Heart Rate,Seizures,Irritability,Headache
+Measles,High Fever,Cough,Runny Nose,Sore Throat,Red Eyes,Skin Rash,Fatigue,Loss of Appetite,Muscle Aches,Sensitivity to Light
+Rubella,Mild Fever,Sore Throat,Rash,Swollen Lymph Nodes,Headache,Red Eyes,Muscle Pain,Fatigue,Joint Pain,Runny Nose
+Poliomyelitis,Fever,Sore Throat,Headache,Vomiting,Fatigue,Muscle Weakness,Paralysis,Difficulty Breathing,Stiff Neck,Painful Limbs
+Rabies,Fever,Headache,Excess Salivation,Muscle Spasms,Paralysis,Confusion,Anxiety,Insomnia,Difficulty Swallowing,Fear of Water
+Whooping Cough,Severe Cough,Runny Nose,Sneezing,Mild Fever,Vomiting,Fatigue,Difficulty Breathing,Bluish Lips,Sweating,Choking
+Gonorrhea,Painful Urination,Pus-like Discharge,Swollen Testicles,Lower Abdominal Pain,Irregular Bleeding,Painful Intercourse,Rectal Pain,Sore Throat,Fever,Joint Pain
+Syphilis,Sores,Rashes,Fever,Swollen Lymph Nodes,Fatigue,Headaches,Weight Loss,Joint Pain,Hair Loss,Vision Problems
+Trichomoniasis,Itching,Burning,Painful Urination,Foul-Smelling Discharge,Redness,Swelling,Discomfort,Painful Intercourse,Abdominal Pain,Frequent Urination
+Lymphatic Filariasis,Swollen Limbs,Fever,Chills,Muscle Pain,Swollen Lymph Nodes,Thickened Skin,Fatigue,Headache,Nausea,Abdominal Pain
+Onchocerciasis,Itching,Skin Rash,Nodules under Skin,Blindness,Swollen Lymph Nodes,Fever,Weight Loss,Fatigue,Headache,Joint Pain
+Trypanosomiasis,Fever,Headache,Joint Pain,Itching,Swollen Lymph Nodes,Confusion,Sleep Disturbances,Weight Loss,Fatigue,Muscle Pain
+Bilharzia,Abdominal Pain,Diarrhea,Blood in Urine,Fatigue,Fever,Cough,Weight Loss,Swollen Abdomen,Joint Pain,Itching
+Guinea Worm Disease,Painful Blisters,Fever,Swelling,Itching,Ulcers,Fatigue,Muscle Pain,Nausea,Vomiting,Diarrhea
+Buruli Ulcer,Swelling,Skin Ulcers,Painless Nodules,Fever,Fatigue,Weight Loss,Muscle Pain,Swollen Lymph Nodes,Itching,Redness
+Trachoma,Eye Pain,Redness,Blurred Vision,Sensitivity to Light,Swollen Eyelids,Discharge,Itching,Fever,Headache,Fatigue
+Scabies,Itching,Rash,Sores,Redness,Swelling,Thickened Skin,Fever,Fatigue,Irritability,Sleep Disturbances
+Ringworm,Itching,Rash,Red Patches,Scaling,Blistering,Hair Loss,Fatigue,Fever,Swelling,Discomfort
+Hookworm,Abdominal Pain,Diarrhea,Fatigue,Weight Loss,Anemia,Itching,Nausea,Vomiting,Cough,Fever
+Ascariasis,Abdominal Pain,Diarrhea,Nausea,Vomiting,Fatigue,Weight Loss,Cough,Fever,Itching,Wheezing
+Giardiasis,Diarrhea,Abdominal Pain,Blotting,Nausea,Fatigue,Weight Loss,Dehydration,Vomiting,Fever,Headache
+Amebiasis,Diarrhea,Abdominal Pain,Fatigue,Weight Loss,Fever,Nausea,Vomiting,Dehydration,Bloody Stool,Headache
+Cryptosporidiosis,Diarrhea,Abdominal Pain,Nausea,Vomiting,Fever,Fatigue,Weight Loss,Dehydration,Headache,Muscle Pain
+Toxoplasmosis,Fever,Headache,Swollen Lymph Nodes,Fatigue,Muscle Pain,Sore Throat,Confusion,Seizures,Blurred Vision,Weight Loss
+Leishmaniasis,Fever,Weight Loss,Fatigue,Swollen Spleen,Anemia,Skin Sores,Nosebleeds,Swollen Lymph Nodes,Cough,Muscle Pain
+Dracunculiasis,Painful Blisters,Fever,Swelling,Itching,Ulcers,Fatigue,Muscle Pain,Nausea,Vomiting,Diarrhea
+African Trypanosomiasis,Fever,Headache,Joint Pain,Itching,Swollen Lymph Nodes,Confusion,Sleep Disturbances,Weight Loss,Fatigue,Muscle Pain
+River Blindness,Itching,Skin Rash,Nodules under Skin,Blindness,Swollen Lymph Nodes,Fever,Weight Loss,Fatigue,Headache,Joint Pain
+Sleeping Sickness,Fever,Headache,Joint Pain,Itching,Swollen Lymph Nodes,Confusion,Sleep Disturbances,Weight Loss,Fatigue,Muscle Pain
+Leprosy,Skin Lesions,Numbness,Muscle Weakness,Joint Pain,Fatigue,Weight Loss,Fever,Swollen Lymph Nodes,Blindness,Deformities
+Yaws,Skin Sores,Joint Pain,Fever,Fatigue,Weight Loss,Swollen Lymph Nodes,Itching,Rash,Headache,Muscle Pain
