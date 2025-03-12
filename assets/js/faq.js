@@ -21,7 +21,72 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Your existing tab functionality code
+    // FAQ Categories navigation
+    const categoryLinks = document.querySelectorAll('.category-card');
+    const faqSections = document.querySelectorAll('.faq-section');
+    
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default anchor behavior
+            
+            // Remove active class from all links
+            categoryLinks.forEach(l => l.classList.remove('active'));
+            
+            // Add active class to clicked link
+            link.classList.add('active');
+            
+            // Get the target section id
+            const targetId = link.getAttribute('href').substring(1);
+            
+            // Hide all sections
+            faqSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the target section
+            document.getElementById(targetId).classList.add('active');
+            
+            // Scroll to section
+            document.getElementById(targetId).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Update URL hash (for bookmarking/sharing)
+            history.pushState(null, null, `#${targetId}`);
+        });
+    });
+    
+    // Handle direct URL access with hash
+    if (window.location.hash) {
+        const targetId = window.location.hash.substring(1);
+        const targetSection = document.getElementById(targetId);
+        const targetLink = document.querySelector(`a[href="#${targetId}"]`);
+        
+        if (targetSection && targetLink) {
+            // Hide all sections
+            faqSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            targetSection.classList.add('active');
+            
+            // Update active link
+            categoryLinks.forEach(l => l.classList.remove('active'));
+            targetLink.classList.add('active');
+            
+            // Scroll to section (with slight delay to ensure page is loaded)
+            setTimeout(() => {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+        }
+    }
+    
+    // Your existing Community Questions Tab functionality
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
@@ -45,5 +110,27 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(target).classList.add('active');
         });
     });
+    
+    // Add Back to Top buttons to each section
+    faqSections.forEach(section => {
+        // Create back to top button
+        const backToTopBtn = document.createElement('a');
+        backToTopBtn.className = 'back-to-top-btn';
+        backToTopBtn.innerHTML = '<i class="bx bx-up-arrow-alt"></i> Back to Categories';
+        backToTopBtn.href = '#';
+        
+        // Add click event
+        backToTopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Scroll to categories section
+            document.querySelector('.faq-categories').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+        
+        // Append to section
+        section.appendChild(backToTopBtn);
+    });
 });
-
