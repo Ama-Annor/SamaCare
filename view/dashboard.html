@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <span>JD</span>
+                </div>
+                <div class="user-info">
+                    <h4>John Doe</h4>
+                    <p>Patient</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="dashboard.html">
+                            <i class='bx bx-home-alt'></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medical_records.html">
+                            <i class='bx bx-folder'></i>
+                            <span>Medical Records</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="appointments.html">
+                            <i class='bx bx-calendar'></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health-chat.html">
+                            <i class='bx bx-chat'></i>
+                            <span>Health Assistant</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health-tracking.html">
+                            <i class='bx bx-line-chart'></i>
+                            <span>Health Tracking</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medications.html">
+                            <i class='bx bx-capsule'></i>
+                            <span>Medications</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <i class='bx bx-cog'></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small">
+                                    <span>JD</span>
+                                </div>
+                                <span class="user-name">John Doe</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <div class="welcome-card">
+                        <div class="welcome-text">
+                            <h2>Welcome back, John!</h2>
+                            <p>Here's a summary of your health information and upcoming appointments.</p>
+                        </div>
+                        <div class="welcome-actions">
+                            <a href="appointments.html" class="btn primary-btn">
+                                <i class='bx bx-calendar-plus'></i>
+                                <span>Book Appointment</span>
+                            </a>
+                            <a href="health-chat.html" class="btn secondary-btn">
+                                <i class='bx bx-chat'></i>
+                                <span>Ask Health Assistant</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Stats Cards Section -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-calendar-check'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Upcoming Appointments</h3>
+                                <p class="stat-value">2</p>
+                                <p class="stat-description">Next: Jun 19, 2024</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-capsule'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Active Medications</h3>
+                                <p class="stat-value">3</p>
+                                <p class="stat-description">2 due today</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-file'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Medical Records</h3>
+                                <p class="stat-value">12</p>
+                                <p class="stat-description">Last updated: 3 days ago</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-line-chart'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Health Metrics</h3>
+                                <p class="stat-value">7</p>
+                                <p class="stat-description">Blood pressure, glucose & more</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Two Column Layout For Upcoming and Recent Activities -->
+                <section class="dashboard-two-columns">
+                    <!-- Upcoming Appointments -->
+                    <div class="dashboard-column">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>Upcoming Appointments</h3>
+                                <a href="appointments.html" class="view-all">View All</a>
+                            </div>
+                            <div class="appointments-list">
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="day">19</span>
+                                        <span class="month">Jun</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>General Checkup</h4>
+                                        <p><i class='bx bx-time'></i> 10:30 AM</p>
+                                        <p><i class='bx bx-user'></i> Dr. Ama Mensah</p>
+                                        <p><i class='bx bx-map'></i> SamaCare Main Clinic</p>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <button class="action-btn">
+                                            <i class='bx bx-edit'></i>
+                                        </button>
+                                        <button class="action-btn">
+                                            <i class='bx bx-calendar-x'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="day">24</span>
+                                        <span class="month">Jun</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>Lab Tests</h4>
+                                        <p><i class='bx bx-time'></i> 9:00 AM</p>
+                                        <p><i class='bx bx-user'></i> Lab Department</p>
+                                        <p><i class='bx bx-map'></i> SamaCare Diagnostics</p>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <button class="action-btn">
+                                            <i class='bx bx-edit'></i>
+                                        </button>
+                                        <button class="action-btn">
+                                            <i class='bx bx-calendar-x'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <a href="appointments.html" class="add-appointment">
+                                    <i class='bx bx-plus'></i>
+                                    <span>Schedule New Appointment</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activities -->
+                    <div class="dashboard-column">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>Recent Activities</h3>
+                                <a href="#" class="view-all">View All</a>
+                            </div>
+                            <div class="activities-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class='bx bx-file'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Medical Report Added</h4>
+                                        <p>You uploaded a new blood test report</p>
+                                        <span class="activity-time">Today, 9:32 AM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class='bx bx-calendar-check'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Appointment Confirmed</h4>
+                                        <p>Your appointment with Dr. Ama Mensah has been confirmed</p>
+                                        <span class="activity-time">Yesterday, 4:15 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class='bx bx-line-chart'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Health Metrics Updated</h4>
+                                        <p>You updated your blood pressure readings</p>
+                                        <span class="activity-time">Jun 12, 2024, 8:45 AM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class='bx bx-chat'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Health Chat Session</h4>
+                                        <p>You completed a chat session with the health assistant</p>
+                                        <span class="activity-time">Jun 10, 2024, 2:20 PM</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Health Metrics Section -->
+                <section class="health-metrics-section">
+                    <div class="content-card full-width">
+                        <div class="card-header">
+                            <h3>Health Metrics Overview</h3>
+                            <a href="health-tracking.html" class="view-all">View Details</a>
+                        </div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <h4>Blood Pressure</h4>
+                                    <div class="metric-icon">
+                                        <i class='bx bx-heart'></i>
+                                    </div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="current-value">120/80</span>
+                                    <span class="metric-trend positive">
+                                        <i class='bx bx-down-arrow'></i>
+                                        <span>5%</span>
+                                    </span>
+                                </div>
+                                <div class="metric-chart">
+                                    <!-- Placeholder for chart -->
+                                    <div class="chart-placeholder"></div>
+                                </div>
+                                <div class="metric-footer">
+                                    <span>Last updated: Today</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <h4>Blood Glucose</h4>
+                                    <div class="metric-icon">
+                                        <i class='bx bx-droplet'></i>
+                                    </div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="current-value">95 mg/dL</span>
+                                    <span class="metric-trend positive">
+                                        <i class='bx bx-down-arrow'></i>
+                                        <span>2%</span>
+                                    </span>
+                                </div>
+                                <div class="metric-chart">
+                                    <!-- Placeholder for chart -->
+                                    <div class="chart-placeholder"></div>
+                                </div>
+                                <div class="metric-footer">
+                                    <span>Last updated: Yesterday</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <h4>Weight</h4>
+                                    <div class="metric-icon">
+                                        <i class='bx bx-dumbbell'></i>
+                                    </div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="current-value">72 kg</span>
+                                    <span class="metric-trend negative">
+                                        <i class='bx bx-up-arrow'></i>
+                                        <span>1%</span>
+                                    </span>
+                                </div>
+                                <div class="metric-chart">
+                                    <!-- Placeholder for chart -->
+                                    <div class="chart-placeholder"></div>
+                                </div>
+                                <div class="metric-footer">
+                                    <span>Last updated: 3 days ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card add-metric">
+                                <div class="add-metric-content">
+                                    <div class="add-icon">
+                                        <i class='bx bx-plus'></i>
+                                    </div>
+                                    <h4>Add New Metric</h4>
+                                    <p>Track additional health parameters</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Reminders & Notifications Section -->
+                <section class="reminders-section">
+                    <div class="content-card full-width">
+                        <div class="card-header">
+                            <h3>Reminders & Notifications</h3>
+                            <a href="#" class="view-all">Manage Reminders</a>
+                        </div>
+                        <div class="reminders-list">
+                            <div class="reminder-item medication">
+                                <div class="reminder-icon">
+                                    <i class='bx bx-capsule'></i>
+                                </div>
+                                <div class="reminder-details">
+                                    <h4>Medication Reminder</h4>
+                                    <p>Take Lisinopril 10mg - 1 tablet</p>
+                                    <span class="reminder-time">Today, 8:00 PM</span>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="action-btn done-btn">
+                                        <i class='bx bx-check'></i>
+                                    </button>
+                                    <button class="action-btn snooze-btn">
+                                        <i class='bx bx-time'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="reminder-item appointment">
+                                <div class="reminder-icon">
+                                    <i class='bx bx-calendar'></i>
+                                </div>
+                                <div class="reminder-details">
+                                    <h4>Appointment Reminder</h4>
+                                    <p>General Checkup with Dr. Ama Mensah</p>
+                                    <span class="reminder-time">Tomorrow, 10:30 AM</span>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="action-btn view-btn">
+                                        <i class='bx bx-show'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="reminder-item test">
+                                <div class="reminder-icon">
+                                    <i class='bx bx-test-tube'></i>
+                                </div>
+                                <div class="reminder-details">
+                                    <h4>Lab Test</h4>
+                                    <p>Remember to fast for 8 hours before your blood test</p>
+                                    <span class="reminder-time">Jun 24, 2024, 9:00 AM</span>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="action-btn dismiss-btn">
+                                        <i class='bx bx-x'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <a href="#" class="add-reminder">
+                                <i class='bx bx-plus'></i>
+                                <span>Add New Reminder</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

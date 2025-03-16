@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Records - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/medical_records.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <span>JD</span>
+                </div>
+                <div class="user-info">
+                    <h4>John Doe</h4>
+                    <p>Patient</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-home-alt'></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="medical_records.html">
+                            <i class='bx bx-folder'></i>
+                            <span>Medical Records</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="appointments.html">
+                            <i class='bx bx-calendar'></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health-chat.html">
+                            <i class='bx bx-chat'></i>
+                            <span>Health Assistant</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health-tracking.html">
+                            <i class='bx bx-line-chart'></i>
+                            <span>Health Tracking</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medications.html">
+                            <i class='bx bx-capsule'></i>
+                            <span>Medications</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <i class='bx bx-cog'></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Medical Records</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search medical records...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small">
+                                    <span>JD</span>
+                                </div>
+                                <span class="user-name">John Doe</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Medical Records Content -->
+            <div class="dashboard-content">
+                <!-- Action Bar -->
+                <section class="action-bar">
+                    <div class="action-left">
+                        <button class="btn primary-btn">
+                            <i class='bx bx-plus'></i>
+                            <span>Add Record</span>
+                        </button>
+                        <div class="filter-dropdown">
+                            <button class="btn secondary-btn filter-btn">
+                                <i class='bx bx-filter'></i>
+                                <span>Filter</span>
+                            </button>
+                            <div class="filter-menu">
+                                <div class="filter-section">
+                                    <h4>Record Type</h4>
+                                    <div class="filter-options">
+                                        <label class="filter-option">
+                                            <input type="checkbox" checked> Lab Results
+                                        </label>
+                                        <label class="filter-option">
+                                            <input type="checkbox" checked> Doctor Notes
+                                        </label>
+                                        <label class="filter-option">
+                                            <input type="checkbox" checked> Imaging
+                                        </label>
+                                        <label class="filter-option">
+                                            <input type="checkbox" checked> Medications
+                                        </label>
+                                        <label class="filter-option">
+                                            <input type="checkbox" checked> Vaccinations
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="filter-section">
+                                    <h4>Date Range</h4>
+                                    <div class="date-range">
+                                        <input type="date" placeholder="From">
+                                        <input type="date" placeholder="To">
+                                    </div>
+                                </div>
+                                <div class="filter-actions">
+                                    <button class="btn secondary-btn">Reset</button>
+                                    <button class="btn primary-btn">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sort-dropdown">
+                            <button class="btn secondary-btn">
+                                <i class='bx bx-sort'></i>
+                                <span>Sort By: Recent</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="action-right">
+                        <button class="btn secondary-btn">
+                            <i class='bx bx-export'></i>
+                            <span>Export</span>
+                        </button>
+                        <button class="view-toggle">
+                            <i class='bx bx-list-ul active'></i>
+                            <i class='bx bx-grid-alt'></i>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Records Categories -->
+                <section class="records-categories">
+                    <div class="category-tabs">
+                        <button class="category-tab active" data-category="all">
+                            <i class='bx bx-folder'></i>
+                            <span>All Records</span>
+                            <span class="record-count">15</span>
+                        </button>
+                        <button class="category-tab" data-category="lab">
+                            <i class='bx bx-vial'></i>
+                            <span>Lab Results</span>
+                            <span class="record-count">5</span>
+                        </button>
+                        <button class="category-tab" data-category="imaging">
+                            <i class='bx bx-scan'></i>
+                            <span>Imaging</span>
+                            <span class="record-count">2</span>
+                        </button>
+                        <button class="category-tab" data-category="visits">
+                            <i class='bx bx-notepad'></i>
+                            <span>Visit Notes</span>
+                            <span class="record-count">3</span>
+                        </button>
+                        <button class="category-tab" data-category="meds">
+                            <i class='bx bx-capsule'></i>
+                            <span>Medications</span>
+                            <span class="record-count">3</span>
+                        </button>
+                        <button class="category-tab" data-category="vax">
+                            <i class='bx bx-injection'></i>
+                            <span>Vaccinations</span>
+                            <span class="record-count">2</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Records List -->
+                <section class="medical-records-list">
+                    <div class="records-container">
+                        <!-- Lab Results -->
+                        <div class="record-item" data-category="lab">
+                            <div class="record-icon">
+                                <i class='bx bx-vial'></i>
+                            </div>
+                            <div class="record-details">
+                                <h3 class="record-title">Complete Blood Count (CBC)</h3>
+                                <div class="record-meta">
+                                    <span class="record-date"><i class='bx bx-calendar'></i> Jun 10, 2024</span>
+                                    <span class="record-provider"><i class='bx bx-hospital'></i> SamaCare Labs</span>
+                                </div>
+                                <p class="record-description">Results for routine blood work including RBC, WBC, hemoglobin, and platelets.</p>
+                                <div class="record-tags">
+                                    <span class="record-tag lab">Lab Result</span>
+                                    <span class="record-tag">Routine</span>
+                                </div>
+                            </div>
+                            <div class="record-actions">
+                                <button class="action-btn" title="View">
+                                    <i class='bx bx-show'></i>
+                                </button>
+                                <button class="action-btn" title="Download">
+                                    <i class='bx bx-download'></i>
+                                </button>
+                                <button class="action-btn" title="Share">
+                                    <i class='bx bx-share-alt'></i>
+                                </button>
+                                <button class="action-btn" title="More">
+                                    <i class='bx bx-dots-vertical-rounded'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Visit -->
+                        <div class="record-item" data-category="visits">
+                            <div class="record-icon">
+                                <i class='bx bx-notepad'></i>
+                            </div>
+                            <div class="record-details">
+                                <h3 class="record-title">General Checkup - Dr. Ama Mensah</h3>
+                                <div class="record-meta">
+                                    <span class="record-date"><i class='bx bx-calendar'></i> May 25, 2024</span>
+                                    <span class="record-provider"><i class='bx bx-hospital'></i> SamaCare Main Clinic</span>
+                                </div>
+                                <p class="record-description">Annual physical examination with blood pressure check, heart and lung assessment.</p>
+                                <div class="record-tags">
+                                    <span class="record-tag visit">Visit Note</span>
+                                    <span class="record-tag">Routine</span>
+                                </div>
+                            </div>
+                            <div class="record-actions">
+                                <button class="action-btn" title="View">
+                                    <i class='bx bx-show'></i>
+                                </button>
+                                <button class="action-btn" title="Download">
+                                    <i class='bx bx-download'></i>
+                                </button>
+                                <button class="action-btn" title="Share">
+                                    <i class='bx bx-share-alt'></i>
+                                </button>
+                                <button class="action-btn" title="More">
+                                    <i class='bx bx-dots-vertical-rounded'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Imaging -->
+                        <div class="record-item" data-category="imaging">
+                            <div class="record-icon">
+                                <i class='bx bx-scan'></i>
+                            </div>
+                            <div class="record-details">
+                                <h3 class="record-title">Chest X-Ray</h3>
+                                <div class="record-meta">
+                                    <span class="record-date"><i class='bx bx-calendar'></i> May 18, 2024</span>
+                                    <span class="record-provider"><i class='bx bx-hospital'></i> SamaCare Imaging Center</span>
+                                </div>
+                                <p class="record-description">Routine chest X-ray to investigate mild respiratory symptoms. Results show clear lungs.</p>
+                                <div class="record-tags">
+                                    <span class="record-tag imaging">Imaging</span>
+                                    <span class="record-tag">X-Ray</span>
+                                </div>
+                            </div>
+                            <div class="record-actions">
+                                <button class="action-btn" title="View">
+                                    <i class='bx bx-show'></i>
+                                </button>
+                                <button class="action-btn" title="Download">
+                                    <i class='bx bx-download'></i>
+                                </button>
+                                <button class="action-btn" title="Share">
+                                    <i class='bx bx-share-alt'></i>
+                                </button>
+                                <button class="action-btn" title="More">
+                                    <i class='bx bx-dots-vertical-rounded'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Medication -->
+                        <div class="record-item" data-category="meds">
+                            <div class="record-icon">
+                                <i class='bx bx-capsule'></i>
+                            </div>
+                            <div class="record-details">
+                                <h3 class="record-title">Lisinopril 10mg</h3>
+                                <div class="record-meta">
+                                    <span class="record-date"><i class='bx bx-calendar'></i> May 25, 2024</span>
+                                    <span class="record-provider"><i class='bx bx-user'></i> Dr. Ama Mensah</span>
+                                </div>
+                                <p class="record-description">Prescription for blood pressure management. Take one tablet daily in the morning.</p>
+                                <div class="record-tags">
+                                    <span class="record-tag medication">Medication</span>
+                                    <span class="record-tag">Active</span>
+                                </div>
+                            </div>
+                            <div class="record-actions">
+                                <button class="action-btn" title="View">
+                                    <i class='bx bx-show'></i>
+                                </button>
+                                <button class="action-btn" title="Download">
+                                    <i class='bx bx-download'></i>
+                                </button>
+                                <button class="action-btn" title="Share">
+                                    <i class='bx bx-share-alt'></i>
+                                </button>
+                                <button class="action-btn" title="More">
+                                    <i class='bx bx-dots-vertical-rounded'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Lab Result -->
+                        <div class="record-item" data-category="lab">
+                            <div class="record-icon">
+                                <i class='bx bx-vial'></i>
+                            </div>
+                            <div class="record-details">
+                                <h3 class="record-title">Lipid Panel</h3>
+                                <div class="record-meta">
+                                    <span class="record-date"><i class='bx bx-calendar'></i> May 18, 2024</span>
+                                    <span class="record-provider"><i class='bx bx-hospital'></i> SamaCare Labs</span>
+                                </div>
+                                <p class="record-description">Cholesterol test including LDL, HDL, triglycerides, and total cholesterol.</p>
+                                <div class="record-tags">
+                                    <span class="record-tag lab">Lab Result</span>
+                                    <span class="record-tag">Routine</span>
+                                </div>
+                            </div>
+                            <div class="record-actions">
+                                <button class="action-btn" title="View">
+                                    <i class='bx bx-show'></i>
+                                </button>
+                                <button class="action-btn" title="Download">
+                                    <i class='bx bx-download'></i>
+                                </button>
+                                <button class="action-btn" title="Share">
+                                    <i class='bx bx-share-alt'></i>
+                                </button>
+                                <button class="action-btn" title="More">
+                                    <i class='bx bx-dots-vertical-rounded'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Vaccination -->
+                        <div class="record-item" data-category="vax">
+                            <div class="record-icon">
+                                <i class='bx bx-injection'></i>
+                            </div>
+                            <div class="record-details">
+                                <h3 class="record-title">Influenza Vaccine</h3>
+                                <div class="record-meta">
+                                    <span class="record-date"><i class='bx bx-calendar'></i> Apr 10, 2024</span>
+                                    <span class="record-provider"><i class='bx bx-hospital'></i> SamaCare Vaccination Center</span>
+                                </div>
+                                <p class="record-description">Annual influenza vaccination for seasonal flu prevention.</p>
+                                <div class="record-tags">
+                                    <span class="record-tag vaccination">Vaccination</span>
+                                    <span class="record-tag">Preventive</span>
+                                </div>
+                            </div>
+                            <div class="record-actions">
+                                <button class="action-btn" title="View">
+                                    <i class='bx bx-show'></i>
+                                </button>
+                                <button class="action-btn" title="Download">
+                                    <i class='bx bx-download'></i>
+                                </button>
+                                <button class="action-btn" title="Share">
+                                    <i class='bx bx-share-alt'></i>
+                                </button>
+                                <button class="action-btn" title="More">
+                                    <i class='bx bx-dots-vertical-rounded'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- More records would go here -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <button class="pagination-btn" disabled>
+                            <i class='bx bx-chevron-left'></i>
+                        </button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <button class="pagination-btn">
+                            <i class='bx bx-chevron-right'></i>
+                        </button>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Record Viewer Modal -->
+        <div class="record-modal" id="recordViewerModal">
+            <div class="record-modal-content">
+                <div class="record-modal-header">
+                    <h2>Complete Blood Count (CBC)</h2>
+                    <button class="close-modal">
+                        <i class='bx bx-x'></i>
+                    </button>
+                </div>
+                <div class="record-modal-body">
+                    <div class="record-info-section">
+                        <div class="record-info-item">
+                            <span class="info-label">Date</span>
+                            <span class="info-value">Jun 10, 2024</span>
+                        </div>
+                        <div class="record-info-item">
+                            <span class="info-label">Provider</span>
+                            <span class="info-value">SamaCare Labs</span>
+                        </div>
+                        <div class="record-info-item">
+                            <span class="info-label">Ordered By</span>
+                            <span class="info-value">Dr. Ama Mensah</span>
+                        </div>
+                        <div class="record-info-item">
+                            <span class="info-label">Status</span>
+                            <span class="info-value status-complete">Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="record-content">
+                        <h3>Test Results</h3>
+                        <div class="test-results-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Test</th>
+                                        <th>Result</th>
+                                        <th>Reference Range</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>White Blood Cells (WBC)</td>
+                                        <td>7.2 K/µL</td>
+                                        <td>4.5 - 11.0 K/µL</td>
+                                        <td class="result-normal">Normal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Red Blood Cells (RBC)</td>
+                                        <td>5.2 M/µL</td>
+                                        <td>4.5 - 5.9 M/µL</td>
+                                        <td class="result-normal">Normal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hemoglobin (Hgb)</td>
+                                        <td>14.2 g/dL</td>
+                                        <td>13.5 - 17.5 g/dL</td>
+                                        <td class="result-normal">Normal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hematocrit (Hct)</td>
+                                        <td>42.1 %</td>
+                                        <td>41.0 - 50.0 %</td>
+                                        <td class="result-normal">Normal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Platelets</td>
+                                        <td>310 K/µL</td>
+                                        <td>150 - 400 K/µL</td>
+                                        <td class="result-normal">Normal</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Notes</h3>
+                        <div class="result-notes">
+                            <p>All values are within normal range. No abnormalities detected.</p>
+                        </div>
+
+                        <h3>Recommendations</h3>
+                        <div class="result-recommendations">
+                            <p>Continue with regular health monitoring. No specific follow-up required based on these results.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-modal-footer">
+                    <button class="btn secondary-btn">
+                        <i class='bx bx-download'></i>
+                        <span>Download PDF</span>
+                    </button>
+                    <button class="btn secondary-btn">
+                        <i class='bx bx-share-alt'></i>
+                        <span>Share</span>
+                    </button>
+                    <button class="btn primary-btn close-btn">
+                        <span>Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Record Modal -->
+        <div class="record-modal" id="addRecordModal">
+            <div class="record-modal-content">
+                <div class="record-modal-header">
+                    <h2>Add New Medical Record</h2>
+                    <button class="close-modal">
+                        <i class='bx bx-x'></i>
+                    </button>
+                </div>
+                <div class="record-modal-body">
+                    <form class="add-record-form">
+                        <div class="form-section">
+                            <h3>Record Information</h3>
+                            
+                            <div class="form-group">
+                                <label for="recordType">Record Type</label>
+                                <select id="recordType" required>
+                                    <option value="">Select record type</option>
+                                    <option value="lab">Lab Result</option>
+                                    <option value="imaging">Imaging</option>
+                                    <option value="visit">Doctor Visit</option>
+                                    <option value="medication">Medication</option>
+                                    <option value="vaccination">Vaccination</option>
+                                    <option value="allergy">Allergy</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="recordTitle">Title</label>
+                                <input type="text" id="recordTitle" placeholder="e.g., Blood Test, X-Ray, Doctor Visit" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="recordDate">Date</label>
+                                    <input type="date" id="recordDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="recordProvider">Provider/Facility</label>
+                                    <input type="text" id="recordProvider" placeholder="e.g., SamaCare Clinic">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="recordDescription">Description</label>
+                                <textarea id="recordDescription" rows="3" placeholder="Brief description of the medical record"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>Upload Files</h3>
+                            <div class="file-upload-container">
+                                <div class="file-upload-area">
+                                    <input type="file" id="fileUpload" class="file-input" multiple>
+                                    <label for="fileUpload" class="file-label">
+                                        <i class='bx bx-cloud-upload'></i>
+                                        <span>Drag & drop files here or click to browse</span>
+                                        <small>Supported formats: PDF, JPG, PNG (Max 10MB)</small>
+                                    </label>
+                                </div>
+                                
+                                <div class="uploaded-files">
+                                    <!-- Files will be added here dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>Tags & Categories</h3>
+                            <div class="form-group">
+                                <label>Tags</label>
+                                <div class="tags-input">
+                                    <input type="text" id="tagInput" placeholder="Add a tag and press Enter">
+                                    <div class="tags-container">
+                                        <!-- Tags will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="record-modal-footer">
+                    <button class="btn secondary-btn cancel-btn">
+                        <span>Cancel</span>
+                    </button>
+                    <button type="submit" form="addRecordForm" class="btn primary-btn">
+                        <span>Save Record</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/medical_records.js"></script>
+</body>
+</html>

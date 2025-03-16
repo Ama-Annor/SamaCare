@@ -23,19 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
     const dots = document.querySelectorAll('.dot');
+    const testimonialSlider = document.querySelector('.testimonial-slider');
     const testimonials = document.querySelectorAll('.testimonial-card');
     let currentIndex = 0;
     
     // Function to update testimonial display
     function updateTestimonials() {
-        // For desktop
-        if (window.innerWidth > 992) {
-            testimonials.forEach((testimonial, index) => {
-                testimonial.style.display = 'flex';
-            });
-        } 
         // For mobile and tablets
-        else {
+        if (window.innerWidth <= 992) {
             testimonials.forEach((testimonial, index) => {
                 if (index === currentIndex) {
                     testimonial.style.display = 'flex';
@@ -43,16 +38,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     testimonial.style.display = 'none';
                 }
             });
-            
-            // Update active dot
-            dots.forEach((dot, index) => {
-                if (index === currentIndex) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
+        } else {
+            // For desktop view, reset all testimonials to display flex
+            testimonials.forEach(testimonial => {
+                testimonial.style.display = 'flex';
             });
         }
+        
+        // Update active dot
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
     }
     
     // Initialize testimonials
