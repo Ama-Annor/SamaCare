@@ -1,21 +1,149 @@
-/* Medical Records Page Styles */
+/*Medical Records Page Styles*/
+
+/* Record type colors */
 :root {
-    /* Extend dashboard variables with medical-records specific colors */
     --lab-color: #4caf50;
     --imaging-color: #2196f3;
     --visit-color: #ff9800;
-    --medication-color: #9c27b0;
-    --vaccination-color: #00bcd4;
-    --allergy-color: #f44336;
-    
-    /* Status colors */
-    --normal-color: #4caf50;
-    --abnormal-color: #f44336;
-    --pending-color: #ff9800;
-    --neutral-color: #757575;
 }
 
-/* Action Bar */
+/* Health Summary Section */
+.health-summary {
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+.summary-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-header h2 {
+    font-size: 20px;
+    color: var(--dark-color);
+}
+
+.last-update {
+    font-size: 14px;
+    color: var(--muted-text);
+}
+
+.summary-content {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.summary-metrics {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: var(--bg-light);
+    padding: 15px;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.metric-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background-color: var(--light-jade);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 22px;
+}
+
+.metric-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-label {
+    font-size: 14px;
+    color: var(--muted-text);
+}
+
+.metric-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 3px 0;
+}
+
+.metric-date {
+    font-size: 12px;
+    color: var(--muted-text);
+}
+
+.summary-alerts {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.alert-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(233, 196, 106, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid var(--accent-color);
+}
+
+.alert-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    font-size: 20px;
+}
+
+.alert-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.alert-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.alert-description {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+/*Action Bar*/
 .action-bar {
     display: flex;
     justify-content: space-between;
@@ -30,84 +158,6 @@
     align-items: center;
     gap: 15px;
     flex-wrap: wrap;
-}
-
-.filter-dropdown, .sort-dropdown {
-    position: relative;
-}
-
-.filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.filter-menu {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    background-color: white;
-    border-radius: var(--border-radius);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    z-index: 100;
-    padding: 20px;
-    display: none;
-}
-
-.filter-dropdown:hover .filter-menu,
-.filter-menu:hover {
-    display: block;
-}
-
-.filter-section {
-    margin-bottom: 20px;
-}
-
-.filter-section h4 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: var(--dark-color);
-}
-
-.filter-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.filter-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.filter-option input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-.date-range {
-    display: flex;
-    gap: 10px;
-}
-
-.date-range input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.filter-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
 }
 
 .view-toggle {
@@ -132,7 +182,7 @@
     border-radius: 3px;
 }
 
-/* Records Categories */
+/*Records Categories*/
 .records-categories {
     margin-bottom: 30px;
 }
@@ -184,7 +234,7 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Medical Records List */
+/*Medical Records List*/
 .medical-records-list {
     margin-bottom: 30px;
 }
@@ -195,6 +245,104 @@
     gap: 15px;
 }
 
+/*Grid view support*/
+.records-container.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.records-container.grid-view .record-item {
+    flex-direction: column;
+}
+
+.records-container.grid-view .record-icon {
+    margin-bottom: 15px;
+}
+
+.records-container.grid-view .record-actions {
+    margin-top: 15px;
+    align-self: flex-end;
+}
+
+/*Timeline View*/
+.timeline-view {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15px;
+    width: 2px;
+    background-color: var(--border-color);
+}
+
+.timeline-view .record-item {
+    position: relative;
+    margin-bottom: 30px;
+    border-left: none;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.timeline-view .record-item::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: -35px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    z-index: 1;
+}
+
+.timeline-view .record-item[data-category="lab"]::before {
+    border-color: var(--lab-color);
+}
+
+.timeline-view .record-item[data-category="imaging"]::before {
+    border-color: var(--imaging-color);
+}
+
+.timeline-view .record-item[data-category="visits"]::before {
+    border-color: var(--visit-color);
+}
+
+.timeline-view .record-item::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: -15px;
+    width: 15px;
+    height: 2px;
+    background-color: var(--border-color);
+}
+
+.timeline-view .record-date-marker {
+    position: absolute;
+    top: 15px;
+    left: -125px;
+    width: 90px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark-color);
+    text-align: right;
+}
+
+.timeline-view .record-meta {
+    position: relative;
+}
+
+.timeline-view .record-meta span:first-child {
+    display: none; /*Hide date in meta as it's shown in timeline*/
+}
+
+/*Record Item*/
 .record-item {
     background-color: white;
     border-radius: var(--border-radius);
@@ -225,14 +373,6 @@
     border-left-color: var(--visit-color);
 }
 
-.record-item[data-category="meds"] {
-    border-left-color: var(--medication-color);
-}
-
-.record-item[data-category="vax"] {
-    border-left-color: var(--vaccination-color);
-}
-
 .record-icon {
     width: 50px;
     height: 50px;
@@ -255,14 +395,6 @@
 
 .record-item[data-category="visits"] .record-icon {
     background-color: var(--visit-color);
-}
-
-.record-item[data-category="meds"] .record-icon {
-    background-color: var(--medication-color);
-}
-
-.record-item[data-category="vax"] .record-icon {
-    background-color: var(--vaccination-color);
 }
 
 .record-details {
@@ -324,22 +456,32 @@
     color: var(--visit-color);
 }
 
-.record-tag.medication {
-    background-color: rgba(156, 39, 176, 0.1);
-    color: var(--medication-color);
-}
-
-.record-tag.vaccination {
-    background-color: rgba(0, 188, 212, 0.1);
-    color: var(--vaccination-color);
-}
-
 .record-actions {
     display: flex;
     gap: 5px;
 }
 
-/* Pagination */
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--muted-text);
+    transition: all var(--transition-speed);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background-color: var(--bg-light);
+    color: var(--primary-color);
+}
+
+/*Pagination*/
 .pagination {
     display: flex;
     justify-content: center;
@@ -376,322 +518,28 @@
     opacity: 0.5;
 }
 
-/* Modal Styles */
-.record-modal {
-    display: none;
+/*Toast message for simulating actions*/
+.toast-message {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--dark-color);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.record-modal.active {
-    display: flex;
-}
-
-.record-modal-content {
-    background-color: white;
-    border-radius: var(--border-radius);
-    width: 100%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.record-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.record-modal-header h2 {
-    font-size: 22px;
-    color: var(--dark-color);
-}
-
-.close-modal {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--muted-text);
-    transition: all var(--transition-speed);
-}
-
-.close-modal:hover {
-    color: var(--danger-color);
-}
-
-.record-modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.record-modal-footer {
-    padding: 20px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-}
-
-/* Record Viewer Modal Styles */
-.record-info-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-    background-color: var(--bg-light);
-    padding: 20px;
-    border-radius: var(--border-radius);
-}
-
-.record-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.info-label {
-    font-size: 14px;
-    color: var(--muted-text);
-}
-
-.info-value {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--dark-color);
-}
-
-.status-complete {
-    color: var(--success-color);
-}
-
-.record-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.record-content h3 {
-    font-size: 18px;
-    color: var(--dark-color);
-    margin-bottom: 10px;
-}
-
-.test-results-table {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.test-results-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.test-results-table th, .test-results-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.test-results-table th {
-    background-color: var(--bg-light);
-    font-weight: 600;
-    color: var(--dark-color);
-}
-
-.test-results-table tr:last-child td {
-    border-bottom: none;
-}
-
-.result-normal {
-    color: var(--normal-color);
-}
-
-.result-abnormal {
-    color: var(--abnormal-color);
-}
-
-.result-notes, .result-recommendations {
-    background-color: var(--bg-light);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-/* Add Record Modal Styles */
-.form-section {
-    margin-bottom: 30px;
-}
-
-.form-section h3 {
-    font-size: 18px;
-    color: var(--dark-color);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--dark-color);
-}
-
-.form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 14px;
-    transition: all var(--transition-speed);
-}
-
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
-    outline: none;
-}
-
-.file-upload-container {
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    text-align: center;
-    transition: all var(--transition-speed);
-}
-
-.file-upload-container:hover {
-    border-color: var(--primary-color);
-}
-
-.file-upload-area {
-    position: relative;
-    padding: 30px;
-}
-
-.file-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     opacity: 0;
-    cursor: pointer;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
 }
 
-.file-label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
+.toast-message.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.file-label i {
-    font-size: 40px;
-    color: var(--primary-color);
-}
-
-.file-label span {
-    font-size: 16px;
-    color: var(--dark-color);
-}
-
-.file-label small {
-    font-size: 12px;
-    color: var(--muted-text);
-}
-
-.uploaded-files {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.file-item {
-    background-color: var(--bg-light);
-    border-radius: 5px;
-    padding: 10px 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-}
-
-.file-item i {
-    font-size: 20px;
-    color: var(--primary-color);
-}
-
-.file-item .file-remove {
-    margin-left: auto;
-    color: var(--danger-color);
-    cursor: pointer;
-}
-
-.tags-input {
-    position: relative;
-}
-
-.tags-input input {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 14px;
-    transition: all var(--transition-speed);
-}
-
-.tags-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.tag-item {
-    background-color: var(--light-jade);
-    color: var(--primary-color);
-    padding: 5px 10px;
-    border-radius: 50px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.tag-remove {
-    cursor: pointer;
-    font-size: 16px;
-}
-
-/* Responsive Styles */
+/*Responsive Styles*/
 @media (max-width: 768px) {
     .action-bar {
         flex-direction: column;
@@ -702,11 +550,6 @@
         width: 100%;
     }
 
-    .filter-menu {
-        width: 100%;
-        max-width: 300px;
-    }
-
     .record-item {
         flex-direction: column;
     }
@@ -715,42 +558,34 @@
         margin-bottom: 15px;
     }
 
-    .record-actions {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
     .record-meta {
         flex-direction: column;
         gap: 5px;
     }
-
-    .record-modal-content {
-        width: 95%;
-    }
-
-    .form-row {
+    
+    .records-container.grid-view {
+        display: grid;
         grid-template-columns: 1fr;
-        gap: 10px;
+    }
+    
+    .summary-content {
+        flex-direction: column;
     }
 }
 
 @media (max-width: 576px) {
     .category-tabs {
-        scrollbar-width: none; /* For Firefox */
-        -ms-overflow-style: none; /* For Internet Explorer and Edge */
+        scrollbar-width: none; /*For Firefox*/
+        -ms-overflow-style: none; /*For Internet Explorer and Edge*/
     }
 
     .category-tabs::-webkit-scrollbar {
-        display: none; /* For Chrome, Safari, and Opera */
+        display: none; /*For Chrome, Safari, and Opera*/
     }
-
-    .record-modal-footer {
-        flex-direction: column-reverse;
-    }
-
-    .record-modal-footer .btn {
-        width: 100%;
+    
+    .record-actions {
+        position: absolute;
+        top: 15px;
+        right: 15px;
     }
 }

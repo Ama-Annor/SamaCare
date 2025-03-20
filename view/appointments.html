@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/appointments.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <span>JD</span>
+                </div>
+                <div class="user-info">
+                    <h4>John Doe</h4>
+                    <p>Patient</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-home-alt'></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medical_records.html">
+                            <i class='bx bx-folder'></i>
+                            <span>Medical Records</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="appointments.html">
+                            <i class='bx bx-calendar'></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health-chat.html">
+                            <i class='bx bx-chat'></i>
+                            <span>Health Assistant</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Appointments</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search appointments...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small">
+                                    <span>JD</span>
+                                </div>
+                                <span class="user-name">John Doe</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Appointments Content -->
+            <div class="dashboard-content">
+                <!-- Action Bar -->
+                <section class="action-bar">
+                    <div class="action-left">
+                        <button class="btn primary-btn schedule-btn">
+                            <i class='bx bx-plus'></i>
+                            <span>New Appointment</span>
+                        </button>
+                        <div class="filter-dropdown">
+                            <button class="btn secondary-btn">
+                                <i class='bx bx-filter'></i>
+                                <span>Status: All</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="action-right">
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="list">
+                                <i class='bx bx-list-ul'></i>
+                            </button>
+                            <button class="view-btn" data-view="calendar">
+                                <i class='bx bx-calendar'></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Appointments List View -->
+                <section class="appointments-section view-section active" id="list-view">
+                    <div class="appointments-container">
+                        <!-- Upcoming Appointments -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>Upcoming Appointments</h3>
+                            </div>
+                            <div class="appointments-list">
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="day">19</span>
+                                        <span class="month">Jun</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>General Checkup</h4>
+                                        <p><i class='bx bx-time'></i> 10:30 AM</p>
+                                        <p><i class='bx bx-user'></i> Dr. Ama Mensah</p>
+                                        <p><i class='bx bx-map'></i> SamaCare Main Clinic</p>
+                                        <span class="appointment-status confirmed">Confirmed</span>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <button class="action-btn" title="Reschedule">
+                                            <i class='bx bx-calendar-edit'></i>
+                                        </button>
+                                        <button class="action-btn" title="Cancel">
+                                            <i class='bx bx-x-circle'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Past Appointments -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>Past Appointments</h3>
+                            </div>
+                            <div class="appointments-list">
+                                <div class="appointment-item past">
+                                    <div class="appointment-date">
+                                        <span class="day">10</span>
+                                        <span class="month">May</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>Regular Checkup</h4>
+                                        <p><i class='bx bx-time'></i> 1:00 PM</p>
+                                        <p><i class='bx bx-user'></i> Dr. McNobert Amoah</p>
+                                        <p><i class='bx bx-map'></i> SamaCare West Branch</p>
+                                        <span class="appointment-status completed">Completed</span>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <button class="action-btn" title="View Details">
+                                            <i class='bx bx-detail'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="appointment-item past">
+                                    <div class="appointment-date">
+                                        <span class="day">15</span>
+                                        <span class="month">Apr</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>Lab Tests</h4>
+                                        <p><i class='bx bx-time'></i> 9:30 AM</p>
+                                        <p><i class='bx bx-user'></i> Lab Department</p>
+                                        <p><i class='bx bx-map'></i> SamaCare Diagnostics</p>
+                                        <span class="appointment-status completed">Completed</span>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <button class="action-btn" title="View Details">
+                                            <i class='bx bx-detail'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Appointments Calendar View -->
+                <section class="appointments-section view-section" id="calendar-view">
+                    <div class="content-card">
+                        <div class="calendar-header">
+                            <div class="calendar-navigation">
+                                <button class="calendar-nav-btn">
+                                    <i class='bx bx-chevron-left'></i>
+                                </button>
+                                <h3>June 2024</h3>
+                                <button class="calendar-nav-btn">
+                                    <i class='bx bx-chevron-right'></i>
+                                </button>
+                            </div>
+                            <div class="calendar-view-options">
+                                <button class="calendar-view-btn active" data-view="month">Month</button>
+                                <button class="calendar-view-btn" data-view="week">Week</button>
+                                <button class="calendar-view-btn" data-view="day">Day</button>
+                            </div>
+                        </div>
+                        <div class="calendar-container">
+                            <div class="calendar-weekdays">
+                                <div>Sun</div>
+                                <div>Mon</div>
+                                <div>Tue</div>
+                                <div>Wed</div>
+                                <div>Thu</div>
+                                <div>Fri</div>
+                                <div>Sat</div>
+                            </div>
+                            <div class="calendar-days">
+                                <!-- Previous month days -->
+                                <div class="calendar-day other-month">26</div>
+                                <div class="calendar-day other-month">27</div>
+                                <div class="calendar-day other-month">28</div>
+                                <div class="calendar-day other-month">29</div>
+                                <div class="calendar-day other-month">30</div>
+                                <div class="calendar-day other-month">31</div>
+                                
+                                <!-- Current month days -->
+                                <div class="calendar-day">1</div>
+                                <div class="calendar-day">2</div>
+                                <div class="calendar-day">3</div>
+                                <div class="calendar-day">4</div>
+                                <div class="calendar-day">5</div>
+                                <div class="calendar-day">6</div>
+                                <div class="calendar-day">7</div>
+                                <div class="calendar-day">8</div>
+                                <div class="calendar-day">9</div>
+                                <div class="calendar-day">10</div>
+                                <div class="calendar-day">11</div>
+                                <div class="calendar-day">12</div>
+                                <div class="calendar-day">13</div>
+                                <div class="calendar-day">14</div>
+                                <div class="calendar-day">15</div>
+                                <div class="calendar-day">16</div>
+                                <div class="calendar-day">17</div>
+                                <div class="calendar-day">18</div>
+                                <div class="calendar-day current-date has-appointment">19</div>
+                                <div class="calendar-day">20</div>
+                                <div class="calendar-day">21</div>
+                                <div class="calendar-day">22</div>
+                                <div class="calendar-day">23</div>
+                                <div class="calendar-day">24</div>
+                                <div class="calendar-day">25</div>
+                                <div class="calendar-day">26</div>
+                                <div class="calendar-day">27</div>
+                                <div class="calendar-day">28</div>
+                                <div class="calendar-day">29</div>
+                                <div class="calendar-day">30</div>
+                                
+                                <!-- Next month days -->
+                                <div class="calendar-day other-month">1</div>
+                                <div class="calendar-day other-month">2</div>
+                                <div class="calendar-day other-month">3</div>
+                                <div class="calendar-day other-month">4</div>
+                                <div class="calendar-day other-month">5</div>
+                                <div class="calendar-day other-month">6</div>
+                            </div>
+                        </div>
+                        <div class="selected-date-appointments">
+                            <h4>June 19, 2024</h4>
+                            <div class="day-appointment-item">
+                                <div class="appointment-time">10:30 AM</div>
+                                <div class="appointment-info">
+                                    <h5>General Checkup</h5>
+                                    <p>Dr. Ama Mensah - SamaCare Main Clinic</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/appointments.js"></script>
+</body>
+</html>

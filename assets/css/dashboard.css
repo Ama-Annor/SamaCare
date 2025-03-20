@@ -1,4 +1,4 @@
-/* Dashboard Variables */
+/*Dashboard Variables*/
 :root {
     --primary-color: #2a9d8f;
     --secondary-color: #219186;
@@ -9,7 +9,7 @@
     --light-jade: #def2f1;
     --medium-jade: #3aafa9;
     
-    /* Dashboard Specific Colors */
+    /*Dashboard Specific Colors*/
     --bg-light: #f5f7fa;
     --card-bg: #ffffff;
     --sidebar-bg: #264653;
