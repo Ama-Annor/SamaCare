@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Tracking - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/health_tracking.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <span>JD</span>
+                </div>
+                <div class="user-info">
+                    <h4>John Doe</h4>
+                    <p>Patient</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-home-alt'></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medical_records.html">
+                            <i class='bx bx-folder'></i>
+                            <span>Medical Records</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="appointments.html">
+                            <i class='bx bx-calendar'></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health_tracking.html">
+                            <i class='bx bx-line-chart'></i>
+                            <span>Health Tracking</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="health-chat.html">
+                            <i class='bx bx-chat'></i>
+                            <span>Health Assistant</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Health Tracking</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search metrics...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small">
+                                    <span>JD</span>
+                                </div>
+                                <span class="user-name">John Doe</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Health Tracking Content -->
+            <div class="dashboard-content">
+                <!-- Action Bar -->
+                <section class="action-bar">
+                    <div class="action-left">
+                        <button class="btn primary-btn" id="addNewMeasurementBtn">
+                            <i class='bx bx-plus'></i>
+                            <span>Add New Measurement</span>
+                        </button>
+                        <div class="date-filter">
+                            <button class="btn secondary-btn">
+                                <i class='bx bx-calendar'></i>
+                                <span>Last 30 Days</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Health Metrics Overview -->
+                <section class="metrics-overview">
+                    <div class="metrics-grid">
+                        <!-- Blood Pressure Metric Card -->
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <h3>Blood Pressure</h3>
+                                <div class="metric-icon">
+                                    <i class='bx bx-heart'></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <div class="current-reading">
+                                    <div class="reading-value">120/80 mmHg</div>
+                                    <div class="reading-status normal">Normal</div>
+                                </div>
+                                <div class="reading-trend">
+                                    <span class="trend-label">Trend: </span>
+                                    <span class="trend-value positive">
+                                        <i class='bx bx-down-arrow'></i> 5% in last 30 days
+                                    </span>
+                                </div>
+                                <div class="reading-time">Last reading: Today, 8:30 AM</div>
+                            </div>
+                            <div class="metric-chart">
+                                <div class="chart-placeholder" id="bp-chart"></div>
+                            </div>
+                            <div class="metric-actions">
+                                <button class="btn secondary-btn view-history-btn" data-metric="blood-pressure">
+                                    <span>View History</span>
+                                </button>
+                                <button class="btn primary-btn add-reading-btn" data-metric="blood-pressure">
+                                    <i class='bx bx-plus'></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Weight Metric Card -->
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <h3>Weight</h3>
+                                <div class="metric-icon">
+                                    <i class='bx bx-dumbbell'></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <div class="current-reading">
+                                    <div class="reading-value">72 kg</div>
+                                    <div class="reading-status normal">Normal</div>
+                                </div>
+                                <div class="reading-trend">
+                                    <span class="trend-label">Trend: </span>
+                                    <span class="trend-value negative">
+                                        <i class='bx bx-up-arrow'></i> 1% in last 30 days
+                                    </span>
+                                </div>
+                                <div class="reading-time">Last reading: 3 days ago</div>
+                            </div>
+                            <div class="metric-chart">
+                                <div class="chart-placeholder" id="weight-chart"></div>
+                            </div>
+                            <div class="metric-actions">
+                                <button class="btn secondary-btn view-history-btn" data-metric="weight">
+                                    <span>View History</span>
+                                </button>
+                                <button class="btn primary-btn add-reading-btn" data-metric="weight">
+                                    <i class='bx bx-plus'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Detailed Metric History Section (initially hidden) -->
+                <section class="metric-history-section" id="metric-history">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3>Blood Pressure History</h3>
+                            <button class="close-history">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        </div>
+                        <div class="history-content">
+                            <div class="history-chart">
+                                <div class="chart-placeholder large"></div>
+                            </div>
+                            <div class="history-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Reading</th>
+                                            <th>Status</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Jun 20, 2024</td>
+                                            <td>8:30 AM</td>
+                                            <td>120/80 mmHg</td>
+                                            <td><span class="status-badge normal">Normal</span></td>
+                                            <td>Morning reading</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jun 19, 2024</td>
+                                            <td>7:45 AM</td>
+                                            <td>122/82 mmHg</td>
+                                            <td><span class="status-badge normal">Normal</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jun 18, 2024</td>
+                                            <td>8:15 AM</td>
+                                            <td>125/85 mmHg</td>
+                                            <td><span class="status-badge normal">Normal</span></td>
+                                            <td>After coffee</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jun 17, 2024</td>
+                                            <td>9:00 AM</td>
+                                            <td>128/84 mmHg</td>
+                                            <td><span class="status-badge normal">Normal</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jun 16, 2024</td>
+                                            <td>8:45 AM</td>
+                                            <td>130/86 mmHg</td>
+                                            <td><span class="status-badge normal">Normal</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Add Reading Form (initially hidden) -->
+                <div class="add-reading-form" id="add-reading-form">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h3>Add Blood Pressure Reading</h3>
+                            <button class="close-form">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        </div>
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label for="reading-date">Date</label>
+                                <input type="date" id="reading-date" value="2024-06-20">
+                            </div>
+                            <div class="form-group">
+                                <label for="reading-time">Time</label>
+                                <input type="time" id="reading-time" value="08:30">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="systolic">Systolic (mmHg)</label>
+                                    <input type="number" id="systolic" placeholder="120">
+                                </div>
+                                <div class="form-group">
+                                    <label for="diastolic">Diastolic (mmHg)</label>
+                                    <input type="number" id="diastolic" placeholder="80">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reading-notes">Notes (Optional)</label>
+                                <textarea id="reading-notes" rows="3" placeholder="Add any notes or context about this reading"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <button class="btn secondary-btn cancel-btn">Cancel</button>
+                            <button class="btn primary-btn save-btn">Save Reading</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date Filter Modal (initially hidden) -->
+                <div class="date-filter-modal" id="date-filter-modal">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h3>Select Date Range</h3>
+                            <button class="close-form" id="close-date-filter">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        </div>
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label>Preset Ranges</label>
+                                <div class="date-preset-options">
+                                    <button class="preset-btn" data-days="7">Last 7 Days</button>
+                                    <button class="preset-btn active" data-days="30">Last 30 Days</button>
+                                    <button class="preset-btn" data-days="90">Last 3 Months</button>
+                                    <button class="preset-btn" data-days="365">Last Year</button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Custom Range</label>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="start-date">Start Date</label>
+                                        <input type="date" id="start-date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="end-date">End Date</label>
+                                        <input type="date" id="end-date">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <button class="btn secondary-btn" id="cancel-date-filter">Cancel</button>
+                            <button class="btn primary-btn" id="apply-date-filter">Apply Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/health_tracking.js"></script>
+</body>
+</html>

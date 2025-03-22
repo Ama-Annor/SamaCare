@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     //show or hide the appointment based on the date
                     const appointmentsList = document.querySelector('.selected-date-appointments');
                     if (date === '19') {
-                        /show the appointment for the 19th
+                        // show the appointment for the 19th
                         appointmentsList.innerHTML = `
                             <h4>June ${date}, 2024</h4>
                             <div class="day-appointment-item">
@@ -483,14 +483,347 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // ====== BOOKING MODAL FUNCTIONALITY ======
+    
     //New appointment button
     const scheduleBtn = document.querySelector('.schedule-btn');
+    const bookingModal = document.getElementById('booking-modal');
+    const closeBookingModal = document.getElementById('close-booking-modal');
     
+    // Get the confirmation modal and elements
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const closeConfirmation = document.getElementById('close-confirmation');
+    const confirmBookingBtn = document.getElementById('confirm-booking');
+    
+    // Step navigation buttons
+    const nextStepBtns = document.querySelectorAll('.next-step');
+    const prevStepBtns = document.querySelectorAll('.prev-step');
+    
+    // Form elements
+    const serviceTypeSelect = document.getElementById('service-type');
+    const doctorSelect = document.getElementById('doctor');
+    const doctorInfo = document.getElementById('doctor-info');
+    const appointmentDateInput = document.getElementById('appointment-date');
+    const timeSlots = document.querySelectorAll('input[name="time-slot"]');
+    const appointmentReasonTextarea = document.getElementById('appointment-reason');
+    const appointmentLocationSelect = document.getElementById('appointment-location');
+    
+    // Summary elements
+    const summaryService = document.getElementById('summary-service');
+    const summaryDoctor = document.getElementById('summary-doctor');
+    const summaryDate = document.getElementById('summary-date');
+    const summaryTime = document.getElementById('summary-time');
+    const summaryLocation = document.getElementById('summary-location');
+    const summaryReason = document.getElementById('summary-reason');
+    
+    // Confirmation elements
+    const confirmDate = document.getElementById('confirm-date');
+    const confirmTime = document.getElementById('confirm-time');
+    const confirmDoctor = document.getElementById('confirm-doctor');
+    const confirmLocation = document.getElementById('confirm-location');
+    
+    // Show booking modal when clicking the schedule button
     if (scheduleBtn) {
         scheduleBtn.addEventListener('click', function() {
-            showToast('New appointment scheduling would be implemented with backend integration');
+            showBookingModal();
         });
     }
+    
+    // Close booking modal when clicking the X button
+    if (closeBookingModal) {
+        closeBookingModal.addEventListener('click', function() {
+            hideBookingModal();
+        });
+    }
+    
+    // Close confirmation modal when clicking the Done button
+    if (closeConfirmation) {
+        closeConfirmation.addEventListener('click', function() {
+            hideConfirmationModal();
+        });
+    }
+    
+    // Handle next step buttons
+    if (nextStepBtns.length > 0) {
+        nextStepBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const currentStep = parseInt(this.getAttribute('data-step'));
+                
+                // Validate current step
+                if (validateStep(currentStep)) {
+                    hideStep(currentStep);
+                    showStep(currentStep + 1);
+                    
+                    // If moving to the review step, populate the summary
+                    if (currentStep === 4) {
+                        populateSummary();
+                    }
+                }
+            });
+        });
+    }
+    
+    // Handle previous step buttons
+    if (prevStepBtns.length > 0) {
+        prevStepBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const currentStep = parseInt(this.getAttribute('data-step'));
+                hideStep(currentStep);
+                showStep(currentStep - 1);
+            });
+        });
+    }
+    
+    // Handle doctor selection
+    if (doctorSelect) {
+        doctorSelect.addEventListener('change', function() {
+            if (this.value) {
+                // Show doctor info card
+                doctorInfo.style.display = 'block';
+                
+                // Update doctor info based on selection
+                updateDoctorInfo(this.value);
+            } else {
+                doctorInfo.style.display = 'none';
+            }
+        });
+    }
+    
+    // Set minimum date for appointment date input to today
+    if (appointmentDateInput) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        appointmentDateInput.min = `${year}-${month}-${day}`;
+        
+        // Set default date to tomorrow
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowYear = tomorrow.getFullYear();
+        const tomorrowMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const tomorrowDay = String(tomorrow.getDate()).padStart(2, '0');
+        appointmentDateInput.value = `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`;
+    }
+    
+    // Handle confirm booking button
+    if (confirmBookingBtn) {
+        confirmBookingBtn.addEventListener('click', function() {
+            // In a real application, this would send data to the server
+            // For now, we'll just show the confirmation modal
+            
+            // Transfer summary details to confirmation modal
+            confirmDate.textContent = summaryDate.textContent;
+            confirmTime.textContent = summaryTime.textContent;
+            confirmDoctor.textContent = summaryDoctor.textContent;
+            confirmLocation.textContent = summaryLocation.textContent;
+            
+            // Hide booking modal and show confirmation
+            hideBookingModal();
+            showConfirmationModal();
+        });
+    }
+    
+    // Function to show the booking modal
+    function showBookingModal() {
+        if (bookingModal) {
+            bookingModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            
+            // Reset the form
+            resetBookingForm();
+        }
+    }
+    
+    // Function to hide the booking modal
+    function hideBookingModal() {
+        if (bookingModal) {
+            bookingModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
+    
+    // Function to show the confirmation modal
+    function showConfirmationModal() {
+        if (confirmationModal) {
+            confirmationModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+    }
+    
+    // Function to hide the confirmation modal
+    function hideConfirmationModal() {
+        if (confirmationModal) {
+            confirmationModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
+    
+    // Function to show a specific step
+    function showStep(stepNumber) {
+        const step = document.getElementById(`step-${stepNumber}`);
+        if (step) {
+            step.style.display = 'block';
+        }
+    }
+    
+    // Function to hide a specific step
+    function hideStep(stepNumber) {
+        const step = document.getElementById(`step-${stepNumber}`);
+        if (step) {
+            step.style.display = 'none';
+        }
+    }
+    
+    // Function to validate each step
+    function validateStep(stepNumber) {
+        switch(stepNumber) {
+            case 1:
+                // Validate service selection
+                if (!serviceTypeSelect.value) {
+                    showToast('Please select a service');
+                    return false;
+                }
+                return true;
+            
+            case 2:
+                // Validate doctor selection
+                if (!doctorSelect.value) {
+                    showToast('Please select a doctor');
+                    return false;
+                }
+                return true;
+            
+            case 3:
+                // Validate date and time selection
+                if (!appointmentDateInput.value) {
+                    showToast('Please select a date');
+                    return false;
+                }
+                
+                let timeSelected = false;
+                for (let timeSlot of timeSlots) {
+                    if (timeSlot.checked) {
+                        timeSelected = true;
+                        break;
+                    }
+                }
+                
+                if (!timeSelected) {
+                    showToast('Please select a time slot');
+                    return false;
+                }
+                return true;
+            
+            case 4:
+                // Validate additional information
+                if (!appointmentReasonTextarea.value) {
+                    showToast('Please provide a reason for your visit');
+                    return false;
+                }
+                if (!appointmentLocationSelect.value) {
+                    showToast('Please select a clinic location');
+                    return false;
+                }
+                return true;
+            
+            default:
+                return true;
+        }
+    }
+    
+    // Function to update doctor info
+    function updateDoctorInfo(doctorValue) {
+        const doctorName = document.getElementById('doctor-name');
+        const doctorSpecialty = document.getElementById('doctor-specialty');
+        
+        switch(doctorValue) {
+            case 'dr-ama-mensah':
+                doctorName.textContent = 'Dr. Ama Mensah';
+                doctorSpecialty.textContent = 'General Physician';
+                break;
+            case 'dr-mcnobert-amoah':
+                doctorName.textContent = 'Dr. McNobert Amoah';
+                doctorSpecialty.textContent = 'Cardiologist';
+                break;
+            case 'dr-sarah-johnson':
+                doctorName.textContent = 'Dr. Sarah Johnson';
+                doctorSpecialty.textContent = 'Dentist';
+                break;
+            case 'dr-michael-ofori':
+                doctorName.textContent = 'Dr. Michael Ofori';
+                doctorSpecialty.textContent = 'Pediatrician';
+                break;
+        }
+    }
+    
+    // Function to populate summary
+    function populateSummary() {
+        // Service
+        summaryService.textContent = serviceTypeSelect.options[serviceTypeSelect.selectedIndex].text;
+        
+        // Doctor
+        summaryDoctor.textContent = doctorSelect.options[doctorSelect.selectedIndex].text.split(' - ')[0];
+        
+        // Date
+        const selectedDate = new Date(appointmentDateInput.value);
+        const formattedDate = selectedDate.toLocaleDateString('en-US', { 
+            month: 'long', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
+        summaryDate.textContent = formattedDate;
+        
+        // Time
+        let selectedTimeValue = '';
+        let selectedTimeLabel = '';
+        for (let timeSlot of timeSlots) {
+            if (timeSlot.checked) {
+                selectedTimeValue = timeSlot.value;
+                selectedTimeLabel = timeSlot.nextElementSibling.textContent;
+                break;
+            }
+        }
+        summaryTime.textContent = selectedTimeLabel;
+        
+        // Location
+        summaryLocation.textContent = appointmentLocationSelect.options[appointmentLocationSelect.selectedIndex].text;
+        
+        // Reason
+        summaryReason.textContent = appointmentReasonTextarea.value;
+    }
+    
+    // Function to reset the booking form
+    function resetBookingForm() {
+        // Reset all form fields
+        serviceTypeSelect.value = '';
+        doctorSelect.value = '';
+        doctorInfo.style.display = 'none';
+        
+        // Reset time slot selections
+        for (let timeSlot of timeSlots) {
+            timeSlot.checked = false;
+        }
+        
+        appointmentReasonTextarea.value = '';
+        
+        // Show first step, hide others
+        for (let i = 1; i <= 5; i++) {
+            if (i === 1) {
+                showStep(i);
+            } else {
+                hideStep(i);
+            }
+        }
+    }
+    
+    // Add keyboard event listener to close modal on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            hideBookingModal();
+            hideConfirmationModal();
+        }
+    });
     
     //Filter dropdown for status
     const filterDropdown = document.querySelector('.filter-dropdown .secondary-btn');

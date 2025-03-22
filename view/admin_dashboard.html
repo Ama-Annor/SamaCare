@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar admin-sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar admin">
+                    <span>AD</span>
+                </div>
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h5>Main</h5>
+                    <ul>
+                        <li class="active">
+                            <a href="admin_dashboard.html">
+                                <i class='bx bx-grid-alt'></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_analytics.html">
+                                <i class='bx bx-bar-chart-alt-2'></i>
+                                <span>Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h5>Management</h5>
+                    <ul>
+                        <li>
+                            <a href="admin_users.html">
+                                <i class='bx bx-user'></i>
+                                <span>User Management</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_doctors.html">
+                                <i class='bx bx-plus-medical'></i>
+                                <span>Doctors</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_appointments.html">
+                                <i class='bx bx-calendar'></i>
+                                <span>Appointments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_medical_services.html">
+                                <i class='bx bx-first-aid'></i>
+                                <span>Medical Services</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h5>System</h5>
+                    <ul>
+                        <li>
+                            <a href="admin_settings.html">
+                                <i class='bx bx-cog'></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_logs.html">
+                                <i class='bx bx-history'></i>
+                                <span>Activity Logs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_notifications.html">
+                                <i class='bx bx-bell'></i>
+                                <span>Notifications</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Admin Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small admin">
+                                    <span>AD</span>
+                                </div>
+                                <span class="user-name">Admin User</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Overview Stats -->
+                <section class="stats-overview">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class='bx bx-user'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Users</h3>
+                                <div class="stat-number">2,543</div>
+                                <div class="stat-trend positive">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>12% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class='bx bx-calendar-check'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Appointments</h3>
+                                <div class="stat-number">187</div>
+                                <div class="stat-trend positive">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>8% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class='bx bx-plus-medical'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Doctors</h3>
+                                <div class="stat-number">48</div>
+                                <div class="stat-trend positive">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>4% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class='bx bx-message-detail'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Support Tickets</h3>
+                                <div class="stat-number">23</div>
+                                <div class="stat-trend negative">
+                                    <i class='bx bx-down-arrow'></i>
+                                    <span>6% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>User Growth</h3>
+                                <div class="chart-actions">
+                                    <button class="btn icon-btn">
+                                        <i class='bx bx-refresh'></i>
+                                    </button>
+                                    <button class="btn icon-btn">
+                                        <i class='bx bx-dots-vertical-rounded'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-placeholder" id="user-growth-chart"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>Appointment Distribution</h3>
+                                <div class="chart-actions">
+                                    <button class="btn icon-btn">
+                                        <i class='bx bx-refresh'></i>
+                                    </button>
+                                    <button class="btn icon-btn">
+                                        <i class='bx bx-dots-vertical-rounded'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-placeholder" id="appointment-distribution-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Recent Activities and Quick Actions -->
+                <section class="activity-actions-section">
+                    <div class="section-row">
+                        <div class="recent-activities">
+                            <div class="section-header">
+                                <h3>Recent Activities</h3>
+                                <a href="admin_logs.html" class="view-all">View All</a>
+                            </div>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon green">
+                                        <i class='bx bx-user-plus'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-text">New user <strong>John Smith</strong> registered</div>
+                                        <div class="activity-time">2 hours ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon blue">
+                                        <i class='bx bx-calendar-plus'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-text"><strong>Dr. Sarah Williams</strong> created 5 new appointment slots</div>
+                                        <div class="activity-time">4 hours ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon purple">
+                                        <i class='bx bx-message'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-text">New support ticket <strong>#4872</strong> opened</div>
+                                        <div class="activity-time">Yesterday</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon orange">
+                                        <i class='bx bx-cog'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-text">System update <strong>v2.0.5</strong> completed</div>
+                                        <div class="activity-time">2 days ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon red">
+                                        <i class='bx bx-error-circle'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-text">Reported issue with <strong>appointment scheduling</strong> resolved</div>
+                                        <div class="activity-time">3 days ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-actions">
+                            <div class="section-header">
+                                <h3>Quick Actions</h3>
+                            </div>
+                            <div class="action-grid">
+                                <a href="admin_users.html" class="action-card">
+                                    <div class="action-icon blue">
+                                        <i class='bx bx-user-plus'></i>
+                                    </div>
+                                    <span>Add User</span>
+                                </a>
+                                
+                                <a href="admin_doctors.html" class="action-card">
+                                    <div class="action-icon purple">
+                                        <i class='bx bx-plus-medical'></i>
+                                    </div>
+                                    <span>Add Doctor</span>
+                                </a>
+                                
+                                <a href="admin_medical_services.html" class="action-card">
+                                    <div class="action-icon green">
+                                        <i class='bx bx-plus-circle'></i>
+                                    </div>
+                                    <span>Add Service</span>
+                                </a>
+                                
+                                <a href="admin_appointments.html" class="action-card">
+                                    <div class="action-icon orange">
+                                        <i class='bx bx-calendar-edit'></i>
+                                    </div>
+                                    <span>Manage Appointments</span>
+                                </a>
+                                
+                                <a href="admin_settings.html" class="action-card">
+                                    <div class="action-icon gray">
+                                        <i class='bx bx-cog'></i>
+                                    </div>
+                                    <span>Settings</span>
+                                </a>
+                                
+                                <a href="admin_reports.html" class="action-card">
+                                    <div class="action-icon red">
+                                        <i class='bx bx-file'></i>
+                                    </div>
+                                    <span>Generate Report</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Pending Approvals Section -->
+                <section class="pending-approvals-section">
+                    <div class="section-header">
+                        <h3>Pending Approvals</h3>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    
+                    <div class="approval-table-container">
+                        <table class="approval-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Requested By</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#APR001</td>
+                                    <td>Doctor Registration</td>
+                                    <td>Dr. Michael Chen</td>
+                                    <td>Jun 18, 2024</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn icon-btn sm">
+                                                <i class='bx bx-show'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm approve">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm reject">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#APR002</td>
+                                    <td>Medical Service</td>
+                                    <td>Admin Staff</td>
+                                    <td>Jun 17, 2024</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn icon-btn sm">
+                                                <i class='bx bx-show'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm approve">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm reject">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#APR003</td>
+                                    <td>User Role Change</td>
+                                    <td>Jane Smith</td>
+                                    <td>Jun 16, 2024</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn icon-btn sm">
+                                                <i class='bx bx-show'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm approve">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm reject">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#APR004</td>
+                                    <td>Content Update</td>
+                                    <td>Admin Staff</td>
+                                    <td>Jun 15, 2024</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn icon-btn sm">
+                                                <i class='bx bx-show'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm approve">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm reject">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/admin_dashboard.js"></script>
+</body>
+</html>
