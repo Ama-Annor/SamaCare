@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - SamaCare Admin</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin_analytics.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar admin-sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar admin">
+                    <span>AD</span>
+                </div>
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h5>Main</h5>
+                    <ul>
+                        <li>
+                            <a href="admin_dashboard.html">
+                                <i class='bx bx-grid-alt'></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="admin_analytics.html">
+                                <i class='bx bx-bar-chart-alt-2'></i>
+                                <span>Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h5>Management</h5>
+                    <ul>
+                        <li>
+                            <a href="admin_users.html">
+                                <i class='bx bx-user'></i>
+                                <span>User Management</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_doctors.html">
+                                <i class='bx bx-plus-medical'></i>
+                                <span>Doctors</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin_appointments.html">
+                                <i class='bx bx-calendar'></i>
+                                <span>Appointments</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h5>System</h5>
+                    <ul>
+                        <li>
+                            <a href="admin_settings.html">
+                                <i class='bx bx-cog'></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Analytics</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small admin">
+                                    <span>AD</span>
+                                </div>
+                                <span class="user-name">Admin User</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Analytics Content -->
+            <div class="dashboard-content">
+                <!-- Date Filters -->
+                <section class="date-filter-section">
+                    <div class="filter-card">
+                        <div class="filter-options">
+                            <div class="date-presets">
+                                <button class="date-preset active" data-days="7">Last 7 Days</button>
+                                <button class="date-preset" data-days="30">Last 30 Days</button>
+                                <button class="date-preset" data-days="90">Last 3 Months</button>
+                                <button class="date-preset" data-days="365">Last Year</button>
+                            </div>
+                            <div class="custom-date-range">
+                                <span>Custom Range:</span>
+                                <div class="date-inputs">
+                                    <input type="date" id="date-start" class="date-input">
+                                    <span>to</span>
+                                    <input type="date" id="date-end" class="date-input">
+                                    <button class="apply-date-btn">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Key Metrics -->
+                <section class="metrics-section">
+                    <div class="section-header">
+                        <h2>Key Metrics Overview</h2>
+                        <div class="section-actions">
+                            <button class="btn icon-btn">
+                                <i class='bx bx-download'></i>
+                                <span>Export</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon blue">
+                                <i class='bx bx-user-plus'></i>
+                            </div>
+                            <div class="metric-data">
+                                <h3>New Patients</h3>
+                                <div class="metric-value">124</div>
+                                <div class="metric-trend positive">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>15.4% vs previous period</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon green">
+                                <i class='bx bx-calendar-check'></i>
+                            </div>
+                            <div class="metric-data">
+                                <h3>Completed Appointments</h3>
+                                <div class="metric-value">187</div>
+                                <div class="metric-trend positive">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>8.2% vs previous period</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon purple">
+                                <i class='bx bx-time'></i>
+                            </div>
+                            <div class="metric-data">
+                                <h3>Average Wait Time</h3>
+                                <div class="metric-value">12.5 min</div>
+                                <div class="metric-trend negative">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>3.1% vs previous period</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon orange">
+                                <i class='bx bx-trending-up'></i>
+                            </div>
+                            <div class="metric-data">
+                                <h3>Patient Satisfaction</h3>
+                                <div class="metric-value">92%</div>
+                                <div class="metric-trend positive">
+                                    <i class='bx bx-up-arrow'></i>
+                                    <span>1.8% vs previous period</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Patient Activity Chart -->
+                <section class="chart-section">
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h3>Patient Activity</h3>
+                            <div class="chart-actions">
+                                <div class="chart-view-options">
+                                    <button class="view-option active" data-view="daily">Daily</button>
+                                    <button class="view-option" data-view="weekly">Weekly</button>
+                                    <button class="view-option" data-view="monthly">Monthly</button>
+                                </div>
+                                <button class="btn icon-btn">
+                                    <i class='bx bx-refresh'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div class="chart-placeholder" id="patient-activity-chart"></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Two Column Analytics Layout -->
+                <section class="two-column-section">
+                    <!-- Service Distribution -->
+                    <div class="analysis-column">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>Service Distribution</h3>
+                                <div class="chart-actions">
+                                    <button class="btn icon-btn">
+                                        <i class='bx bx-refresh'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-placeholder" id="service-distribution-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Age Demographics -->
+                    <div class="analysis-column">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>Patient Demographics</h3>
+                                <div class="chart-actions">
+                                    <button class="btn icon-btn">
+                                        <i class='bx bx-refresh'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-placeholder" id="demographics-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Doctor Performance -->
+                <section class="performance-section">
+                    <div class="section-header">
+                        <h2>Doctor Performance</h2>
+                        <div class="section-actions">
+                            <button class="btn icon-btn">
+                                <i class='bx bx-download'></i>
+                                <span>Export</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="performance-table">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialty</th>
+                                    <th>Appointments</th>
+                                    <th>Patient Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="doctor-info">
+                                            <div class="doctor-avatar">AM</div>
+                                            <span>Dr. Ama Mensah</span>
+                                        </div>
+                                    </td>
+                                    <td>General Physician</td>
+                                    <td>48</td>
+                                    <td>
+                                        <div class="rating">
+                                            <div class="stars" data-rating="4.8">
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star-half'></i>
+                                                <span>4.8</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="doctor-info">
+                                            <div class="doctor-avatar">MA</div>
+                                            <span>Dr. McNobert Amoah</span>
+                                        </div>
+                                    </td>
+                                    <td>Cardiologist</td>
+                                    <td>32</td>
+                                    <td>
+                                        <div class="rating">
+                                            <div class="stars" data-rating="4.6">
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star-half'></i>
+                                                <span>4.6</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="doctor-info">
+                                            <div class="doctor-avatar">SJ</div>
+                                            <span>Dr. Sarah Johnson</span>
+                                        </div>
+                                    </td>
+                                    <td>Dentist</td>
+                                    <td>40</td>
+                                    <td>
+                                        <div class="rating">
+                                            <div class="stars" data-rating="4.9">
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <span>4.9</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="doctor-info">
+                                            <div class="doctor-avatar">MO</div>
+                                            <span>Dr. Michael Ofori</span>
+                                        </div>
+                                    </td>
+                                    <td>Pediatrician</td>
+                                    <td>45</td>
+                                    <td>
+                                        <div class="rating">
+                                            <div class="stars" data-rating="4.7">
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star-half'></i>
+                                                <span>4.7</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <!-- Appointment Insights -->
+                <section class="insights-section">
+                    <div class="section-header">
+                        <h2>Appointment Insights</h2>
+                    </div>
+                    
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <h3>Peak Hours</h3>
+                                <i class='bx bx-time-five'></i>
+                            </div>
+                            <div class="insight-chart">
+                                <div class="chart-placeholder" id="peak-hours-chart"></div>
+                            </div>
+                            <div class="insight-summary">
+                                <p>Peak appointment times occur between <strong>9:00 AM</strong> and <strong>11:00 AM</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <h3>Appointment Types</h3>
+                                <i class='bx bx-list-check'></i>
+                            </div>
+                            <div class="insight-chart">
+                                <div class="chart-placeholder" id="appointment-types-chart"></div>
+                            </div>
+                            <div class="insight-summary">
+                                <p><strong>General Checkups</strong> are the most common appointment type (45%)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <h3>Cancellation Rate</h3>
+                                <i class='bx bx-x-circle'></i>
+                            </div>
+                            <div class="insight-chart">
+                                <div class="chart-placeholder" id="cancellation-chart"></div>
+                            </div>
+                            <div class="insight-summary">
+                                <p>Current cancellation rate: <strong>5.2%</strong> (decreased by 1.3% from last period)</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/admin_dashboard.js"></script>
+    <script src="../assets/js/admin_analytics.js"></script>
+</body>
+</html>

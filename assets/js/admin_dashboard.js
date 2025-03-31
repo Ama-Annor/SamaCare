@@ -2,9 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create charts for the admin dashboard
     createAdminCharts();
     
-    // Handle approval actions
-    setupApprovalActions();
-    
     // Handle dropdown toggles
     setupDropdowns();
     
@@ -14,15 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to create charts for the admin dashboard
 function createAdminCharts() {
-    // User Growth Chart
-    createUserGrowthChart();
+    // Patient Growth Chart
+    createPatientGrowthChart();
     
     // Appointment Distribution Chart
     createAppointmentDistributionChart();
 }
 
-// Function to create the user growth chart
-function createUserGrowthChart() {
+// Function to create the patient growth chart
+function createPatientGrowthChart() {
     const ctx = document.getElementById('user-growth-chart');
     
     if (!ctx) return;
@@ -32,14 +29,14 @@ function createUserGrowthChart() {
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
     
-    // Sample data for user growth chart
+    // Sample data for patient growth chart
     const data = [
-        { month: 'Jan', users: 1850 },
-        { month: 'Feb', users: 1920 },
-        { month: 'Mar', users: 2050 },
-        { month: 'Apr', users: 2180 },
-        { month: 'May', users: 2320 },
-        { month: 'Jun', users: 2543 }
+        { month: 'Jan', patients: 1850 },
+        { month: 'Feb', patients: 1920 },
+        { month: 'Mar', patients: 2050 },
+        { month: 'Apr', patients: 2180 },
+        { month: 'May', patients: 2320 },
+        { month: 'Jun', patients: 2543 }
     ];
     
     // Chart dimensions
@@ -51,7 +48,7 @@ function createUserGrowthChart() {
     
     // Create scales
     const xScale = chartWidth / (data.length - 1);
-    const yMax = Math.max(...data.map(d => d.users));
+    const yMax = Math.max(...data.map(d => d.patients));
     const yScale = chartHeight / yMax;
     
     // Create group for chart elements
@@ -62,14 +59,14 @@ function createUserGrowthChart() {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     
     // Generate path data
-    let pathData = `M0,${chartHeight - data[0].users * yScale}`;
+    let pathData = `M0,${chartHeight - data[0].patients * yScale}`;
     
     for (let i = 1; i < data.length; i++) {
-        pathData += ` L${i * xScale},${chartHeight - data[i].users * yScale}`;
+        pathData += ` L${i * xScale},${chartHeight - data[i].patients * yScale}`;
     }
     
     path.setAttribute('d', pathData);
-    path.setAttribute('stroke', '#4361ee');
+    path.setAttribute('stroke', '#4ade80');
     path.setAttribute('stroke-width', '3');
     path.setAttribute('fill', 'none');
     
@@ -77,25 +74,25 @@ function createUserGrowthChart() {
     const areaPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     
     // Generate area path data
-    let areaPathData = `M0,${chartHeight - data[0].users * yScale}`;
+    let areaPathData = `M0,${chartHeight - data[0].patients * yScale}`;
     
     for (let i = 1; i < data.length; i++) {
-        areaPathData += ` L${i * xScale},${chartHeight - data[i].users * yScale}`;
+        areaPathData += ` L${i * xScale},${chartHeight - data[i].patients * yScale}`;
     }
     
     // Close the path
     areaPathData += ` L${(data.length - 1) * xScale},${chartHeight} L0,${chartHeight} Z`;
     
     areaPath.setAttribute('d', areaPathData);
-    areaPath.setAttribute('fill', 'rgba(67, 97, 238, 0.1)');
+    areaPath.setAttribute('fill', 'rgba(74, 222, 128, 0.1)');
     
     // Add data points
     data.forEach((d, i) => {
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', i * xScale);
-        circle.setAttribute('cy', chartHeight - d.users * yScale);
+        circle.setAttribute('cy', chartHeight - d.patients * yScale);
         circle.setAttribute('r', '4');
-        circle.setAttribute('fill', '#4361ee');
+        circle.setAttribute('fill', '#4ade80');
         circle.setAttribute('stroke', 'white');
         circle.setAttribute('stroke-width', '2');
         
@@ -106,7 +103,7 @@ function createUserGrowthChart() {
             
             const tooltipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
             tooltipRect.setAttribute('x', i * xScale - 40);
-            tooltipRect.setAttribute('y', chartHeight - d.users * yScale - 40);
+            tooltipRect.setAttribute('y', chartHeight - d.patients * yScale - 40);
             tooltipRect.setAttribute('width', '80');
             tooltipRect.setAttribute('height', '30');
             tooltipRect.setAttribute('rx', '5');
@@ -114,11 +111,11 @@ function createUserGrowthChart() {
             
             const tooltipText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             tooltipText.setAttribute('x', i * xScale);
-            tooltipText.setAttribute('y', chartHeight - d.users * yScale - 20);
+            tooltipText.setAttribute('y', chartHeight - d.patients * yScale - 20);
             tooltipText.setAttribute('text-anchor', 'middle');
             tooltipText.setAttribute('fill', 'white');
             tooltipText.setAttribute('font-size', '12');
-            tooltipText.textContent = `${d.month}: ${d.users}`;
+            tooltipText.textContent = `${d.month}: ${d.patients}`;
             
             tooltip.appendChild(tooltipRect);
             tooltip.appendChild(tooltipText);
@@ -193,14 +190,13 @@ function createAppointmentDistributionChart() {
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
     
-    // Sample data for appointment distribution chart
+    // Sample data for appointment types based on your requirement
     const data = [
-        { category: 'General', count: 45, color: '#4361ee' },
-        { category: 'Dental', count: 30, color: '#4cc9f0' },
-        { category: 'Cardiology', count: 25, color: '#f72585' },
-        { category: 'Pediatrics', count: 20, color: '#3f37c9' },
-        { category: 'Dermatology', count: 15, color: '#60a5fa' },
-        { category: 'Others', count: 52, color: '#a78bfa' }
+        { category: 'General Checkup', count: 45, color: '#4ade80' },
+        { category: 'Specialist Consultation', count: 25, color: '#60a5fa' },
+        { category: 'Dental Care', count: 30, color: '#a78bfa' },
+        { category: 'Laboratory Tests', count: 20, color: '#f97316' },
+        { category: 'Vaccination', count: 15, color: '#f43f5e' }
     ];
     
     // Chart dimensions
@@ -329,38 +325,6 @@ function createAppointmentDistributionChart() {
     ctx.appendChild(svg);
 }
 
-// Function to setup approval actions
-function setupApprovalActions() {
-    const approveButtons = document.querySelectorAll('.table-actions .approve');
-    const rejectButtons = document.querySelectorAll('.table-actions .reject');
-    
-    approveButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            const statusCell = row.querySelector('.status-badge');
-            
-            statusCell.textContent = 'Approved';
-            statusCell.classList.remove('pending');
-            statusCell.classList.add('approved');
-            
-            showToast('Item approved successfully');
-        });
-    });
-    
-    rejectButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            const statusCell = row.querySelector('.status-badge');
-            
-            statusCell.textContent = 'Rejected';
-            statusCell.classList.remove('pending');
-            statusCell.classList.add('rejected');
-            
-            showToast('Item rejected');
-        });
-    });
-}
-
 // Function to setup dropdowns
 function setupDropdowns() {
     const userBtn = document.querySelector('.user-btn');
@@ -368,8 +332,7 @@ function setupDropdowns() {
     if (userBtn) {
         userBtn.addEventListener('click', function() {
             // Toggle user dropdown
-            // Implementation would go here
-            showToast('User menu would open here');
+            showToast('User menu opened');
         });
     }
 }
@@ -400,34 +363,6 @@ function showToast(message) {
         toast = document.createElement('div');
         toast.className = 'toast-message';
         document.body.appendChild(toast);
-        
-        // Add style for the toast if not already added
-        if (!document.querySelector('style#toast-style')) {
-            const style = document.createElement('style');
-            style.id = 'toast-style';
-            style.textContent = `
-                .toast-message {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    background-color: var(--admin-primary, #4361ee);
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-                    z-index: 1000;
-                    opacity: 0;
-                    transform: translateY(20px);
-                    transition: all 0.3s ease;
-                }
-                
-                .toast-message.show {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            `;
-            document.head.appendChild(style);
-        }
     }
     
     // Set message and show toast
