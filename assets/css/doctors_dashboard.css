@@ -1,0 +1,135 @@
+/* Doctor Dashboard Specific Styles */
+
+/* Task Priority Colors */
+.reminder-item.high-priority {
+    border-left-color: var(--danger-color);
+}
+
+.reminder-item.medium-priority {
+    border-left-color: var(--warning-color);
+}
+
+.reminder-item.low-priority {
+    border-left-color: var(--info-color);
+}
+
+/* Doctor-specific icons */
+.tasks-section .reminder-icon {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Notification Colors */
+.activity-icon.urgent {
+    background-color: #FFECEC !important;
+    color: #FF4D4D !important;
+}
+
+.activity-icon.info {
+    background-color: #E0F8FF !important;
+    color: #0096FF !important;
+}
+
+.activity-icon.warning {
+    background-color: #FFF2E0 !important;
+    color: #FF9500 !important;
+}
+
+.activity-icon.success {
+    background-color: #E6FFF2 !important;
+    color: #00C853 !important;
+}
+
+/* Schedule Time Block */
+.appointment-date {
+    background-color: var(--light-jade);
+    text-align: center;
+}
+
+/* Schedule Additional Styles */
+.appointment-status {
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.status-confirmed {
+    background-color: var(--light-jade);
+    color: var(--primary-color);
+}
+
+.status-completed {
+    background-color: #E6FFF2;
+    color: #00C853;
+}
+
+.status-canceled {
+    background-color: #FFECEC;
+    color: #FF4D4D;
+}
+
+.status-waiting {
+    background-color: #FFF2E0;
+    color: #FF9500;
+}
+
+/* Task Action Button Hover Effects */
+.done-btn:hover {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.reminder-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* Performance Metrics Additional Styles */
+.metric-header i {
+    font-size: 20px;
+}
+
+/* Custom task icons */
+.task-priority {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.priority-high {
+    background-color: var(--danger-color);
+}
+
+.priority-medium {
+    background-color: var(--warning-color);
+}
+
+.priority-low {
+    background-color: var(--info-color);
+}
+
+/* Doctor Specific Welcome Card */
+.welcome-card {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+}
+
+/* Mobile Optimization for Doctor Dashboard */
+@media (max-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .appointment-details h4 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .appointment-status {
+        margin-top: 0;
+    }
+}
