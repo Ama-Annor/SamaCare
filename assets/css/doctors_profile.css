@@ -1,0 +1,291 @@
+/* Doctor Profile Specific Styles */
+.profile-header-section {
+    margin-bottom: 30px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.profile-avatar {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+}
+
+.edit-avatar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: all var(--transition-speed);
+}
+
+.edit-avatar:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    font-size: 28px;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: var(--muted-text);
+    margin-bottom: 12px;
+}
+
+.profile-status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: #e0f7e6;
+    color: #4caf50;
+}
+
+.status-badge.away {
+    background-color: #fff8e1;
+    color: #ffa000;
+}
+
+.status-badge.busy {
+    background-color: #fee8e7;
+    color: #f44336;
+}
+
+.status-badge.off-duty {
+    background-color: #f0f0f0;
+    color: #757575;
+}
+
+.status-badge::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-badge.active::before {
+    background-color: #4caf50;
+}
+
+.status-badge.away::before {
+    background-color: #ffa000;
+}
+
+.status-badge.busy::before {
+    background-color: #f44336;
+}
+
+.status-badge.off-duty::before {
+    background-color: #757575;
+}
+
+.status-text {
+    font-size: 13px;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.status-text:hover {
+    text-decoration: underline;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-left: auto;
+}
+
+/* Profile Form Styles */
+.profile-form {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all var(--transition-speed);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+    outline: none;
+}
+
+.form-control:disabled {
+    background-color: var(--bg-light);
+    cursor: not-allowed;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.edit-section-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    background-color: transparent;
+    transition: all var(--transition-speed);
+}
+
+.edit-section-btn:hover {
+    background-color: var(--light-jade);
+}
+
+/* Schedule Grid Styles */
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.schedule-day {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.day-header {
+    background-color: var(--bg-light);
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.day-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
+.time-slots {
+    padding: 15px;
+}
+
+.time-slots.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.time-input {
+    width: 120px;
+    text-align: center;
+}
+
+/* Media Queries for Doctor Profile */
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .time-slot {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .time-input {
+        width: 100%;
+    }
+}
