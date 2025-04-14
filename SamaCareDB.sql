@@ -2,6 +2,7 @@
 CREATE DATABASE samacare;
 USE samacare;
 
+
 -- User roles table
 CREATE TABLE roles (
     role_id INT AUTO_INCREMENT PRIMARY KEY,
