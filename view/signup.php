@@ -1,3 +1,12 @@
+<?php
+session_start();
+$errors = $_SESSION['signup_errors'] ?? [];
+$formData = $_SESSION['form_data'] ?? [];
+// Clear after displaying
+unset($_SESSION['signup_errors'], $_SESSION['form_data']);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,20 +128,40 @@
                     <span>or sign up with email</span>
                 </div>
                 
-                <form class="auth-form">
+                <!-- samuel_update  to display errors-->
+                <div class="error-container" id="error-container" style="display: none;">
+                    <ul id="error-list"></ul>
+                </div>
+
+                <!-- Handle retaining right form data when the form refreshes -->
+                <?php if (isset($_SESSION['signup_errors']) && !empty($_SESSION['signup_errors'])): ?>
+                    <div class="error-messages" style="color: red; margin-bottom: 15px;">
+                        <ul>
+                            <?php foreach ($_SESSION['signup_errors'] as $error): ?>
+                                <li><?= htmlspecialchars($error) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <?php unset($_SESSION['signup_errors']); // Clear after displaying ?>
+                <?php endif; ?>
+
+                <!-- made changes and included form names for easy connection to php script -->
+                <form class="auth-form" method = "POST" action = "../assets/php_files/process_signup.php">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName">First Name</label>
                             <div class="input-with-icon">
                                 <i class='bx bx-user'></i>
-                                <input type="text" id="firstName" placeholder="Enter your first name" required>
+                                <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required
+                                value="<?= htmlspecialchars($formData['firstName'] ?? '') ?>">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="lastName">Last Name</label>
                             <div class="input-with-icon">
                                 <i class='bx bx-user'></i>
-                                <input type="text" id="lastName" placeholder="Enter your last name" required>
+                                <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required
+                                value="<?= htmlspecialchars($formData['lastName'] ?? '') ?>">
                             </div>
                         </div>
                     </div>
@@ -141,7 +170,8 @@
                         <label for="email">Email Address</label>
                         <div class="input-with-icon">
                             <i class='bx bx-envelope'></i>
-                            <input type="email" id="email" placeholder="Enter your email address" required>
+                            <input type="email" id="email" name="email" placeholder="Enter your email address" required
+                            value="<?= htmlspecialchars($formData['email'] ?? '') ?>">
                         </div>
                     </div>
                     
@@ -149,7 +179,7 @@
                         <label for="password">Password</label>
                         <div class="input-with-icon">
                             <i class='bx bx-lock-alt'></i>
-                            <input type="password" id="password" placeholder="Create a password" required>
+                            <input type="password" id="password" name = "password" placeholder="Create a password" required>
                             <button type="button" class="toggle-password">
                                 <i class='bx bx-hide'></i>
                             </button>
@@ -164,12 +194,29 @@
                             <span class="strength-text">Password strength</span>
                         </div>
                     </div>
+
+                    <!-- confirm password(update--samuel) -->
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-lock-alt'></i>
+                            <input type="password" id="confirm-password" name = "confirm-password" placeholder="Confirm your password" required>
+                            <button type="button" class="toggle-password">
+                                <i class='bx bx-hide'></i>
+                            </button>
+                        </div>
+                        <div class="password-match" id="password-match-message">
+                            <span class="match-text">Passwords must match</span>
+                        </div>
+                    </div>
+
                     
                     <div class="form-group">
                         <label for="phone">Phone Number (Optional)</label>
                         <div class="input-with-icon">
                             <i class='bx bx-phone'></i>
-                            <input type="tel" id="phone" placeholder="Enter your phone number">
+                            <input type="tel" id="phone" name = "phone" placeholder="Enter your phone number">
                         </div>
                     </div>
                     
