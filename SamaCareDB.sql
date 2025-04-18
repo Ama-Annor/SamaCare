@@ -134,7 +134,7 @@ CREATE TABLE medical_records (
     file_path VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (patient_id) REFERENCES patients(patient_id) ON DELETE CASCADE,
-    FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id) ON SET NULL,
+    FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id) ON DELETE SET NULL,
     FOREIGN KEY (category_id) REFERENCES record_categories(category_id)
 );
 
