@@ -1,98 +1,73 @@
 <?php
-// Start a session
 session_start();
+require_once '../db/db_connect.php';
 
-// Initialize variables for FORM INPUT
-$email = $password_input = "";  // Changed variable name here
+$email = $password_input = "";
 $email_err = $password_err = $login_err = "";
 
-// Database connection parameters - use DIFFERENT variables
-$host = "localhost";
-$dbname = "samacare"; 
-$db_username = "root";  // Changed variable name
-$db_password = "";      // Changed variable name
-
-// Process form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // Validate email
     if (empty(trim($_POST["email"]))) {
         $email_err = "Please enter your email.";
     } else {
         $email = trim($_POST["email"]);
     }
-    
-    // Validate password
+
     if (empty(trim($_POST["password"]))) {
         $password_err = "Please enter your password.";
     } else {
         $password_input = trim($_POST["password"]);
     }
-    
-    // Check input errors before attempting login
+
     if (empty($email_err) && empty($password_err)) {
-        try {
-            // Establish connection with database - use db_username and db_password
-            $conn = new PDO("mysql:host=$host;dbname=$dbname", $db_username, $db_password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-           
-            // Prepare a select statement
-            $stmt = $conn->prepare("SELECT user_id, role_id, email, password, first_name, last_name, status FROM users WHERE email = :email");
-            $param_email = $email;
-            $stmt->bindParam(":email", $param_email);
-            
-            
-            // Execute the statement
-            $stmt->execute();
-            
-            // Check if email exists
-            if($stmt->rowCount() == 1) {
-                // Fetch user data
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                // Verify password - use password_input here
-                if(password_verify($password_input, $user["password"])) {
-                    // Check if account is active
-                    if($user["status"] == "active") {
-                        // Store data in session variables
-                        $_SESSION["loggedin"] = true;
-                        $_SESSION["id"] = $user["id"];
-                        $_SESSION["email"] = $user["email"];
-                        $_SESSION["role_id"] = $user["role_id"];
-                        $_SESSION["first_name"] = $user["first_name"];
-                        $_SESSION["last_name"] = $user["last_name"];
-                        
-                        // Redirect user based on role
-                        if($user["role_id"] == 1) {
-                            // Admin user
-                            header("location: admin_dashboard.html");
-                        } else if($user["role_id"] == 2) {
-                            // Regular user (patient)
-                            header("location: dashboard.html");
-                        } else {
-                            // Doctor
-                            header("location: doctors_dashboard.html");
-                        }
-                        exit;
-                    } else {
-                        $login_err = "Your account is not active. Please contact support.";
+        $stmt = $conn->prepare("SELECT user_id, role_id, email, password, first_name, last_name, status FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
+
+            if (password_verify($password_input, $user["password"])) {
+                if ($user["status"] == "active") {
+                    // Set session variables
+                    $_SESSION["loggedin"] = true;
+                    $_SESSION["user_id"] = $user["user_id"];
+                    $_SESSION["email"] = $user["email"];
+                    $_SESSION["role_id"] = $user["role_id"];
+                    $_SESSION["first_name"] = $user["first_name"];
+                    $_SESSION["last_name"] = $user["last_name"];
+
+                    // Redirect based on role
+                    switch ($user["role_id"]) {
+                        case 1:
+                            header("Location: admin_dashboard.html");
+                            break;
+                        case 2:
+                            header("Location: dashboard.php");
+                            break;
+                        case 3: // Assuming 3 is doctor role
+                            header("Location: doctor_dashboard.php");
+                            break;
+                        default:
+                            header("Location: dashboard.php");
                     }
+                    exit;
                 } else {
-                    // Password is not valid
-                    $login_err = "Invalid email or password.";
+                    $login_err = "Your account is not active. Please contact support.";
                 }
             } else {
-                // Email doesn't exist
                 $login_err = "Invalid email or password.";
             }
-        } catch(PDOException $e) {
-            $login_err = "Oops! Something went wrong. Please try again later.";
-            // Log the error for administrators
-            error_log("Login error: " . $e->getMessage());
+        } else {
+            $login_err = "Invalid email or password.";
         }
+        $stmt->close();
     }
+    $conn->close();
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
