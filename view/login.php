@@ -1,3 +1,73 @@
+<?php
+session_start();
+require_once '../db/db_connect.php';
+
+$email = $password_input = "";
+$email_err = $password_err = $login_err = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (empty(trim($_POST["email"]))) {
+        $email_err = "Please enter your email.";
+    } else {
+        $email = trim($_POST["email"]);
+    }
+
+    if (empty(trim($_POST["password"]))) {
+        $password_err = "Please enter your password.";
+    } else {
+        $password_input = trim($_POST["password"]);
+    }
+
+    if (empty($email_err) && empty($password_err)) {
+        $stmt = $conn->prepare("SELECT user_id, role_id, email, password, first_name, last_name, status FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
+
+            if (password_verify($password_input, $user["password"])) {
+                if ($user["status"] == "active") {
+                    // Set session variables
+                    $_SESSION["loggedin"] = true;
+                    $_SESSION["user_id"] = $user["user_id"];
+                    $_SESSION["email"] = $user["email"];
+                    $_SESSION["role_id"] = $user["role_id"];
+                    $_SESSION["first_name"] = $user["first_name"];
+                    $_SESSION["last_name"] = $user["last_name"];
+
+                    // Redirect based on role
+                    switch ($user["role_id"]) {
+                        case 1:
+                            header("Location: admin_dashboard.html");
+                            break;
+                        case 2:
+                            header("Location: dashboard.php");
+                            break;
+                        case 3: // Assuming 3 is doctor role
+                            header("Location: doctor_dashboard.php");
+                            break;
+                        default:
+                            header("Location: dashboard.php");
+                    }
+                    exit;
+                } else {
+                    $login_err = "Your account is not active. Please contact support.";
+                }
+            } else {
+                $login_err = "Invalid email or password.";
+            }
+        } else {
+            $login_err = "Invalid email or password.";
+        }
+        $stmt->close();
+    }
+    $conn->close();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,8 +112,8 @@
                 <a href="contact.html">Contact</a>
             </nav>
             <div class="auth-buttons">
-                <a href="login.html" class="login-btn active">Login</a>
-                <a href="signup.html" class="signup-btn">Sign Up</a>
+                <a href="login.php" class="login-btn active">Login</a>
+                <a href="signup.php" class="signup-btn">Sign Up</a>
             </div>
             <button class="mobile-menu-btn">
                 <i class='bx bx-menu'></i>
@@ -113,35 +183,43 @@
                     <span>or login with email</span>
                 </div>
                 
-                <form class="auth-form">
-                    <div class="form-group">
+                <?php
+                if(!empty($login_err)){
+                    echo '<div class="alert alert-danger">' . $login_err . '</div>';
+                }
+                ?>
+                
+                <form class="auth-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                    <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                         <label for="email">Email Address</label>
                         <div class="input-with-icon">
                             <i class='bx bx-envelope'></i>
-                            <input type="email" id="email" placeholder="Enter your email address" required>
+                            <input type="email" id="email" name="email" placeholder="Enter your email address" value="<?php echo $email; ?>" required>
                         </div>
+                        <span class="error-message"><?php echo $email_err; ?></span>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
                         <label for="password">Password</label>
                         <div class="input-with-icon">
                             <i class='bx bx-lock-alt'></i>
-                            <input type="password" id="password" placeholder="Enter your password" required>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
                             <button type="button" class="toggle-password">
                                 <i class='bx bx-hide'></i>
                             </button>
                         </div>
+                        <span class="error-message"><?php echo $password_err; ?></span>
                     </div>
                     
                     <div class="form-row remember-forgot">
                         <div class="form-group checkbox-group">
                             <label class="checkbox-container">
-                                <input type="checkbox">
+                                <input type="checkbox" name="remember">
                                 <span class="checkmark"></span>
                                 Remember me
                             </label>
                         </div>
-                        <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+                        <a href="forgot-password.php" class="forgot-link">Forgot password?</a>
                     </div>
                     
                     <button type="submit" class="submit-btn">
@@ -151,7 +229,7 @@
                 </form>
                 
                 <div class="auth-footer">
-                    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                    <p>Don't have an account? <a href="signup.php">Sign up</a></p>
                 </div>
             </div>
         </div>

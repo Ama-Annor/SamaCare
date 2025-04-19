@@ -336,3 +336,71 @@ function createSVGChart(elementId, dataPoints, lineColor) {
     chartElement.innerHTML = '';
     chartElement.appendChild(svg);
 }
+
+// Show/hide forms
+document.getElementById('addNewMeasurementBtn').addEventListener('click', () => {
+    document.getElementById('add-reading-form').classList.add('active');
+});
+
+document.querySelectorAll('.close-form, .cancel-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.add-reading-form, .date-filter-modal').forEach(el => {
+            el.classList.remove('active');
+        });
+    });
+});
+
+// Toast messages
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast-message ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Auto-hide toast messages
+setTimeout(() => {
+    document.querySelectorAll('.toast-message').forEach(toast => {
+        toast.remove();
+    });
+}, 3000);
+
+// View History functionality
+document.querySelectorAll('.view-history-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Show history section
+        document.getElementById('metric-history').classList.add('active');
+
+        // Refresh chart with historical data
+        createHistoryChart();
+    });
+});
+
+// Close history section
+document.querySelector('.close-history').addEventListener('click', () => {
+    document.getElementById('metric-history').classList.remove('active');
+});
+
+// Chart functions
+function createHistoryChart() {
+    // Implement your chart logic here using Chart.js or similar
+    console.log('History chart created');
+}
+
+function createMetricCharts() {
+    // Create charts for metric cards
+    document.querySelectorAll('.metric-chart .chart-placeholder').forEach(chart => {
+        const data = [
+            { x: 0, y: Math.random() * 100 },
+            { x: 20, y: Math.random() * 100 },
+            { x: 40, y: Math.random() * 100 },
+            { x: 60, y: Math.random() * 100 },
+            { x: 80, y: Math.random() * 100 }
+        ];
+        createSVGChart(chart.id, data, '#2a9d8f');
+    });
+}
