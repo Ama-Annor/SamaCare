@@ -107,6 +107,22 @@ try {
             $stmt->close();
         }
 
+        $confirmedAppointmentsCount = 0;
+        if ($patientData && isset($patientData['patient_id'])) {
+            $stmt = $conn->prepare("
+            SELECT COUNT(*) as confirmed_count
+            FROM appointments a
+            WHERE a.patient_id = ? 
+            AND a.appointment_date >= CURDATE()
+            AND a.status = 'confirmed'  
+        ");
+            $stmt->bind_param("i", $patientData['patient_id']);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+            $confirmedAppointmentsCount = $result['confirmed_count'] ?? 0;
+            $stmt->close();
+        }
+
         // Fetch historical chart data for each metric type (last 5 readings)
         if (!empty($healthMetrics)) {
             foreach ($healthMetrics as $metric) {
@@ -508,7 +524,7 @@ function outputChartData($chartData, $metricId) {
                         <div class="stat-icon"><i class='bx bx-calendar-check'></i></div>
                         <div class="stat-info">
                             <h3>Upcoming Appointments</h3>
-                            <p class="stat-value"><?= $upcomingAppointment ? 1 : 0 ?></p>
+                            <p class="stat-value"><?= $confirmedAppointmentsCount ?></p>
                             <p class="stat-description">
                                 <?= $upcomingAppointment ?
                                     'Next: ' . formatDate($upcomingAppointment['appointment_date']) :
