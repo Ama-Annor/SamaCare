@@ -172,6 +172,20 @@ VALUES ($doctorId, '$day', '$startTime', '$endTime', 1)";
     }
 }
 
+// Get admin user details
+$adminId = $_SESSION['user_id'];
+$adminQuery = "SELECT first_name, last_name FROM users WHERE user_id = $adminId";
+$adminResult = mysqli_query($conn, $adminQuery);
+
+$adminName = 'Admin User';
+$adminInitials = 'AD';
+
+if ($adminResult && $adminRow = mysqli_fetch_assoc($adminResult)) {
+    $adminName = $adminRow['first_name'] . ' ' . $adminRow['last_name'];
+    $adminInitials = strtoupper(substr($adminRow['first_name'], 0, 1) . substr($adminRow['last_name'], 0, 1));
+}
+
+
 // Function to get doctor initials
 function getInitials($firstName, $lastName) {
     return strtoupper(substr($firstName, 0, 1) . substr($lastName, 0, 1));
@@ -205,12 +219,13 @@ function getInitials($firstName, $lastName) {
 
         <div class="user-profile">
             <div class="user-avatar admin">
-                <span>AD</span>
+                <span><?= htmlspecialchars($adminInitials) ?></span>
             </div>
             <div class="user-info">
-                <h4>Admin User</h4>
+                <h4><?= htmlspecialchars($adminName) ?></h4>
                 <p>Administrator</p>
             </div>
+
         </div>
 
         <nav class="sidebar-nav">
@@ -304,9 +319,9 @@ function getInitials($firstName, $lastName) {
                     <div class="user-dropdown">
                         <button class="user-btn">
                             <div class="user-avatar small admin">
-                                <span>AD</span>
+                                <span><?= htmlspecialchars($adminInitials) ?></span>
                             </div>
-                            <span class="user-name">Admin User</span>
+                            <span class="user-name"><?= htmlspecialchars($adminName) ?></span>
                             <i class='bx bx-chevron-down'></i>
                         </button>
                     </div>
