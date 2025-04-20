@@ -29,6 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (password_verify($password_input, $user["password"])) {
                 if ($user["status"] == "active") {
+
+                    $update_stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                    $update_stmt->bind_param("i", $user["user_id"]);
+                    $update_stmt->execute();
+                    $update_stmt->close();
+
+
                     // Set session variables
                     $_SESSION["loggedin"] = true;
                     $_SESSION["user_id"] = $user["user_id"];
