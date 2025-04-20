@@ -14,32 +14,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const addReadingForm = document.getElementById('add-reading-form');
     const closeFormBtn = document.querySelector('.close-form');
     const cancelBtn = document.querySelector('.cancel-btn');
-    const saveBtn = document.querySelector('.save-btn');
-    
+    const saveBtn = document.querySelector('.primary-btn[name="add_reading"]');
+
     // Function to show the add reading form
     function showAddReadingForm(metricType) {
         if (addReadingForm) {
+            // Convert string to number if it's not already
+            const metricTypeId = parseInt(metricType);
+
             // Update form title based on metric type
             const formTitle = addReadingForm.querySelector('.form-header h3');
             if (formTitle) {
-                formTitle.textContent = metricType === 'blood-pressure' ? 
+                formTitle.textContent = metricTypeId === 1 ?
                     'Add Blood Pressure Reading' : 'Add Weight Reading';
             }
-            
-            // Show or hide specific form fields based on metric type
-            const formRow = document.querySelector('.form-row');
-            
-            if (formRow) {
-                if (metricType === 'blood-pressure') {
-                    formRow.style.display = 'grid';
-                } else {
-                    formRow.style.display = 'none';
-                }
-            }
-            
+
+            // Update the hidden input field value
+            document.getElementById('form-metric-type').value = metricTypeId;
+
+            // Show/hide fields based on metric type
+            document.getElementById('blood-pressure-fields').style.display =
+                metricTypeId === 1 ? 'block' : 'none';
+            document.getElementById('weight-fields').style.display =
+                metricTypeId === 2 ? 'block' : 'none';
+
             // Show the form
             addReadingForm.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
     }
     
@@ -78,14 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (cancelBtn) {
         cancelBtn.addEventListener('click', hideAddReadingForm);
     }
-    
-    // Save reading and close form
-    if (saveBtn) {
-        saveBtn.addEventListener('click', function() {
-            showToast('Reading saved successfully');
-            hideAddReadingForm();
-        });
-    }
+
     
     // ====== Date Filter Modal ======
     const dateFilterBtn = document.querySelector('.date-filter .secondary-btn');
