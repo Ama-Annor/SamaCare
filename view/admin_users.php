@@ -24,6 +24,22 @@ function getUsers($conn) {
 
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
+            // Double-check role for doctors by checking the doctors table
+            if ($row['role_name'] !== 'Doctor') {
+                // Check if this user exists in the doctors table
+                $doctor_check_sql = "SELECT * FROM doctors WHERE user_id = " . $row['user_id'];
+                $doctor_result = mysqli_query($conn, $doctor_check_sql);
+
+                if (mysqli_num_rows($doctor_result) > 0) {
+                    // This user is a doctor but has wrong role_id in users table
+                    $row['role_name'] = 'Doctor';
+
+                    // Update the role_id in the users table to fix it permanently
+                    $update_sql = "UPDATE users SET role_id = 3 WHERE user_id = " . $row['user_id'];
+                    mysqli_query($conn, $update_sql);
+                }
+            }
+
             $users[] = $row;
         }
     }
