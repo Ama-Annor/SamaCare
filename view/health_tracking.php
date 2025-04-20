@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 require_once '../db/db_connect.php';
 
 // Redirect if not logged in
@@ -599,11 +605,11 @@ function timeElapsed($datetime) {
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="systolic">Systolic (mmHg)</label>
-                                        <input type="number" id="systolic" name="systolic" min="50" max="250" placeholder="120" required>
+                                        <input type="number" id="systolic" name="systolic" min="50" max="250" placeholder="120" >
                                     </div>
                                     <div class="form-group">
                                         <label for="diastolic">Diastolic (mmHg)</label>
-                                        <input type="number" id="diastolic" name="diastolic" min="30" max="150" placeholder="80" required>
+                                        <input type="number" id="diastolic" name="diastolic" min="30" max="150" placeholder="80" >
                                     </div>
                                 </div>
                             </div>
@@ -611,7 +617,7 @@ function timeElapsed($datetime) {
                             <div id="weight-fields" style="display: none;">
                                 <div class="form-group">
                                     <label for="weight">Weight (kg)</label>
-                                    <input type="number" id="weight" step="0.1" name="weight" min="20" max="300" placeholder="70" required>
+                                    <input type="number" id="weight" step="0.1" name="weight" min="20" max="300" placeholder="70" >
                                 </div>
                             </div>
 
