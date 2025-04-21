@@ -379,36 +379,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_user_details') {
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link rel="stylesheet" href="../assets/css/admin_users.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <style>
-        /* Toast message styles */
-        .toast-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px;
-            z-index: 1000;
-            display: none;
-        }
-
-        .toast-message.show {
-            display: block;
-            animation: fadeInOut 3s;
-        }
-
-        .toast-message.error {
-            background-color: #f44336;
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-    </style>
 </head>
 <body>
 <!-- Dashboard Layout -->
