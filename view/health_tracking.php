@@ -563,9 +563,9 @@ function timeElapsed($datetime) {
                                             </td>
                                             <td>
                                                 <?php if (!empty($metric['notes'])): ?>
-                                                    <?= nl2br(htmlspecialchars($metric['notes'])) ?>
+                                                    <?= htmlspecialchars(preg_replace('/\r\n|\r|\n|\\\\r\\\\n/', '', trim($metric['notes']))) ?>
                                                 <?php else: ?>
-                                                    <span class="text-muted">N/A</span>
+                                                    <span class="text-muted">None</span>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
