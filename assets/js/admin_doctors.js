@@ -220,20 +220,25 @@ function setupFilters() {
 
     if (specialtyFilter && statusFilter && doctorCards.length > 0) {
         // Function to apply filters
+        // Function to apply filters
         const applyFilters = () => {
             const selectedSpecialty = specialtyFilter.value;
             const selectedStatus = statusFilter.value;
 
             doctorCards.forEach(card => {
-                const specialty = card.getAttribute('data-specialty').toLowerCase();
-                const status = card.getAttribute('data-status');
-
+                // For specialty comparison
                 let specialtyMatch = selectedSpecialty === 'all';
-                if (!specialtyMatch && specialty) {
-                    // This will match any specialty that contains the selected value
-                    specialtyMatch = specialty.toLowerCase().includes(selectedSpecialty.toLowerCase());
+
+                if (!specialtyMatch) {
+                    // Get the specialty name from the option text
+                    const selectedSpecialtyName = specialtyFilter.options[specialtyFilter.selectedIndex].text.toLowerCase();
+                    const cardSpecialty = card.getAttribute('data-specialty').toLowerCase();
+
+                    // Now compare the names instead of ID vs name
+                    specialtyMatch = selectedSpecialty === 'all' || cardSpecialty === selectedSpecialtyName;
                 }
 
+                const status = card.getAttribute('data-status');
                 const statusMatch = selectedStatus === 'all' || status === selectedStatus;
 
                 if (specialtyMatch && statusMatch) {
