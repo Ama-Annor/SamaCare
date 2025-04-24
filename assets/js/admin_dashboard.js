@@ -158,7 +158,7 @@ function createPatientGrowthChart() {
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('fill', '#6b7280');
         text.setAttribute('font-size', '12');
-        text.textContent = d.month;
+        text.textContent = d.day;
         chartGroup.appendChild(text);
 
         // Data point
@@ -345,8 +345,9 @@ function createAppointmentDistributionChart() {
     // Add legend items
     data.forEach((d, i) => {
         const legendItem = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const legendX = -width / 2 + 30;
-        const legendY = height / 2 - 120 + i * 25;
+        // Adjust X and Y to be within the SVG viewport
+        const legendX = 20; // Place legend on the right side
+        const legendY = i * 25 + 20; // Start from top
 
         legendItem.setAttribute('transform', `translate(${legendX}, ${legendY})`);
 

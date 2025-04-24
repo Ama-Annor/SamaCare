@@ -76,36 +76,38 @@ function fetchDashboardStats($conn) {
 function fetchPatientGrowth($conn) {
     $growth = [];
 
-    // Get the last 6 months of patient registrations
+    // Get the last 30 days of patient registrations
     $query = "SELECT 
-              DATE_FORMAT(date_created, '%b') AS month,
+              DATE(date_created) AS day,
               COUNT(*) AS patients
               FROM users u
               JOIN patients p ON p.user_id = u.user_id
-              WHERE date_created >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
-              GROUP BY DATE_FORMAT(date_created, '%Y-%m')
-              ORDER BY date_created ASC
-              LIMIT 6";
+              WHERE date_created >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+              GROUP BY day
+              ORDER BY day ASC
+              LIMIT 30";
 
     $result = $conn->query($query);
 
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $growth[] = [
-                'month' => $row['month'],
+                'day' => date('M j', strtotime($row['day'])), // Format as "Oct 5"
                 'patients' => (int)$row['patients']
             ];
         }
     } else {
-        // Fall back to sample data if no results
-        $growth = [
-            ['month' => 'Jan', 'patients' => 1850],
-            ['month' => 'Feb', 'patients' => 1920],
-            ['month' => 'Mar', 'patients' => 2050],
-            ['month' => 'Apr', 'patients' => 2180],
-            ['month' => 'May', 'patients' => 2320],
-            ['month' => 'Jun', 'patients' => 2543]
-        ];
+        // Fallback to sample daily data
+        $growth = [];
+        $startDate = new DateTime('-29 days');
+        for ($i = 0; $i < 30; $i++) {
+            $currentDate = clone $startDate;
+            $currentDate->add(new DateInterval("P{$i}D"));
+            $growth[] = [
+                'day' => $currentDate->format('M j'),
+                'patients' => rand(50, 100)
+            ];
+        }
     }
 
     return $growth;
