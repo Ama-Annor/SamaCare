@@ -1,13 +1,6 @@
 /*Medical Records Page Styles*/
 
-/* Record type colors */
-:root {
-    --lab-color: #4caf50;
-    --imaging-color: #2196f3;
-    --visit-color: #ff9800;
-}
-
-/* Health Summary Section */
+/* Record Item Styles */
 .health-summary {
     margin-bottom: 30px;
 }
@@ -182,58 +175,6 @@
     border-radius: 3px;
 }
 
-/*Records Categories*/
-.records-categories {
-    margin-bottom: 30px;
-}
-
-.category-tabs {
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    padding-bottom: 10px;
-}
-
-.category-tab {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    background-color: white;
-    border: 1px solid var(--border-color);
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all var(--transition-speed);
-}
-
-.category-tab i {
-    font-size: 18px;
-}
-
-.category-tab:hover {
-    background-color: var(--bg-light);
-}
-
-.category-tab.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.record-count {
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 2px 8px;
-    border-radius: 50px;
-    font-size: 12px;
-}
-
-.category-tab.active .record-count {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
 /*Medical Records List*/
 .medical-records-list {
     margin-bottom: 30px;
@@ -256,90 +197,13 @@
     flex-direction: column;
 }
 
-.records-container.grid-view .record-icon {
+.records-container.grid-view .letter-icon {
     margin-bottom: 15px;
 }
 
 .records-container.grid-view .record-actions {
     margin-top: 15px;
     align-self: flex-end;
-}
-
-/*Timeline View*/
-.timeline-view {
-    position: relative;
-    padding-left: 30px;
-}
-
-.timeline-view::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 15px;
-    width: 2px;
-    background-color: var(--border-color);
-}
-
-.timeline-view .record-item {
-    position: relative;
-    margin-bottom: 30px;
-    border-left: none;
-    border-radius: 0 var(--border-radius) var(--border-radius) 0;
-}
-
-.timeline-view .record-item::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    left: -35px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: white;
-    border: 2px solid var(--primary-color);
-    z-index: 1;
-}
-
-.timeline-view .record-item[data-category="lab"]::before {
-    border-color: var(--lab-color);
-}
-
-.timeline-view .record-item[data-category="imaging"]::before {
-    border-color: var(--imaging-color);
-}
-
-.timeline-view .record-item[data-category="visits"]::before {
-    border-color: var(--visit-color);
-}
-
-.timeline-view .record-item::after {
-    content: '';
-    position: absolute;
-    top: 25px;
-    left: -15px;
-    width: 15px;
-    height: 2px;
-    background-color: var(--border-color);
-}
-
-.timeline-view .record-date-marker {
-    position: absolute;
-    top: 15px;
-    left: -125px;
-    width: 90px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--dark-color);
-    text-align: right;
-}
-
-.timeline-view .record-meta {
-    position: relative;
-}
-
-.timeline-view .record-meta span:first-child {
-    display: none; /*Hide date in meta as it's shown in timeline*/
 }
 
 /*Record Item*/
@@ -361,19 +225,7 @@
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
-.record-item[data-category="lab"] {
-    border-left-color: var(--lab-color);
-}
-
-.record-item[data-category="imaging"] {
-    border-left-color: var(--imaging-color);
-}
-
-.record-item[data-category="visits"] {
-    border-left-color: var(--visit-color);
-}
-
-.record-icon {
+.letter-icon {
     width: 50px;
     height: 50px;
     border-radius: 10px;
@@ -383,18 +235,7 @@
     font-size: 24px;
     color: white;
     flex-shrink: 0;
-}
-
-.record-item[data-category="lab"] .record-icon {
-    background-color: var(--lab-color);
-}
-
-.record-item[data-category="imaging"] .record-icon {
-    background-color: var(--imaging-color);
-}
-
-.record-item[data-category="visits"] .record-icon {
-    background-color: var(--visit-color);
+    font-weight: 600;
 }
 
 .record-details {
@@ -439,21 +280,6 @@
     font-weight: 500;
     background-color: var(--bg-light);
     color: var(--text-color);
-}
-
-.record-tag.lab {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: var(--lab-color);
-}
-
-.record-tag.imaging {
-    background-color: rgba(33, 150, 243, 0.1);
-    color: var(--imaging-color);
-}
-
-.record-tag.visit {
-    background-color: rgba(255, 152, 0, 0.1);
-    color: var(--visit-color);
 }
 
 .record-actions {
@@ -539,6 +365,32 @@
     transform: translateY(0);
 }
 
+/*No records message*/
+.no-records-message {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.no-records-message i {
+    font-size: 50px;
+    color: var(--muted-text);
+    margin-bottom: 20px;
+}
+
+.no-records-message h3 {
+    font-size: 20px;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.no-records-message p {
+    font-size: 14px;
+    color: var(--muted-text);
+}
+
 /*Responsive Styles*/
 @media (max-width: 768px) {
     .action-bar {
@@ -554,7 +406,7 @@
         flex-direction: column;
     }
 
-    .record-icon {
+    .letter-icon {
         margin-bottom: 15px;
     }
 
@@ -562,12 +414,12 @@
         flex-direction: column;
         gap: 5px;
     }
-    
+
     .records-container.grid-view {
         display: grid;
         grid-template-columns: 1fr;
     }
-    
+
     .summary-content {
         flex-direction: column;
     }

@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
     
     // View toggle (list/grid/timeline view)
     const viewToggle = document.querySelector('.view-toggle');
