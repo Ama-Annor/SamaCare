@@ -46,7 +46,7 @@ function initActionButtons() {
     const closeBookingBtn = document.getElementById('close-booking-modal');
     if (closeBookingBtn) {
         closeBookingBtn.addEventListener('click', function() {
-            document.getElementById('booking-modal').style.display = 'none';
+            closeBookingModal();
         });
     }
 
@@ -605,54 +605,118 @@ function fetchAvailableTimeSlots(doctorId, date) {
         })
         .catch(error => {
             console.error('Error:', error);
-            timeSlotsContainer.innerHTML = `<p class="error">Error loading time slots</p>`;
+            timeSlotsContainer.innerHTML = `<p class="error">Error loading time slots: Check console for details</p>`;
         });
+}
+
+// Helper function to format time from 24h to 12h format
+function formatTime(time) {
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
 }
 
 
 // Submit booking
 function submitBooking() {
-    // Create form data
+    // Show loading state
+    const confirmButton = document.getElementById('confirm-booking');
+    const originalText = confirmButton.textContent;
+    confirmButton.textContent = 'Processing...';
+    confirmButton.disabled = true;
+
+    // Create form data from booking data
     const formData = new FormData();
     formData.append('doctor_id', bookingData.doctor_id);
     formData.append('service_id', bookingData.service_id);
-    formData.append('location_id', bookingData.location_id);
-    formData.append('appointment_date', bookingData.appointment_date);
-
-    // Parse time slot
-    const timeSlotParts = bookingData.time_slot.split('-');
-    formData.append('start_time', timeSlotParts[0]);
-    formData.append('end_time', timeSlotParts[1]);
-
+    formData.append('appointment_date', bookingData.date);
+    formData.append('time_slot', bookingData.time_slot);
     formData.append('notes', bookingData.notes);
+    formData.append('location_id', bookingData.location_id);
 
-    // Send request
+    // Submit booking via fetch API
     fetch('appointments.php', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
+            // Reset button state
+            confirmButton.textContent = originalText;
+            confirmButton.disabled = false;
+
             if (data.success) {
-                // Hide booking modal
-                document.getElementById('booking-modal').style.display = 'none';
+                // Show success message
+                showNotification('Success', 'Appointment booked successfully', 'success');
 
-                // Update confirmation modal
-                document.getElementById('confirm-date').textContent = formatDate(bookingData.appointment_date);
-                document.getElementById('confirm-time').textContent = formatTime(timeSlotParts[0]);
-                document.getElementById('confirm-doctor').textContent = document.querySelector('#doctor option:checked').text;
-                document.getElementById('confirm-location').textContent = document.querySelector('#appointment-location option:checked').text;
-
-                // Show confirmation modal
-                document.getElementById('confirmation-modal').style.display = 'flex';
+                // Close the modal and refresh the page after a short delay
+                setTimeout(() => {
+                    closeBookingModal();
+                    window.location.reload();
+                }, 2000);
             } else {
-                alert('Error: ' + data.error);
+                // Show error message
+                showNotification('Error', data.error || 'Failed to book appointment', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            // Reset button state
+            confirmButton.textContent = originalText;
+            confirmButton.disabled = false;
+            // Show error message
+            showNotification('Error', 'Failed to book appointment: ' + error.message, 'error');
         });
+}
+
+// Close booking modal function
+function closeBookingModal() {
+    document.getElementById('booking-modal').style.display = 'none';
+}
+
+function showNotification(title, message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-header">
+            <h4>${title}</h4>
+            <button class="close-notification"><i class='bx bx-x'></i></button>
+        </div>
+        <p>${message}</p>
+    `;
+
+    // Add to the DOM
+    document.body.appendChild(notification);
+
+    // Show with animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    // Add event listener to close button
+    notification.querySelector('.close-notification').addEventListener('click', () => {
+        closeNotification(notification);
+    });
+
+    // Auto-close after 5 seconds
+    setTimeout(() => {
+        closeNotification(notification);
+    }, 5000);
+}
+
+function closeNotification(notification) {
+    notification.classList.remove('show');
+    setTimeout(() => {
+        notification.remove();
+    }, 300); // match the CSS transition time
 }
 
 // Cancel appointment

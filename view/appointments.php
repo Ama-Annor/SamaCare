@@ -94,37 +94,40 @@ if(isset($_GET['action'])) {
 
             // First get the doctor's schedule
             $stmt = $conn->prepare("
-                SELECT start_time, end_time 
-                FROM doctor_schedules
-                WHERE doctor_id = ?
-            ");
+            SELECT start_time, end_time 
+            FROM doctor_schedules
+            WHERE doctor_id = ?
+        ");
             $stmt->bind_param("i", $doctor_id);
             $stmt->execute();
             $schedule = $stmt->get_result()->fetch_assoc();
 
             if(!$schedule) {
-                // Default schedule if not found
+                // Default schedule if not found - using consistent key names
                 $schedule = [
-                    'work_start' => '09:00:00',
-                    'work_end' => '17:00:00',
+                    'start_time' => '09:00:00',
+                    'end_time' => '17:00:00',
                     'slot_duration' => 30 // minutes
                 ];
+            } else {
+                // Add the slot duration to the schedule
+                $schedule['slot_duration'] = 30; // minutes
             }
 
             // Get existing appointments for that day
             $stmt = $conn->prepare("
-                SELECT start_time, end_time
-                FROM appointments
-                WHERE doctor_id = ? AND appointment_date = ?
-            ");
+            SELECT start_time, end_time
+            FROM appointments
+            WHERE doctor_id = ? AND appointment_date = ?
+        ");
             $stmt->bind_param("is", $doctor_id, $date);
             $stmt->execute();
             $booked_slots = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
             // Generate available slots
             $slots = [];
-            $current_slot = new DateTime($schedule['work_start']);
-            $end_time = new DateTime($schedule['work_end']);
+            $current_slot = new DateTime($schedule['start_time']);
+            $end_time = new DateTime($schedule['end_time']);
 
             $morning_slots = ['times' => []];
             $afternoon_slots = ['times' => []];
@@ -529,9 +532,6 @@ $conn->close();
                                         <span class="appointment-status <?php echo strtolower($appointment['status']); ?>"><?php echo ucfirst($appointment['status']); ?></span>
                                     </div>
                                     <div class="appointment-actions">
-                                        <button class="action-btn" title="Reschedule">
-                                            <i class='bx bx-calendar-edit'></i>
-                                        </button>
                                         <button class="action-btn" title="Cancel">
                                             <i class='bx bx-x-circle'></i>
                                         </button>
