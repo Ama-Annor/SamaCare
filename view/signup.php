@@ -60,7 +60,47 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
 <section class="auth-section">
     <div class="auth-container">
         <div class="auth-visual">
-            <!-- ... Keep the visual content the same as before ... -->
+            <div class="visual-content">
+                <h2>Join SamaCare Today</h2>
+                <p>Take control of your health journey with our comprehensive healthcare platform</p>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <i class='bx bx-check-circle'></i>
+                        <span>AI-powered health assessment</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class='bx bx-check-circle'></i>
+                        <span>Secure medical records storage</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class='bx bx-check-circle'></i>
+                        <span>Appointment tracking & reminders</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class='bx bx-check-circle'></i>
+                        <span>Health metrics tracking</span>
+                    </div>
+                </div>
+
+                <div class="visual-footer">
+                    <div class="testimonial">
+                        <div class="testimonial-text">
+                            <i class='bx bxs-quote-left'></i>
+                            <p>SamaCare has completely transformed how I manage my family's health records. Everything is now in one place!</p>
+                            <div class="testimonial-author">
+                                <strong>Kwadwo A.</strong>
+                                <span>Premium Member</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
         </div>
 
         <div class="auth-form-container">
