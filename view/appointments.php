@@ -377,11 +377,19 @@ $conn->close();
 
         <div class="user-profile">
             <div class="user-avatar">
-                <span><?php echo strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1)); ?></span>
+        <span><?=
+            strtoupper(
+                substr($first_name ?? '', 0, 1) .
+                substr($last_name ?? '', 0, 1)
+            )
+            ?></span>
             </div>
             <div class="user-info">
-                <h4><?php echo htmlspecialchars("$first_name $last_name"); ?></h4>
-                <p><?php echo ($role_id == 2) ? 'Patient' : 'Doctor'; ?></p>
+                <h4><?= htmlspecialchars(
+                        ($first_name ?? '') . ' ' .
+                        ($last_name ?? '')
+                    ) ?></h4>
+                <p>Patient</p>
             </div>
         </div>
 
@@ -421,11 +429,7 @@ $conn->close();
         </nav>
 
         <div class="sidebar-footer">
-            <a href="#" class="help-link">
-                <i class='bx bx-help-circle'></i>
-                <span>Help & Support</span>
-            </a>
-            <a href="?logout" class="logout-link">
+            <a href="../actions/logout.php" class="logout-link">
                 <i class='bx bx-log-out'></i>
                 <span>Log Out</span>
             </a>
@@ -455,9 +459,9 @@ $conn->close();
                     <div class="user-dropdown">
                         <button class="user-btn">
                             <div class="user-avatar small">
-                                <span><?php echo strtoupper(substr($first_name, 0, 1)); ?></span>
+                                <span><?= strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1)) ?></span>
                             </div>
-                            <span class="user-name"><?php echo htmlspecialchars($first_name); ?></span>
+                            <span class="user-name"><?= htmlspecialchars($first_name . ' ' . $last_name) ?></span>
                             <i class='bx bx-chevron-down'></i>
                         </button>
                     </div>

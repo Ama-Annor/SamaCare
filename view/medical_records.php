@@ -193,10 +193,18 @@ $conn->close();
 
         <div class="user-profile">
             <div class="user-avatar">
-                <span><?php echo substr($_SESSION["first_name"], 0, 1) . substr($_SESSION["last_name"], 0, 1); ?></span>
+        <span><?=
+            strtoupper(
+                substr($_SESSION['first_name'] ?? '', 0, 1) .
+                substr($_SESSION['last_name'] ?? '', 0, 1)
+            )
+            ?></span>
             </div>
             <div class="user-info">
-                <h4><?php echo $_SESSION["first_name"] . " " . $_SESSION["last_name"]; ?></h4>
+                <h4><?= htmlspecialchars(
+                        ($_SESSION['first_name'] ?? '') . ' ' .
+                        ($_SESSION['last_name'] ?? '')
+                    ) ?></h4>
                 <p>Patient</p>
             </div>
         </div>
@@ -237,11 +245,7 @@ $conn->close();
         </nav>
 
         <div class="sidebar-footer">
-            <a href="#" class="help-link">
-                <i class='bx bx-help-circle'></i>
-                <span>Help & Support</span>
-            </a>
-            <a href="logout.php" class="logout-link">
+            <a href="../actions/logout.php" class="logout-link">
                 <i class='bx bx-log-out'></i>
                 <span>Log Out</span>
             </a>

@@ -446,11 +446,7 @@ function outputChartData($chartData, $metricId) {
         </nav>
 
         <div class="sidebar-footer">
-            <a href="#" class="help-link">
-                <i class='bx bx-help-circle'></i>
-                <span>Help & Support</span>
-            </a>
-            <a href="logout.php" class="logout-link">
+            <a href="../actions/logout.php" class="logout-link">
                 <i class='bx bx-log-out'></i>
                 <span>Log Out</span>
             </a>
