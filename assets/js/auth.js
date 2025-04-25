@@ -27,7 +27,106 @@ document.addEventListener('DOMContentLoaded', function() {
             updatePasswordStrength(this.value);
         });
     }
+
+     // get the password confirmation details from html
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const passwordMatchMessage =  confirmPasswordInput ? document.getElementById('password-match-message') : null;
+    const matchText = passwordMatchMessage ? passwordMatchMessage.querySelector('.match-text') : null;
+   
+    if(confirmPasswordInput && passwordMatchMessage && matchText){
+        //function to check if passwords match
+        function checkPasswordsMatch(){
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if(confirmPassword === ''){
+                //if confirmaton is empty, show default message
+                matchText.textContent = 'Passwords must match';
+                matchText.className = 'match-text';
+                passwordMatchMessage.className = 'password-match';
+
+            }else if(password === confirmPassword){
+                //if passwords match 
+                matchText.textContent = 'Passwords match';
+                matchText.className = 'match-text match-success';
+                passwordMatchMessage.className = 'password-match success';
+            }else {
+                // if passwords don't match 
+                matchText.textContent = 'Passwords do not match';
+                matchText.className = 'match-text match-error';
+                passwordMatchMessage.className = 'password-match error';
+
+            }
+        }
+
+        // Add event listners to both password fields 
+        confirmPasswordInput.addEventListener('input',checkPasswordsMatch);
+        passwordInput.addEventListener('input', function(){
+            if(confirmPasswordInput.value !== ''){
+                checkPasswordsMatch();
+            }
+
+        });
     
+
+    }
+
+ 
+    // Update the authentication file and to handle php errors 
+     // Function to get URL parameters
+     function getUrlParams() {
+        let params = {};
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        for (const [key, value] of urlParams.entries()) {
+            params[key] = value;
+        }
+        return params;
+    }
+
+    // Check for success message in URL (from login redirect)
+    const urlParams = getUrlParams();
+    if (urlParams.registered === 'success') {
+        // Show success message
+        const successContainer = document.createElement('div');
+        successContainer.className = 'success-message';
+        successContainer.textContent = 'Account created successfully! Please log in.';
+        document.querySelector('.auth-header').appendChild(successContainer);
+    }
+
+    // Check for PHP session errors
+    if (typeof phpErrors !== 'undefined' && phpErrors.length > 0) {
+        const errorContainer = document.getElementById('error-container');
+        const errorList = document.getElementById('error-list');
+        
+        // Clear any existing errors
+        errorList.innerHTML = '';
+        
+        // Add each error as a list item
+        phpErrors.forEach(function(error) {
+            const li = document.createElement('li');
+            li.textContent = error;
+            errorList.appendChild(li);
+        });
+        
+        // Show the error container
+        errorContainer.style.display = 'block';
+        
+        // Scroll to the error container
+        errorContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Re-populate form fields if there was form data in the session
+    if (typeof formData !== 'undefined') {
+        if (formData.firstName) document.getElementById('firstName').value = formData.firstName;
+        if (formData.lastName) document.getElementById('lastName').value = formData.lastName;
+        if (formData.email) document.getElementById('email').value = formData.email;
+        if (formData.phone) document.getElementById('phone').value = formData.phone;
+    }
+
+    //-----------------end of change for php
+
+
     function updatePasswordStrength(password) {
         const strengthMeter = document.querySelector('.strength-meter');
         const strengthText = document.querySelector('.strength-text');
@@ -173,35 +272,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (isValid) {
-                //submit the form to the server here - MCNOBERT AND SAMUELLLLL
-                
-                // For demo purposes, show a success message
-                const submitBtn = authForm.querySelector('.submit-btn');
-                const originalText = submitBtn.innerHTML;
-                
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Processing...';
-                
-            
-                setTimeout(() => {
-                    //actual form submission and redirection
-                    
-                    // Reset button state
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                    
-                    // Show success message
-                    const successMessage = document.createElement('div');
-                    successMessage.className = 'success-message';
-                    successMessage.innerHTML = '<i class="bx bx-check-circle"></i> Success! Redirecting...';
-                    
-                    authForm.appendChild(successMessage);
-                    
-                    // Redirect after a delay
-                    setTimeout(() => {
-                        window.location.href = document.querySelector('.auth-footer a').href;
-                    }, 2000);
-                }, 1500);
+                //submit the form to the server here
+                authForm.submit();
+
             }
         });
         

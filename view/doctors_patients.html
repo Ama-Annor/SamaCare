@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients Management - SamaCare Doctor</title>
+    <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin_users.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <span>AM</span>
+                </div>
+                <div class="user-info">
+                    <h4>Dr. Ama Mensah</h4>
+                    <p>Cardiologist</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="doctors_dashboard.html">
+                            <i class='bx bx-home-alt'></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="doctors_appointment.html">
+                            <i class='bx bx-calendar'></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="doctors_patients.html">
+                            <i class='bx bx-user'></i>
+                            <span>Patients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medical_records.html">
+                            <i class='bx bx-folder'></i>
+                            <span>Medical Records</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="doctors_profile.html">
+                            <i class='bx bx-user-circle'></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Patient Management</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search Patients...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small">
+                                    <span>AM</span>
+                                </div>
+                                <span class="user-name">Dr. Ama Mensah</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- User Management Content -->
+            <div class="dashboard-content">
+                <!-- Actions Bar -->
+                <section class="actions-bar">
+                        
+                        <div class="filter-group">
+                            <label for="status-filter">Status:</label>
+                            <select id="status-filter" class="filter-select">
+                                <option value="all">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Users Table -->
+                <section class="users-section">
+                    <div class="table-container">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all">
+                                    </th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Last Visit</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-select">
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">AA</div>
+                                            <span>Adwoa Afari</span>
+                                        </div>
+                                    </td>
+                                    <td>adwoa.afari@email.com</td>
+                                    <td>Today, 10:42 AM</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm edit-btn" data-id="1">
+                                                <i class='bx bx-pencil'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm more-btn" data-id="1">
+                                                <i class='bx bx-dots-vertical-rounded'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-select">
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">JS</div>
+                                            <span>John Smith</span>
+                                        </div>
+                                    </td>
+                                    <td>john.smith@email.com</td>
+                                    <td>Yesterday, 3:15 PM</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm edit-btn" data-id="2">
+                                                <i class='bx bx-pencil'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm more-btn" data-id="2">
+                                                <i class='bx bx-dots-vertical-rounded'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-select">
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar doctor">AM</div>
+                                            <span>Dr. Ama Mensah</span>
+                                        </div>
+                                    </td>
+                                    <td>dr.mensah@samacare.com</td>
+                                    <td>Today, 9:20 AM</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm edit-btn" data-id="3">
+                                                <i class='bx bx-pencil'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm more-btn" data-id="3">
+                                                <i class='bx bx-dots-vertical-rounded'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-select">
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar doctor">MA</div>
+                                            <span>Dr. McNobert Amoah</span>
+                                        </div>
+                                    </td>
+                                    <td>dr.amoah@samacare.com</td>
+                                    <td>2 days ago</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm edit-btn" data-id="4">
+                                                <i class='bx bx-pencil'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm more-btn" data-id="4">
+                                                <i class='bx bx-dots-vertical-rounded'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-select">
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar admin">SU</div>
+                                            <span>System Admin</span>
+                                        </div>
+                                    </td>
+                                    <td>admin@samacare.com</td>
+                                    <td>Today, 8:05 AM</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm edit-btn" data-id="5">
+                                                <i class='bx bx-pencil'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm more-btn" data-id="5">
+                                                <i class='bx bx-dots-vertical-rounded'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-select">
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">MS</div>
+                                            <span>Mary Stone</span>
+                                        </div>
+                                    </td>
+                                    <td>mary.stone@email.com</td>
+                                    <td>1 week ago</td>
+                                    <td><span class="status-badge inactive">Inactive</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm edit-btn" data-id="6">
+                                                <i class='bx bx-pencil'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm more-btn" data-id="6">
+                                                <i class='bx bx-dots-vertical-rounded'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            <span>Showing 1-6 of 28 users</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" disabled>
+                                <i class='bx bx-chevron-left'></i>
+                            </button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">4</button>
+                            <button class="pagination-btn">5</button>
+                            <button class="pagination-btn">
+                                <i class='bx bx-chevron-right'></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            
+            
+            <!-- User Actions Menu -->
+            <div class="context-menu" id="user-actions-menu">
+                <ul>
+                    <li data-action="view">
+                        <i class='bx bx-user'></i>
+                        <span>View Profile</span>
+                    </li>
+                    <li data-action="view">
+                        <i class='bx bx-user'></i>
+                        <span>View Medical Records</span>
+                    </li>
+                    <li data-action="edit">
+                        <i class='bx bx-edit'></i>
+                        <span>Edit Medical Records</span>
+                    </li>
+                    <li data-action="delete" class="danger">
+                        <i class='bx bx-trash'></i>
+                        <span>Remove Patient</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2024 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/admin_dashboard.js"></script>
+    <script src="../assets/js/admin_users.js"></script>
+</body>
+</html>

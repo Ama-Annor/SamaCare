@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #chat-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        .bot {
+            background-color: #f0f0f0;
+            align-self: flex-start;
+        }
+        .user {
+            background-color: #e1f5fe;
+            text-align: right;
+        }
+        #user-input {
+            width: 70%;
+            padding: 8px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SamaCare Symptom Checker</h1>
+    <div id="chat-container"></div>
+    
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="Type your answer here...">
+        <button onclick="sendResponse()">Send</button>
+    </div>
+    
+    <div id="results">
+        <h3>Current Possible Diagnoses:</h3>
+        <ul id="predictions-list"></ul>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000";
+        let currentSymptoms = [];
+        let currentQuestion = null;
+        let chatHistory = [];
+        
+        // Start the conversation
+        window.onload = function() {
+            addBotMessage("Welcome to SamaCare Symptom Checker! What's your most noticeable symptom?");
+        };
+        
+        function addBotMessage(message) {
+            const chatContainer = document.getElementById("chat-container");
+            const msgElement = document.createElement("div");
+            msgElement.className = "message bot";
+            msgElement.innerText = message;
+            chatContainer.appendChild(msgElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function addUserMessage(message) {
+            const chatContainer = document.getElementById("chat-container");
+            const msgElement = document.createElement("div");
+            msgElement.className = "message user";
+            msgElement.innerText = message;
+            chatContainer.appendChild(msgElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        async function sendResponse() {
+            const userInput = document.getElementById("user-input").value.trim();
+            if (!userInput) return;
+            
+            addUserMessage(userInput);
+            document.getElementById("user-input").value = "";
+            
+            if (!currentQuestion) {
+                // First symptom input
+                const capitalizedInput = userInput.charAt(0).toUpperCase() + userInput.slice(1);
+                currentSymptoms.push(capitalizedInput);
+                processSymptoms();
+            } else {
+                // Responding to a symptom question
+                if (userInput.toLowerCase() === "yes") {
+                    currentSymptoms.push(currentQuestion);
+                    addBotMessage(`✓ Added ${currentQuestion}`);
+                    processSymptoms();
+                } else if (userInput.toLowerCase() === "no") {
+                    addBotMessage(`Okay, noted that you don't have ${currentQuestion}.`);
+                    getNextSymptom();
+                } else if (userInput.toLowerCase() === "stop") {
+                    finishDiagnosis();
+                } else {
+                    addBotMessage("Please answer with yes, no, or stop.");
+                }
+            }
+        }
+        
+        async function processSymptoms() {
+            // Get predictions based on current symptoms
+            try {
+                const response = await fetch(`${API_URL}/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        symptoms: currentSymptoms,
+                        top_n: 5
+                    }),
+                });
+                
+                const data = await response.json();
+                updatePredictions(data.predictions);
+                
+                // Check if we have high confidence
+                if (data.predictions.length > 0 && data.predictions[0].probability > 0.9) {
+                    addBotMessage("High confidence diagnosis reached!");
+                    finishDiagnosis();
+                } else {
+                    getNextSymptom();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addBotMessage("Sorry, there was an error processing your symptoms.");
+            }
+        }
+        
+        async function getNextSymptom() {
+            try {
+                const response = await fetch(`${API_URL}/next-symptom`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        current_symptoms: currentSymptoms
+                    }),
+                });
+                
+                const data = await response.json();
+                if (data.next_symptom) {
+                    currentQuestion = data.next_symptom;
+                    addBotMessage(`Do you have ${currentQuestion}? (yes/no/stop)`);
+                } else {
+                    addBotMessage("No more relevant symptoms to check.");
+                    finishDiagnosis();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addBotMessage("Sorry, there was an error getting the next question.");
+            }
+        }
+        
+        function updatePredictions(predictions) {
+            const predictionsList = document.getElementById("predictions-list");
+            predictionsList.innerHTML = "";
+            
+            predictions.forEach((pred, index) => {
+                const li = document.createElement("li");
+                li.innerText = `${pred.disease} (${(pred.probability * 100).toFixed(1)}%)`;
+                predictionsList.appendChild(li);
+            });
+        }
+        
+        function finishDiagnosis() {
+            addBotMessage("Final Diagnosis Possibilities are shown below. Please consult a doctor for confirmation.");
+            currentQuestion = null;
+        }
+    </script>
+</body>
+</html>

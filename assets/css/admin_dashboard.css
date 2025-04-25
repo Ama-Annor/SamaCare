@@ -19,6 +19,10 @@
     --gray-color: #9ca3af;
 }
 
+#user-growth-chart text {
+    font-size: 10px;
+}
+
 /* Admin Sidebar Customization */
 .admin-sidebar {
     background-color: var(--admin-dark);

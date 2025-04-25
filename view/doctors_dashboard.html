@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - SamaCare</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/doctors_dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-plus-medical'></i>SAMA<span>CARE</span>
+                </div>
+                <button class="close-sidebar">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <span>AM</span>
+                </div>
+                <div class="user-info">
+                    <h4>Dr. Ama Mensah</h4>
+                    <p>Cardiologist</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="doctors_dashboard.html">
+                            <i class='bx bx-home-alt'></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="doctors_appointment.html">
+                            <i class='bx bx-calendar'></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="doctors_patients.html">
+                            <i class='bx bx-user'></i>
+                            <span>Patients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="medical_records.html">
+                            <i class='bx bx-folder'></i>
+                            <span>Medical Records</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="doctors_profile.html">
+                            <i class='bx bx-user-circle'></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="help-link">
+                    <i class='bx bx-help-circle'></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h1>Doctor Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search patients...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class='bx bx-bell'></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar small">
+                                    <span>AM</span>
+                                </div>
+                                <span class="user-name">Dr. Ama Mensah</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <div class="welcome-card">
+                        <div class="welcome-text">
+                            <h2>Welcome back, Dr. Mensah!</h2>
+                            <p>You have 8 patients scheduled for today. Your first appointment starts in 25 minutes.</p>
+                        </div>
+                        <div class="welcome-actions">
+                            <a href="appointments.html" class="btn primary-btn">
+                                <i class='bx bx-calendar-plus'></i>
+                                <span>Add Appointment</span>
+                            </a>
+                            <a href="patients.html" class="btn secondary-btn">
+                                <i class='bx bx-user-plus'></i>
+                                <span>New Prescription</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Stats Cards Section -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-calendar-check'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Today's Appointments</h3>
+                                <p class="stat-value">8</p>
+                                <p class="stat-description">3 completed, 5 remaining</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-user'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Patients</h3>
+                                <p class="stat-value">156</p>
+                                <p class="stat-description">5 new this week</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-message-detail'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Pending Messages</h3>
+                                <p class="stat-value">7</p>
+                                <p class="stat-description">2 urgent</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-task'></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Tasks</h3>
+                                <p class="stat-value">12</p>
+                                <p class="stat-description">4 high priority</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Two Column Layout For Schedule and Recent Activities -->
+                <section class="dashboard-two-columns">
+                    <!-- Today's Schedule -->
+                    <div class="dashboard-column">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>Today's Schedule</h3>
+                                <a href="appointments.html" class="view-all">View Full Calendar</a>
+                            </div>
+                            <div class="appointments-list">
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="day">10:30</span>
+                                        <span class="month">AM</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>General Checkup</h4>
+                                        <p><i class='bx bx-user'></i> Adwoa Afari</p>
+                                        <p><i class='bx bx-file'></i> Annual physical examination</p>
+                                        <p><i class='bx bx-map'></i> Room 203</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="day">11:15</span>
+                                        <span class="month">AM</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>Follow-up</h4>
+                                        <p><i class='bx bx-user'></i> Kofi Owusu</p>
+                                        <p><i class='bx bx-file'></i> Post-surgery consultation</p>
+                                        <p><i class='bx bx-map'></i> Room 205</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="day">01:00</span>
+                                        <span class="month">PM</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>New Patient</h4>
+                                        <p><i class='bx bx-user'></i> Esi Bonsu</p>
+                                        <p><i class='bx bx-file'></i> Initial consultation</p>
+                                        <p><i class='bx bx-map'></i> Room 203</p>
+                                    </div>
+                                </div>
+                                
+                                <a href="appointments.html" class="add-appointment">
+                                    <i class='bx bx-plus'></i>
+                                    <span>Add New Appointment</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications & Alerts -->
+                    <div class="dashboard-column">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>Notifications & Alerts</h3>
+                                <a href="#" class="view-all">View All</a>
+                            </div>
+                            <div class="activities-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background-color: #FFECEC; color: #FF4D4D;">
+                                        <i class='bx bx-error-circle'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Lab Results Ready</h4>
+                                        <p>Kwame Asante's blood test results are ready for review</p>
+                                        <span class="activity-time">10 minutes ago</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background-color: #E0F8FF; color: #0096FF;">
+                                        <i class='bx bx-message-detail'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>New Message</h4>
+                                        <p>Dr. Frimpong requested a consultation about a patient</p>
+                                        <span class="activity-time">30 minutes ago</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background-color: #FFF2E0; color: #FF9500;">
+                                        <i class='bx bx-calendar-exclamation'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Appointment Request</h4>
+                                        <p>New urgent appointment request from Emmanuel Yeboah</p>
+                                        <span class="activity-time">1 hour ago</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background-color: #E6FFF2; color: #00C853;">
+                                        <i class='bx bx-check-circle'></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Prescription Approved</h4>
+                                        <p>Your prescription for Akua Mensa has been approved</p>
+                                        <span class="activity-time">2 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Tasks Section -->
+                <section class="tasks-section">
+                    <div class="content-card full-width">
+                        <div class="card-header">
+                            <h3>Pending Tasks</h3>
+                            <a href="#" class="view-all">View All Tasks</a>
+                        </div>
+                        <div class="reminders-list">
+                            <div class="reminder-item medication">
+                                <div class="reminder-icon">
+                                    <i class='bx bx-file-find'></i>
+                                </div>
+                                <div class="reminder-details">
+                                    <h4>Review Lab Results</h4>
+                                    <p>Review and sign off on Abena Osei's lab results</p>
+                                    <span class="reminder-time">High Priority - Due Today</span>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="action-btn done-btn" title="Mark as Done">
+                                        <i class='bx bx-check'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="reminder-item appointment">
+                                <div class="reminder-icon">
+                                    <i class='bx bx-clipboard'></i>
+                                </div>
+                                <div class="reminder-details">
+                                    <h4>Update Patient Notes</h4>
+                                    <p>Complete post-consultation notes for 3 patients from yesterday</p>
+                                    <span class="reminder-time">Medium Priority - Due Today</span>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="action-btn done-btn" title="Mark as Done">
+                                        <i class='bx bx-check'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="reminder-item test">
+                                <div class="reminder-icon">
+                                    <i class='bx bx-capsule'></i>
+                                </div>
+                                <div class="reminder-details">
+                                    <h4>Renew Prescriptions</h4>
+                                    <p>5 patient prescriptions need renewal</p>
+                                    <span class="reminder-time">High Priority - Due Tomorrow</span>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="action-btn done-btn" title="Mark as Done">
+                                        <i class='bx bx-check'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <a href="#" class="add-reminder">
+                                <i class='bx bx-plus'></i>
+                                <span>Add New Task</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Performance Metrics Section -->
+                <section class="health-metrics-section">
+                    <div class="content-card full-width">
+                        <div class="card-header">
+                            <h3>Performance Metrics</h3>
+                            <a href="analytics.html" class="view-all">View Detailed Analytics</a>
+                        </div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <h4>Patient Satisfaction</h4>
+                                    <div class="metric-icon">
+                                        <i class='bx bx-smile'></i>
+                                    </div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="current-value">4.8/5</span>
+                                    <span class="metric-trend positive">
+                                        <i class='bx bx-up-arrow'></i>
+                                        <span>3%</span>
+                                    </span>
+                                </div>
+                                <div class="metric-chart">
+                                    <!-- Placeholder for chart -->
+                                    <div class="chart-placeholder"></div>
+                                </div>
+                                <div class="metric-footer">
+                                    <span>Based on last 30 days</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <h4>Patients Seen</h4>
+                                    <div class="metric-icon">
+                                        <i class='bx bx-user-check'></i>
+                                    </div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="current-value">132</span>
+                                    <span class="metric-trend positive">
+                                        <i class='bx bx-up-arrow'></i>
+                                        <span>8%</span>
+                                    </span>
+                                </div>
+                                <div class="metric-chart">
+                                    <!-- Placeholder for chart -->
+                                    <div class="chart-placeholder"></div>
+                                </div>
+                                <div class="metric-footer">
+                                    <span>This month</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <h4>Avg. Consultation Time</h4>
+                                    <div class="metric-icon">
+                                        <i class='bx bx-time-five'></i>
+                                    </div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="current-value">18 min</span>
+                                    <span class="metric-trend negative">
+                                        <i class='bx bx-down-arrow'></i>
+                                        <span>2%</span>
+                                    </span>
+                                </div>
+                                <div class="metric-chart">
+                                    <!-- Placeholder for chart -->
+                                    <div class="chart-placeholder"></div>
+                                </div>
+                                <div class="metric-footer">
+                                    <span>This week</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Dashboard Footer -->
+            <footer class="dashboard-footer">
+                <p>&copy; 2025 SamaCare. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Help & Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

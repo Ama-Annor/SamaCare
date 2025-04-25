@@ -474,3 +474,11 @@
     border-top: 1px solid var(--border-color);
     z-index: 10;
 }
+
+.toast-message.error {
+    background-color: #e74c3c;
+}
+
+.toast-message.success {
+    background-color: #2ecc71;
+}
