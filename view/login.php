@@ -113,8 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="../index.html">Home</a>
                 <a href="features.html">Features</a>
                 <a href="about.html">About</a>
-                <a href="doctors.html">Doctors</a>
-                <a href="resources.html">Resources</a>
                 <a href="faq.html">FAQ</a>
                 <a href="contact.html">Contact</a>
             </nav>
@@ -226,7 +224,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 Remember me
                             </label>
                         </div>
-                        <a href="forgot-password.php" class="forgot-link">Forgot password?</a>
                     </div>
                     
                     <button type="submit" class="submit-btn">

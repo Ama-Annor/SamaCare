@@ -43,8 +43,6 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
             <a href="../index.html">Home</a>
             <a href="features.html">Features</a>
             <a href="about.html">About</a>
-            <a href="doctors.html">Doctors</a>
-            <a href="resources.html">Resources</a>
             <a href="faq.html">FAQ</a>
             <a href="contact.html">Contact</a>
         </nav>
@@ -154,7 +152,7 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                     <label class="checkbox-container">
                         <input type="checkbox" required>
                         <span class="checkmark"></span>
-                        I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
                     </label>
                 </div>
 
