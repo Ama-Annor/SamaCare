@@ -414,12 +414,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_user_details') {
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="admin_analytics.php">
-                            <i class='bx bx-bar-chart-alt-2'></i>
-                            <span>Analytics</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -446,26 +440,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_user_details') {
                     </li>
                 </ul>
             </div>
-
-            <div class="nav-section">
-                <h5>System</h5>
-                <ul>
-                    <li>
-                        <a href="admin_settings.php">
-                            <i class='bx bx-cog'></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </nav>
 
         <div class="sidebar-footer">
-            <a href="#" class="help-link">
-                <i class='bx bx-help-circle'></i>
-                <span>Help & Support</span>
-            </a>
-            <a href="logout.php" class="logout-link">
+            <a href="../actions/logout.php" class="logout-link">
                 <i class='bx bx-log-out'></i>
                 <span>Log Out</span>
             </a>
