@@ -119,7 +119,7 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                 </div>
             <?php endif; ?>
 
-            <form class="auth-form" method="POST" action="../assets/php_files/process_signup.php">
+            <label class="auth-form" method="POST" action="../assets/php_files/process_signup.php">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First Name</label>
@@ -192,11 +192,7 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                     <label class="checkbox-container">
                         <input type="checkbox" required>
                         <span class="checkmark"></span>
-<<<<<<< HEAD
-                        I agree to the <a</> <a href="terms.html"> Terms of Service </a> <a</> and <a href="privacy.html"> Privacy Policy</a>
-=======
                         I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
->>>>>>> cd6f316d053e9b6f1c592d0e5adbeb908ec24c04
                     </label>
                 </div>
 
@@ -204,11 +200,11 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                     Create Account
                     <i class='bx bx-right-arrow-alt'></i>
                 </button>
-            </form>
+            </label>
 
-            <div class="auth-footer">
-                <p>Already have an account? <a href="login.php">Log in</a></p>
-            </div>
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.php">Log in</a></p>
+                </div>
         </div>
     </div>
 </section>
