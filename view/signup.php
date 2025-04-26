@@ -154,7 +154,7 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                     <label class="checkbox-container">
                         <input type="checkbox" required>
                         <span class="checkmark"></span>
-                        I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
+                        I agree to the <a</> <a href="terms.html"> Terms of Service </a> <a</> and <a href="privacy.html"> Privacy Policy</a>
                     </label>
                 </div>
 

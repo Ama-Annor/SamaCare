@@ -335,7 +335,24 @@
 .calendar-container {
     padding: 20px;
 }
+/* //grid changes  */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
 
+/*edit days header */
+.calendar-days-header {
+    display: flex;  /* or display: grid with grid-template-columns */
+    justify-content: space-between; /* or space-around */
+    width: 100%;
+  }
+  
+  .day-name {
+    flex: 1;  /* makes each day header take equal space */
+    text-align: center;
+  }
 .calendar-weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
