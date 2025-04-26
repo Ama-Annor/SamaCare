@@ -1,0 +1,40 @@
+@startuml SamaCare Appointment Booking Sequence
+
+actor Patient
+participant "Web Interface" as UI
+participant "AppointmentController" as AC
+participant "DoctorService" as DS
+participant "Appointment" as App
+participant "NotificationService" as NS
+database "Database" as DB
+
+Patient -> UI: Select "Book Appointment"
+UI -> DS: getAvailableDoctors()
+DS -> DB: query available doctors
+DB --> DS: return doctor list
+DS --> UI: display available doctors
+
+Patient -> UI: Select doctor
+UI -> DS: getDoctorAvailability(doctorId)
+DS -> DB: query doctor schedule
+DB --> DS: return available time slots
+DS --> UI: display available time slots
+
+Patient -> UI: Select date and time
+Patient -> UI: Enter appointment details
+Patient -> UI: Submit booking request
+UI -> AC: createAppointment(patientId, doctorId, date, time, details)
+
+AC -> App: new Appointment(...)
+AC -> DB: save appointment
+DB --> AC: confirm save
+AC -> NS: sendNotification(doctorId, "New Appointment")
+NS -> DB: save notification for doctor
+AC -> NS: sendNotification(patientId, "Appointment Confirmation")
+NS -> DB: save notification for patient
+NS --> Patient: display confirmation message
+
+AC --> UI: return success
+UI --> Patient: display booking confirmation
+
+@enduml

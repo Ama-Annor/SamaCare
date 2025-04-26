@@ -29,6 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (password_verify($password_input, $user["password"])) {
                 if ($user["status"] == "active") {
+
+                    $update_stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                    $update_stmt->bind_param("i", $user["user_id"]);
+                    $update_stmt->execute();
+                    $update_stmt->close();
+
+
                     // Set session variables
                     $_SESSION["loggedin"] = true;
                     $_SESSION["user_id"] = $user["user_id"];
@@ -40,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Redirect based on role
                     switch ($user["role_id"]) {
                         case 1:
-                            header("Location: admin_dashboard.html");
+                            header("Location: admin_dashboard.php");
                             break;
                         case 2:
                             header("Location: dashboard.php");
@@ -106,8 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="../index.html">Home</a>
                 <a href="features.html">Features</a>
                 <a href="about.html">About</a>
-                <a href="doctors.html">Doctors</a>
-                <a href="resources.html">Resources</a>
                 <a href="faq.html">FAQ</a>
                 <a href="contact.html">Contact</a>
             </nav>
@@ -219,7 +224,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 Remember me
                             </label>
                         </div>
-                        <a href="forgot-password.php" class="forgot-link">Forgot password?</a>
                     </div>
                     
                     <button type="submit" class="submit-btn">

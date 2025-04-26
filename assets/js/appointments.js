@@ -1,885 +1,855 @@
+// Global variables
+let bookingData = {
+    service_id: null,
+    doctor_id: null,
+    appointment_date: null,
+    time_slot: null,
+    location_id: null,
+    notes: null
+};
+
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+// DOM ready event
 document.addEventListener('DOMContentLoaded', function() {
-    //View toggle between list and calendar
+    // Initialize action buttons
+    initActionButtons();
+
+    // Initialize appointment booking flow
+    initBookingFlow();
+
+    // Initialize status filter functionality
+    initStatusFilter();
+
+    // Initialize view toggle (list/calendar)
+    initViewToggle();
+
+    // Initialize calendar functionality
+    initCalendar();
+});
+
+// Initialize action buttons
+function initActionButtons() {
+    // New appointment button
+    const scheduleBtn = document.querySelector('.schedule-btn');
+    if (scheduleBtn) {
+        scheduleBtn.addEventListener('click', function() {
+            // Reset booking form
+            resetBookingForm();
+            // Show booking modal
+            document.getElementById('booking-modal').style.display = 'flex';
+        });
+    }
+
+    // Close booking modal button
+    const closeBookingBtn = document.getElementById('close-booking-modal');
+    if (closeBookingBtn) {
+        closeBookingBtn.addEventListener('click', function() {
+            closeBookingModal();
+        });
+    }
+
+    // Close confirmation modal button
+    const closeConfirmationBtn = document.getElementById('close-confirmation');
+    if (closeConfirmationBtn) {
+        closeConfirmationBtn.addEventListener('click', function() {
+            document.getElementById('confirmation-modal').style.display = 'none';
+            window.location.reload(); // Reload page to show new appointment
+        });
+    }
+
+    // Reschedule and cancel appointment buttons
+    const actionBtns = document.querySelectorAll('.appointment-actions .action-btn');
+    actionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const appointmentItem = this.closest('.appointment-item');
+            const appointmentId = appointmentItem.dataset.id;
+
+            if (this.title === 'Reschedule') {
+                // TODO: Implement reschedule functionality
+                alert('Reschedule functionality will be implemented soon.');
+            } else if (this.title === 'Cancel') {
+                if (confirm('Are you sure you want to cancel this appointment?')) {
+                    cancelAppointment(appointmentId);
+                }
+            } else if (this.title === 'View Details') {
+                // TODO: Implement view details functionality
+                alert('View details functionality will be implemented soon.');
+            }
+        });
+    });
+}
+
+// Initialize booking flow
+function initBookingFlow() {
+    // Service selection change
+    const serviceSelect = document.getElementById('service-type');
+    if (serviceSelect) {
+        serviceSelect.addEventListener('change', function() {
+            bookingData.service_id = this.value;
+            if (this.value) {
+                // Get the selected specialty ID
+                const specialtyId = this.options[this.selectedIndex].dataset.specialty;
+                // Fetch doctors for this specialty
+                fetchDoctorsBySpecialty(specialtyId);
+            }
+        });
+    }
+
+    // Doctor selection change
+    const doctorSelect = document.getElementById('doctor');
+    if (doctorSelect) {
+        doctorSelect.addEventListener('change', function() {
+            bookingData.doctor_id = this.value;
+            if (this.value) {
+                // Display doctor info
+                const doctorName = this.options[this.selectedIndex].text;
+                const doctorSpecialty = this.options[this.selectedIndex].dataset.specialty;
+                const doctorRating = this.options[this.selectedIndex].dataset.rating;
+
+                const doctorInfo = document.getElementById('doctor-info');
+                doctorInfo.innerHTML = `
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">
+                            <span>${doctorName.split(' ').map(n => n[0]).join('')}</span>
+                        </div>
+                        <div class="doctor-details">
+                            <h5 id="doctor-name">${doctorName}</h5>
+                            <p id="doctor-specialty">${doctorSpecialty}</p>
+                            <div class="doctor-rating">
+                                ${generateStarRating(doctorRating)}
+                                <span>${doctorRating}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                doctorInfo.style.display = 'block';
+            } else {
+                document.getElementById('doctor-info').style.display = 'none';
+            }
+        });
+    }
+
+    // Date selection change
+    const dateInput = document.getElementById('appointment-date');
+    if (dateInput) {
+        dateInput.addEventListener('change', function() {
+            bookingData.appointment_date = this.value;
+            if (this.value && bookingData.doctor_id) {
+                // Fetch available time slots
+                fetchAvailableTimeSlots(bookingData.doctor_id, this.value);
+            }
+        });
+
+        // Set min date to today
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.min = `${yyyy}-${mm}-${dd}`;
+    }
+
+    // Location selection change
+    const locationSelect = document.getElementById('appointment-location');
+    if (locationSelect) {
+        locationSelect.addEventListener('change', function() {
+            bookingData.location_id = this.value;
+        });
+    }
+
+    // Notes input change
+    const notesInput = document.getElementById('appointment-reason');
+    if (notesInput) {
+        notesInput.addEventListener('input', function() {
+            bookingData.notes = this.value;
+        });
+    }
+
+    // Booking step navigation
+    const nextButtons = document.querySelectorAll('.next-step');
+    nextButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const currentStep = parseInt(this.dataset.step);
+
+            if (validateStep(currentStep)) {
+                // Hide current step
+                document.getElementById(`step-${currentStep}`).style.display = 'none';
+                // Show next step
+                document.getElementById(`step-${currentStep + 1}`).style.display = 'block';
+
+                // If it's the review step, populate the summary
+                if (currentStep + 1 === 5) {
+                    populateBookingSummary();
+                }
+            }
+        });
+    });
+
+    const prevButtons = document.querySelectorAll('.prev-step');
+    prevButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const currentStep = parseInt(this.dataset.step);
+
+            // Hide current step
+            document.getElementById(`step-${currentStep}`).style.display = 'none';
+            // Show previous step
+            document.getElementById(`step-${currentStep - 1}`).style.display = 'block';
+        });
+    });
+
+    // Confirm booking button
+    const confirmButton = document.getElementById('confirm-booking');
+    if (confirmButton) {
+        confirmButton.addEventListener('click', function() {
+            // Submit booking data
+            submitBooking();
+        });
+    }
+}
+
+// Initialize status filter
+function initStatusFilter() {
+    const filterLinks = document.querySelectorAll('.filter-dropdown-content a');
+    const filterText = document.querySelector('.status-filter-btn span');
+
+    filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const status = this.dataset.status;
+
+            // Update filter button text
+            filterText.textContent = `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+
+            // Filter appointments
+            filterAppointmentsByStatus(status);
+        });
+    });
+}
+
+// Filter appointments by status
+function filterAppointmentsByStatus(status) {
+    const appointmentItems = document.querySelectorAll('.appointment-item');
+
+    appointmentItems.forEach(item => {
+        if (status === 'all' || item.dataset.status === status) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Initialize view toggle (list/calendar)
+function initViewToggle() {
     const viewBtns = document.querySelectorAll('.view-btn');
     const viewSections = document.querySelectorAll('.view-section');
-    
+
     viewBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Update active button
+            const view = this.dataset.view;
+
+            // Activate clicked button
             viewBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Show the corresponding view
-            const view = this.getAttribute('data-view');
+
+            // Show corresponding view section
             viewSections.forEach(section => {
-                if (section.id === view + '-view') {
+                if (section.id === `${view}-view`) {
                     section.classList.add('active');
                 } else {
                     section.classList.remove('active');
                 }
             });
+
+            // If calendar view is selected, refresh calendar
+            if (view === 'calendar') {
+                renderCalendar(currentMonth, currentYear);
+                fetchCalendarAppointments(currentMonth + 1, currentYear);
+            }
         });
     });
-    
-    //Calendar view options
-    const calendarViewBtns = document.querySelectorAll('.calendar-view-btn');
-    const calendarContainer = document.querySelector('.calendar-container');
-    
-    calendarViewBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            //update active button
-            calendarViewBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            //get the selected view type
-            const viewType = this.getAttribute('data-view');
-            
-            //update calendar display based on view type
-            updateCalendarView(viewType);
+}
+
+// Initialize calendar functionality
+function initCalendar() {
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const calendarMonthYear = document.getElementById('calendar-month-year');
+
+    if (prevMonthBtn && nextMonthBtn && calendarMonthYear) {
+        // Set initial month/year
+        updateCalendarHeader();
+
+        // Render initial calendar
+        renderCalendar(currentMonth, currentYear);
+        fetchCalendarAppointments(currentMonth + 1, currentYear);
+
+        // Previous month button
+        prevMonthBtn.addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendarHeader();
+            renderCalendar(currentMonth, currentYear);
+            fetchCalendarAppointments(currentMonth + 1, currentYear);
         });
-    });
-    
-    //function to update calendar display based on view type
-    function updateCalendarView(viewType) {
-        //clear current calendar content
-        calendarContainer.innerHTML = '';
-        
-        if (viewType === 'month') {
-            //month view (default) - recreate the original month view
-            const monthView = `
-                <div class="calendar-weekdays">
-                    <div>Sun</div>
-                    <div>Mon</div>
-                    <div>Tue</div>
-                    <div>Wed</div>
-                    <div>Thu</div>
-                    <div>Fri</div>
-                    <div>Sat</div>
-                </div>
-                <div class="calendar-days">
-                    <!-- Previous month days -->
-                    <div class="calendar-day other-month">26</div>
-                    <div class="calendar-day other-month">27</div>
-                    <div class="calendar-day other-month">28</div>
-                    <div class="calendar-day other-month">29</div>
-                    <div class="calendar-day other-month">30</div>
-                    <div class="calendar-day other-month">31</div>
-                    
-                    <!-- Current month days -->
-                    <div class="calendar-day">1</div>
-                    <div class="calendar-day">2</div>
-                    <div class="calendar-day">3</div>
-                    <div class="calendar-day">4</div>
-                    <div class="calendar-day">5</div>
-                    <div class="calendar-day">6</div>
-                    <div class="calendar-day">7</div>
-                    <div class="calendar-day">8</div>
-                    <div class="calendar-day">9</div>
-                    <div class="calendar-day">10</div>
-                    <div class="calendar-day">11</div>
-                    <div class="calendar-day">12</div>
-                    <div class="calendar-day">13</div>
-                    <div class="calendar-day">14</div>
-                    <div class="calendar-day">15</div>
-                    <div class="calendar-day">16</div>
-                    <div class="calendar-day">17</div>
-                    <div class="calendar-day">18</div>
-                    <div class="calendar-day current-date has-appointment">19</div>
-                    <div class="calendar-day">20</div>
-                    <div class="calendar-day">21</div>
-                    <div class="calendar-day">22</div>
-                    <div class="calendar-day">23</div>
-                    <div class="calendar-day">24</div>
-                    <div class="calendar-day">25</div>
-                    <div class="calendar-day">26</div>
-                    <div class="calendar-day">27</div>
-                    <div class="calendar-day">28</div>
-                    <div class="calendar-day">29</div>
-                    <div class="calendar-day">30</div>
-                    
-                    <!-- Next month days -->
-                    <div class="calendar-day other-month">1</div>
-                    <div class="calendar-day other-month">2</div>
-                    <div class="calendar-day other-month">3</div>
-                    <div class="calendar-day other-month">4</div>
-                    <div class="calendar-day other-month">5</div>
-                    <div class="calendar-day other-month">6</div>
-                </div>
-            `;
-            calendarContainer.innerHTML = monthView;
-            
-            //Attach event listeners to calendar days
-            attachCalendarDayListeners();
-        } 
-        else if (viewType === 'week') {
-            //Week view - Create a weekly calendar view
-            const weekView = `
-                <div class="week-header">
-                    <div class="week-day-names">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div class="week-dates">
-                        <div>16</div>
-                        <div>17</div>
-                        <div>18</div>
-                        <div class="current-date has-appointment">19</div>
-                        <div>20</div>
-                        <div>21</div>
-                        <div>22</div>
-                    </div>
-                </div>
-                <div class="week-hours-container">
-                    <div class="week-hours-col time-labels">
-                        <div class="hour-slot">8:00 AM</div>
-                        <div class="hour-slot">9:00 AM</div>
-                        <div class="hour-slot">10:00 AM</div>
-                        <div class="hour-slot">11:00 AM</div>
-                        <div class="hour-slot">12:00 PM</div>
-                        <div class="hour-slot">1:00 PM</div>
-                        <div class="hour-slot">2:00 PM</div>
-                        <div class="hour-slot">3:00 PM</div>
-                        <div class="hour-slot">4:00 PM</div>
-                        <div class="hour-slot">5:00 PM</div>
-                    </div>
-                    <div class="week-grid">
-                        <div class="day-col"></div>
-                        <div class="day-col"></div>
-                        <div class="day-col"></div>
-                        <div class="day-col">
-                            <div class="appointment-event" style="top: 25%; height: 10%;">
-                                <div class="appointment-event-content">
-                                    <span class="appointment-time">10:30 AM</span>
-                                    <span class="appointment-title">General Checkup</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="day-col"></div>
-                        <div class="day-col"></div>
-                        <div class="day-col"></div>
-                    </div>
-                </div>
-            `;
-            calendarContainer.innerHTML = weekView;
-            
-            //update selected date details for the week view
-            document.querySelector('.selected-date-appointments h4').textContent = 'June 19, 2024';
-        } 
-        else if (viewType === 'day') {
-            //Day view - Create a daily calendar view
-            const dayView = `
-                <div class="day-header">
-                    <h4 class="day-title">Wednesday, June 19</h4>
-                </div>
-                <div class="day-hours-container">
-                    <div class="hour-slots">
-                        <div class="hour-slot">8:00 AM</div>
-                        <div class="hour-slot">9:00 AM</div>
-                        <div class="hour-slot">10:00 AM</div>
-                        <div class="hour-slot">
-                            <div class="appointment-event">
-                                <div class="appointment-time">10:30 AM</div>
-                                <div class="appointment-details">
-                                    <h5>General Checkup</h5>
-                                    <p>Dr. Ama Mensah - SamaCare Main Clinic</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hour-slot">11:00 AM</div>
-                        <div class="hour-slot">12:00 PM</div>
-                        <div class="hour-slot">1:00 PM</div>
-                        <div class="hour-slot">2:00 PM</div>
-                        <div class="hour-slot">3:00 PM</div>
-                        <div class="hour-slot">4:00 PM</div>
-                        <div class="hour-slot">5:00 PM</div>
-                    </div>
-                </div>
-            `;
-            calendarContainer.innerHTML = dayView;
-            
-            //update selected date details for the day view
-            document.querySelector('.selected-date-appointments h4').textContent = 'June 19, 2024';
-        }
-        
-        //CSS added for the specific view
-        addViewSpecificStyles(viewType);
+
+        // Next month button
+        nextMonthBtn.addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendarHeader();
+            renderCalendar(currentMonth, currentYear);
+            fetchCalendarAppointments(currentMonth + 1, currentYear);
+        });
     }
-    
-    //function to attach event listeners to calendar days in month view
-    function attachCalendarDayListeners() {
-        const calendarDays = document.querySelectorAll('.calendar-day');
-        
-        calendarDays.forEach(day => {
-            day.addEventListener('click', function() {
-                //clear previously selected day
-                calendarDays.forEach(d => d.classList.remove('selected'));
-                
-                //select clicked day
-                this.classList.add('selected');
-                
-                //update the appointment details based on the day
-                if (!this.classList.contains('other-month')) {
-                    const date = this.textContent;
-                    document.querySelector('.selected-date-appointments h4').textContent = 
-                        `June ${date}, 2024`;
-                    
-                    //show or hide the appointment based on the date
-                    const appointmentsList = document.querySelector('.selected-date-appointments');
-                    if (date === '19') {
-                        // show the appointment for the 19th
-                        appointmentsList.innerHTML = `
-                            <h4>June ${date}, 2024</h4>
-                            <div class="day-appointment-item">
-                                <div class="appointment-time">10:30 AM</div>
-                                <div class="appointment-info">
-                                    <h5>General Checkup</h5>
-                                    <p>Dr. Ama Mensah - SamaCare Main Clinic</p>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        //No appointments for other days
-                        appointmentsList.innerHTML = `<h4>June ${date}, 2024</h4><p>No appointments scheduled for this day.</p>`;
-                    }
-                }
+}
+
+// Update calendar header with current month and year
+function updateCalendarHeader() {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    document.getElementById('calendar-month-year').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+}
+
+// Render calendar for a specific month and year
+function renderCalendar(month, year) {
+    const calendarDays = document.getElementById('calendar-days');
+    if (!calendarDays) return;
+
+    // Clear calendar
+    calendarDays.innerHTML = '';
+
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Get days from previous month to display
+    const prevMonthDays = new Date(year, month, 0).getDate();
+
+    // Add days from previous month
+    for (let i = firstDay - 1; i >= 0; i--) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day other-month';
+        dayDiv.textContent = prevMonthDays - i;
+        calendarDays.appendChild(dayDiv);
+    }
+
+    // Add days from current month
+    const today = new Date();
+    const currentDate = today.getDate();
+    const currentMonthReal = today.getMonth();
+    const currentYearReal = today.getFullYear();
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day';
+        dayDiv.textContent = i;
+        dayDiv.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+
+        // Add 'current-date' class if it's today
+        if (i === currentDate && month === currentMonthReal && year === currentYearReal) {
+            dayDiv.classList.add('current-date');
+        }
+
+        // Add click event
+        dayDiv.addEventListener('click', function() {
+            // Remove selected class from all days
+            document.querySelectorAll('.calendar-day').forEach(day => {
+                day.classList.remove('selected');
             });
-        });
-    }
-    
-    //Function to add view-specific CSS
-    function addViewSpecificStyles(viewType) {
-        //remove any existing view-specific style tag
-        const existingStyle = document.getElementById('calendar-view-styles');
-        if (existingStyle) {
-            existingStyle.remove();
-        }
-        
-        //create new style element
-        const styleElement = document.createElement('style');
-        styleElement.id = 'calendar-view-styles';
-        
-        //Add CSS based on view type
-        if (viewType === 'week') {
-            styleElement.textContent = `
-                .week-header {
-                    display: flex;
-                    flex-direction: column;
-                    margin-bottom: 10px;
-                }
-                .week-day-names, .week-dates {
-                    display: grid;
-                    grid-template-columns: repeat(7, 1fr);
-                    text-align: center;
-                }
-                .week-day-names div {
-                    padding: 10px;
-                    font-weight: 600;
-                    color: var(--muted-text);
-                }
-                .week-dates div {
-                    padding: 10px;
-                    font-weight: 500;
-                }
-                .week-dates .current-date {
-                    background-color: var(--light-jade);
-                    color: var(--primary-color);
-                    border-radius: 50%;
-                    width: 35px;
-                    height: 35px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin: 0 auto;
-                }
-                .week-dates .has-appointment {
-                    position: relative;
-                }
-                .week-dates .has-appointment::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 2px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 5px;
-                    height: 5px;
-                    border-radius: 50%;
-                    background-color: var(--primary-color);
-                }
-                .week-hours-container {
-                    display: flex;
-                    height: 500px;
-                    overflow-y: auto;
-                    border: 1px solid var(--border-color);
-                    border-radius: var(--border-radius);
-                }
-                .week-hours-col {
-                    width: 80px;
-                    flex-shrink: 0;
-                    border-right: 1px solid var(--border-color);
-                }
-                .week-grid {
-                    flex: 1;
-                    display: grid;
-                    grid-template-columns: repeat(7, 1fr);
-                }
-                .hour-slot {
-                    height: 50px;
-                    border-bottom: 1px solid var(--border-color);
-                    padding: 5px;
-                    position: relative;
-                }
-                .day-col {
-                    border-right: 1px solid var(--border-color);
-                    position: relative;
-                }
-                .day-col:last-child {
-                    border-right: none;
-                }
-                .appointment-event {
-                    position: absolute;
-                    left: 2px;
-                    right: 2px;
-                    background-color: var(--light-jade);
-                    border-left: 3px solid var(--primary-color);
-                    border-radius: 3px;
-                    padding: 5px;
-                    overflow: hidden;
-                    z-index: 1;
-                }
-                .appointment-event-content {
-                    font-size: 12px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-                .appointment-time {
-                    font-weight: 600;
-                    color: var(--primary-color);
-                }
-                .appointment-title {
-                    margin-left: 5px;
-                }
-            `;
-        } 
-        else if (viewType === 'day') {
-            styleElement.textContent = `
-                .day-header {
-                    margin-bottom: 15px;
-                    text-align: center;
-                }
-                .day-title {
-                    font-size: 18px;
-                    color: var(--dark-color);
-                }
-                .day-hours-container {
-                    border: 1px solid var(--border-color);
-                    border-radius: var(--border-radius);
-                    height: 550px;
-                    overflow-y: auto;
-                }
-                .hour-slots {
-                    display: flex;
-                    flex-direction: column;
-                }
-                .hour-slot {
-                    height: 60px;
-                    border-bottom: 1px solid var(--border-color);
-                    padding: 10px;
-                    position: relative;
-                }
-                .hour-slot:last-child {
-                    border-bottom: none;
-                }
-                .appointment-event {
-                    display: flex;
-                    background-color: var(--light-jade);
-                    border-left: 3px solid var(--primary-color);
-                    padding: 10px;
-                    border-radius: 5px;
-                    margin-top: 5px;
-                }
-                .appointment-time {
-                    font-weight: 600;
-                    color: var(--primary-color);
-                    min-width: 80px;
-                }
-                .appointment-details h5 {
-                    margin-bottom: 5px;
-                }
-                .appointment-details p {
-                    font-size: 12px;
-                    color: var(--muted-text);
-                }
-            `;
-        }
-        
-        //style element to the document head
-        document.head.appendChild(styleElement);
-    }
-    
-    //Calendar navigation
-    const calendarNavBtns = document.querySelectorAll('.calendar-nav-btn');
-    
-    calendarNavBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // For demo purposes only
-            showToast('Calendar would navigate to previous/next month');
-        });
-    });
-    
-    //Calendar day selection
-    const calendarDays = document.querySelectorAll('.calendar-day');
-    
-    calendarDays.forEach(day => {
-        day.addEventListener('click', function() {
-            //clear previously selected day
-            calendarDays.forEach(d => d.classList.remove('selected'));
-            
-            //Select clicked day
+
+            // Add selected class to clicked day
             this.classList.add('selected');
-            
-            //this would update the appointments shown below - not yet a real implementation, please link it to the backend
-            if (!this.classList.contains('other-month')) {
-                const date = this.textContent;
-                document.querySelector('.selected-date-appointments h4').textContent = 
-                    `June ${date}, 2024`;
-                
-                //Show or hide the appointment based on the date
-                const appointmentsList = document.querySelector('.selected-date-appointments');
-                if (date === '19') {
-                    //Show the appointment for the chosen day
-                    appointmentsList.style.display = 'block';
-                } else {
-                    //No appointments for other days
-                    appointmentsList.innerHTML = `<h4>June ${date}, 2024</h4><p>No appointments scheduled for this day.</p>`;
+
+            // Show appointments for selected date
+            showAppointmentsForDate(this.dataset.date);
+        });
+
+        calendarDays.appendChild(dayDiv);
+    }
+
+    // Calculate days to add from next month
+    const totalDaysAdded = firstDay + daysInMonth;
+    const remainingDays = 42 - totalDaysAdded; // 6 rows * 7 days = 42
+
+    // Add days from next month
+    for (let i = 1; i <= remainingDays; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day other-month';
+        dayDiv.textContent = i;
+        calendarDays.appendChild(dayDiv);
+    }
+}
+
+// Fetch appointments for calendar view
+function fetchCalendarAppointments(month, year) {
+    fetch(`appointments.php?action=get_calendar&month=${month}&year=${year}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error fetching calendar data:', data.error);
+                return;
+            }
+
+            // Mark days with appointments
+            data.forEach(appointment => {
+                const day = parseInt(appointment.day);
+                const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                const dayElement = document.querySelector(`.calendar-day[data-date="${dateString}"]`);
+                if (dayElement) {
+                    dayElement.classList.add('has-appointment');
+                    dayElement.dataset.appointmentId = appointment.appointment_id;
                 }
-            } else {
-                //Different month
-                showToast('This would show appointments for the selected day in the previous/next month');
-            }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
+}
+
+// Show appointments for a selected date
+function showAppointmentsForDate(dateString) {
+    const appointmentsContainer = document.getElementById('selected-date-appointments');
+    if (!appointmentsContainer) return;
+
+    // Format date for display
+    const date = new Date(dateString);
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+
+    // Update container with selected date
+    appointmentsContainer.innerHTML = `<h4>${formattedDate}</h4>`;
+
+    // Find appointments for this date
+    const upcomingAppointments = Array.from(document.querySelectorAll('#upcoming-appointments .appointment-item'));
+    const pastAppointments = Array.from(document.querySelectorAll('#past-appointments .appointment-item'));
+    const allAppointments = [...upcomingAppointments, ...pastAppointments];
+
+    const dateAppointments = allAppointments.filter(appointment => {
+        const day = appointment.querySelector('.appointment-date .day').textContent;
+        const month = appointment.querySelector('.appointment-date .month').textContent;
+
+        // Convert month abbreviation to month number
+        const monthNames = {
+            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+        };
+
+        const appointmentMonth = monthNames[month];
+        const appointmentYear = new Date().getFullYear(); // Assuming current year
+
+        // Extract year from dateString (format: YYYY-MM-DD)
+        const selectedYear = dateString.split('-')[0];
+        const selectedMonth = dateString.split('-')[1];
+        const selectedDay = dateString.split('-')[2];
+
+        return day === selectedDay && appointmentMonth === selectedMonth;
     });
-    
-    //appointment actions
-    const appointmentActions = document.querySelectorAll('.appointment-actions .action-btn');
-    
-    appointmentActions.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const action = this.getAttribute('title');
-            
-            // Display toast message for the action
-            if (action === 'Reschedule') {
-                showToast('Reschedule functionality would be implemented with backend integration');
-            } else if (action === 'Cancel') {
-                showToast('Cancel functionality would be implemented with backend integration');
-            } else if (action === 'View Details') {
-                showToast('View details functionality would be implemented with backend integration');
-            }
+
+    if (dateAppointments.length === 0) {
+        appointmentsContainer.innerHTML += `<p>No appointments scheduled for this date.</p>`;
+    } else {
+        dateAppointments.forEach(appointment => {
+            const serviceName = appointment.querySelector('.appointment-details h4').textContent;
+            const time = appointment.querySelector('.appointment-details p:nth-child(2)').textContent.replace('', '').trim();
+            const doctor = appointment.querySelector('.appointment-details p:nth-child(3)').textContent.replace('', '').trim();
+            const location = appointment.querySelector('.appointment-details p:nth-child(4)').textContent.replace('', '').trim();
+
+            appointmentsContainer.innerHTML += `
+                <div class="day-appointment-item">
+                    <div class="appointment-time">${time}</div>
+                    <div class="appointment-info">
+                        <h5>${serviceName}</h5>
+                        <p>${doctor} - ${location}</p>
+                    </div>
+                </div>
+            `;
         });
-    });
-    
-    // ====== BOOKING MODAL FUNCTIONALITY ======
-    
-    //New appointment button
-    const scheduleBtn = document.querySelector('.schedule-btn');
-    const bookingModal = document.getElementById('booking-modal');
-    const closeBookingModal = document.getElementById('close-booking-modal');
-    
-    // Get the confirmation modal and elements
-    const confirmationModal = document.getElementById('confirmation-modal');
-    const closeConfirmation = document.getElementById('close-confirmation');
-    const confirmBookingBtn = document.getElementById('confirm-booking');
-    
-    // Step navigation buttons
-    const nextStepBtns = document.querySelectorAll('.next-step');
-    const prevStepBtns = document.querySelectorAll('.prev-step');
-    
-    // Form elements
-    const serviceTypeSelect = document.getElementById('service-type');
+    }
+}
+
+// Fetch doctors by specialty
+function fetchDoctorsBySpecialty(specialtyId) {
+    if (!specialtyId) {
+        console.error("No specialty ID provided");
+        return;
+    }
+
+    // Clear current doctors
     const doctorSelect = document.getElementById('doctor');
-    const doctorInfo = document.getElementById('doctor-info');
-    const appointmentDateInput = document.getElementById('appointment-date');
-    const timeSlots = document.querySelectorAll('input[name="time-slot"]');
-    const appointmentReasonTextarea = document.getElementById('appointment-reason');
-    const appointmentLocationSelect = document.getElementById('appointment-location');
-    
-    // Summary elements
-    const summaryService = document.getElementById('summary-service');
-    const summaryDoctor = document.getElementById('summary-doctor');
-    const summaryDate = document.getElementById('summary-date');
-    const summaryTime = document.getElementById('summary-time');
-    const summaryLocation = document.getElementById('summary-location');
-    const summaryReason = document.getElementById('summary-reason');
-    
-    // Confirmation elements
-    const confirmDate = document.getElementById('confirm-date');
-    const confirmTime = document.getElementById('confirm-time');
-    const confirmDoctor = document.getElementById('confirm-doctor');
-    const confirmLocation = document.getElementById('confirm-location');
-    
-    // Show booking modal when clicking the schedule button
-    if (scheduleBtn) {
-        scheduleBtn.addEventListener('click', function() {
-            showBookingModal();
-        });
-    }
-    
-    // Close booking modal when clicking the X button
-    if (closeBookingModal) {
-        closeBookingModal.addEventListener('click', function() {
-            hideBookingModal();
-        });
-    }
-    
-    // Close confirmation modal when clicking the Done button
-    if (closeConfirmation) {
-        closeConfirmation.addEventListener('click', function() {
-            hideConfirmationModal();
-        });
-    }
-    
-    // Handle next step buttons
-    if (nextStepBtns.length > 0) {
-        nextStepBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const currentStep = parseInt(this.getAttribute('data-step'));
-                
-                // Validate current step
-                if (validateStep(currentStep)) {
-                    hideStep(currentStep);
-                    showStep(currentStep + 1);
-                    
-                    // If moving to the review step, populate the summary
-                    if (currentStep === 4) {
-                        populateSummary();
-                    }
-                }
+    doctorSelect.innerHTML = '<option value="">Select a doctor</option>';
+    document.getElementById('doctor-info').style.display = 'none';
+
+    // Show loading indicator
+    doctorSelect.disabled = true;
+
+    // Make AJAX request
+    fetch(`appointments.php?action=get_doctors&specialty_id=${specialtyId}`)
+        .then(response => response.json())
+        .then(doctors => {
+            if (doctors.error) {
+                console.error("Error fetching doctors:", doctors.error);
+                return;
+            }
+
+            // Populate doctors dropdown
+            doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.doctor_id;
+                option.textContent = `Dr. ${doctor.full_name}`;
+                option.dataset.specialty = doctor.specialty;
+                option.dataset.rating = doctor.rating || "N/A";
+                doctorSelect.appendChild(option);
             });
+        })
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            doctorSelect.disabled = false;
         });
-    }
-    
-    // Handle previous step buttons
-    if (prevStepBtns.length > 0) {
-        prevStepBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const currentStep = parseInt(this.getAttribute('data-step'));
-                hideStep(currentStep);
-                showStep(currentStep - 1);
-            });
-        });
-    }
-    
-    // Handle doctor selection
-    if (doctorSelect) {
-        doctorSelect.addEventListener('change', function() {
-            if (this.value) {
-                // Show doctor info card
-                doctorInfo.style.display = 'block';
-                
-                // Update doctor info based on selection
-                updateDoctorInfo(this.value);
-            } else {
-                doctorInfo.style.display = 'none';
+}
+
+// Fetch available time slots for a doctor on a specific date
+function fetchAvailableTimeSlots(doctorId, date) {
+    // Add loading state
+    const timeSlotsContainer = document.getElementById('time-slots');
+    timeSlotsContainer.innerHTML = '<p>Loading available slots...</p>';
+
+    fetch(`appointments.php?action=get_slots&doctor_id=${doctorId}&date=${date}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Network error');
+            return response.json();
+        })
+        .then(data => {
+            timeSlotsContainer.innerHTML = '';
+
+            if (data.error) {
+                timeSlotsContainer.innerHTML = `<p class="error">${data.error}</p>`;
+                return;
             }
-        });
-    }
-    
-    // Set minimum date for appointment date input to today
-    if (appointmentDateInput) {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        appointmentDateInput.min = `${year}-${month}-${day}`;
-        
-        // Set default date to tomorrow
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const tomorrowYear = tomorrow.getFullYear();
-        const tomorrowMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const tomorrowDay = String(tomorrow.getDate()).padStart(2, '0');
-        appointmentDateInput.value = `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`;
-    }
-    
-    // Handle confirm booking button
-    if (confirmBookingBtn) {
-        confirmBookingBtn.addEventListener('click', function() {
-            // In a real application, this would send data to the server
-            // For now, we'll just show the confirmation modal
-            
-            // Transfer summary details to confirmation modal
-            confirmDate.textContent = summaryDate.textContent;
-            confirmTime.textContent = summaryTime.textContent;
-            confirmDoctor.textContent = summaryDoctor.textContent;
-            confirmLocation.textContent = summaryLocation.textContent;
-            
-            // Hide booking modal and show confirmation
-            hideBookingModal();
-            showConfirmationModal();
-        });
-    }
-    
-    // Function to show the booking modal
-    function showBookingModal() {
-        if (bookingModal) {
-            bookingModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-            
-            // Reset the form
-            resetBookingForm();
-        }
-    }
-    
-    // Function to hide the booking modal
-    function hideBookingModal() {
-        if (bookingModal) {
-            bookingModal.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-        }
-    }
-    
-    // Function to show the confirmation modal
-    function showConfirmationModal() {
-        if (confirmationModal) {
-            confirmationModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
-    }
-    
-    // Function to hide the confirmation modal
-    function hideConfirmationModal() {
-        if (confirmationModal) {
-            confirmationModal.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-        }
-    }
-    
-    // Function to show a specific step
-    function showStep(stepNumber) {
-        const step = document.getElementById(`step-${stepNumber}`);
-        if (step) {
-            step.style.display = 'block';
-        }
-    }
-    
-    // Function to hide a specific step
-    function hideStep(stepNumber) {
-        const step = document.getElementById(`step-${stepNumber}`);
-        if (step) {
-            step.style.display = 'none';
-        }
-    }
-    
-    // Function to validate each step
-    function validateStep(stepNumber) {
-        switch(stepNumber) {
-            case 1:
-                // Validate service selection
-                if (!serviceTypeSelect.value) {
-                    showToast('Please select a service');
-                    return false;
-                }
-                return true;
-            
-            case 2:
-                // Validate doctor selection
-                if (!doctorSelect.value) {
-                    showToast('Please select a doctor');
-                    return false;
-                }
-                return true;
-            
-            case 3:
-                // Validate date and time selection
-                if (!appointmentDateInput.value) {
-                    showToast('Please select a date');
-                    return false;
-                }
-                
-                let timeSelected = false;
-                for (let timeSlot of timeSlots) {
-                    if (timeSlot.checked) {
-                        timeSelected = true;
-                        break;
+
+            // Check if there are morning slots
+            if (data[0] && data[0].times && data[0].times.length > 0) {
+                timeSlotsContainer.innerHTML += '<h5>Morning</h5>';
+                let morningRow = document.createElement('div');
+                morningRow.className = 'time-slot-row';
+
+                data[0].times.forEach((slot, index) => {
+                    if (index > 0 && index % 3 === 0) {
+                        timeSlotsContainer.appendChild(morningRow);
+                        morningRow = document.createElement('div');
+                        morningRow.className = 'time-slot-row';
                     }
+
+                    morningRow.innerHTML += `
+                        <div class="time-slot ${slot.booked ? 'booked' : ''}">
+                            <input type="radio" name="time-slot" id="slot-${index}" 
+                                value="${slot.start}-${slot.end}" ${slot.booked ? 'disabled' : ''}>
+                            <label for="slot-${index}">${formatTime(slot.start)}</label>
+                        </div>
+                    `;
+                });
+
+                if (morningRow.children.length > 0) {
+                    timeSlotsContainer.appendChild(morningRow);
                 }
-                
-                if (!timeSelected) {
-                    showToast('Please select a time slot');
-                    return false;
+            }
+
+            // Check if there are afternoon slots
+            if (data[1] && data[1].times && data[1].times.length > 0) {
+                timeSlotsContainer.innerHTML += '<h5>Afternoon</h5>';
+                let afternoonRow = document.createElement('div');
+                afternoonRow.className = 'time-slot-row';
+
+                data[1].times.forEach((slot, index) => {
+                    if (index > 0 && index % 3 === 0) {
+                        timeSlotsContainer.appendChild(afternoonRow);
+                        afternoonRow = document.createElement('div');
+                        afternoonRow.className = 'time-slot-row';
+                    }
+
+                    afternoonRow.innerHTML += `
+                        <div class="time-slot ${slot.booked ? 'booked' : ''}">
+                            <input type="radio" name="time-slot" id="slot-${index + 100}" 
+                                value="${slot.start}-${slot.end}" ${slot.booked ? 'disabled' : ''}>
+                            <label for="slot-${index + 100}">${formatTime(slot.start)}</label>
+                        </div>
+                    `;
+                });
+
+                if (afternoonRow.children.length > 0) {
+                    timeSlotsContainer.appendChild(afternoonRow);
                 }
-                return true;
-            
-            case 4:
-                // Validate additional information
-                if (!appointmentReasonTextarea.value) {
-                    showToast('Please provide a reason for your visit');
-                    return false;
-                }
-                if (!appointmentLocationSelect.value) {
-                    showToast('Please select a clinic location');
-                    return false;
-                }
-                return true;
-            
-            default:
-                return true;
-        }
-    }
-    
-    // Function to update doctor info
-    function updateDoctorInfo(doctorValue) {
-        const doctorName = document.getElementById('doctor-name');
-        const doctorSpecialty = document.getElementById('doctor-specialty');
-        
-        switch(doctorValue) {
-            case 'dr-ama-mensah':
-                doctorName.textContent = 'Dr. Ama Mensah';
-                doctorSpecialty.textContent = 'General Physician';
-                break;
-            case 'dr-mcnobert-amoah':
-                doctorName.textContent = 'Dr. McNobert Amoah';
-                doctorSpecialty.textContent = 'Cardiologist';
-                break;
-            case 'dr-sarah-johnson':
-                doctorName.textContent = 'Dr. Sarah Johnson';
-                doctorSpecialty.textContent = 'Dentist';
-                break;
-            case 'dr-michael-ofori':
-                doctorName.textContent = 'Dr. Michael Ofori';
-                doctorSpecialty.textContent = 'Pediatrician';
-                break;
-        }
-    }
-    
-    // Function to populate summary
-    function populateSummary() {
-        // Service
-        summaryService.textContent = serviceTypeSelect.options[serviceTypeSelect.selectedIndex].text;
-        
-        // Doctor
-        summaryDoctor.textContent = doctorSelect.options[doctorSelect.selectedIndex].text.split(' - ')[0];
-        
-        // Date
-        const selectedDate = new Date(appointmentDateInput.value);
-        const formattedDate = selectedDate.toLocaleDateString('en-US', { 
-            month: 'long', 
-            day: 'numeric', 
-            year: 'numeric' 
+            }
+
+            // Add event listeners to time slot radios
+            const timeSlotRadios = document.querySelectorAll('input[name="time-slot"]');
+            timeSlotRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        bookingData.time_slot = this.value;
+                    }
+                });
+            });
+
+            // If no slots found at all
+            if (timeSlotsContainer.children.length === 0) {
+                timeSlotsContainer.innerHTML = '<p>No available time slots for this date</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            timeSlotsContainer.innerHTML = `<p class="error">Error loading time slots: Check console for details</p>`;
         });
-        summaryDate.textContent = formattedDate;
-        
-        // Time
-        let selectedTimeValue = '';
-        let selectedTimeLabel = '';
-        for (let timeSlot of timeSlots) {
-            if (timeSlot.checked) {
-                selectedTimeValue = timeSlot.value;
-                selectedTimeLabel = timeSlot.nextElementSibling.textContent;
-                break;
+}
+
+// Helper function to format time from 24h to 12h format
+function formatTime(time) {
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+}
+
+
+// Submit booking
+function submitBooking() {
+    // Show loading state
+    const confirmButton = document.getElementById('confirm-booking');
+    const originalText = confirmButton.textContent;
+    confirmButton.textContent = 'Processing...';
+    confirmButton.disabled = true;
+
+    // Create form data from booking data
+    const formData = new FormData();
+    formData.append('doctor_id', bookingData.doctor_id);
+    formData.append('service_id', bookingData.service_id);
+    formData.append('appointment_date', bookingData.date);
+    formData.append('time_slot', bookingData.time_slot);
+    formData.append('notes', bookingData.notes);
+    formData.append('location_id', bookingData.location_id);
+
+    // Submit booking via fetch API
+    fetch('appointments.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        }
-        summaryTime.textContent = selectedTimeLabel;
-        
-        // Location
-        summaryLocation.textContent = appointmentLocationSelect.options[appointmentLocationSelect.selectedIndex].text;
-        
-        // Reason
-        summaryReason.textContent = appointmentReasonTextarea.value;
-    }
-    
-    // Function to reset the booking form
-    function resetBookingForm() {
-        // Reset all form fields
-        serviceTypeSelect.value = '';
-        doctorSelect.value = '';
-        doctorInfo.style.display = 'none';
-        
-        // Reset time slot selections
-        for (let timeSlot of timeSlots) {
-            timeSlot.checked = false;
-        }
-        
-        appointmentReasonTextarea.value = '';
-        
-        // Show first step, hide others
-        for (let i = 1; i <= 5; i++) {
-            if (i === 1) {
-                showStep(i);
+            return response.json();
+        })
+        .then(data => {
+            // Reset button state
+            confirmButton.textContent = originalText;
+            confirmButton.disabled = false;
+
+            if (data.success) {
+                // Show success message
+                showNotification('Success', 'Appointment booked successfully', 'success');
+
+                // Close the modal and refresh the page after a short delay
+                setTimeout(() => {
+                    closeBookingModal();
+                    window.location.reload();
+                }, 2000);
             } else {
-                hideStep(i);
+                // Show error message
+                showNotification('Error', data.error || 'Failed to book appointment', 'error');
             }
-        }
-    }
-    
-    // Add keyboard event listener to close modal on Escape key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            hideBookingModal();
-            hideConfirmationModal();
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Reset button state
+            confirmButton.textContent = originalText;
+            confirmButton.disabled = false;
+            // Show error message
+            showNotification('Error', 'Failed to book appointment: ' + error.message, 'error');
+        });
+}
+
+// Close booking modal function
+function closeBookingModal() {
+    document.getElementById('booking-modal').style.display = 'none';
+}
+
+function showNotification(title, message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-header">
+            <h4>${title}</h4>
+            <button class="close-notification"><i class='bx bx-x'></i></button>
+        </div>
+        <p>${message}</p>
+    `;
+
+    // Add to the DOM
+    document.body.appendChild(notification);
+
+    // Show with animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    // Add event listener to close button
+    notification.querySelector('.close-notification').addEventListener('click', () => {
+        closeNotification(notification);
     });
-    
-    //Filter dropdown for status
-    const filterDropdown = document.querySelector('.filter-dropdown .secondary-btn');
-    
-    if (filterDropdown) {
-        filterDropdown.addEventListener('click', function() {
-            showToast('Filter functionality would be implemented with backend integration');
-        });
-    }
-    
-    //Toast message function
-    function showToast(message) {
-        //Create toast element if it doesn't exist
-        let toast = document.querySelector('.toast-message');
-        
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.className = 'toast-message';
-            document.body.appendChild(toast);
-            
-            // Add style for the toast if not already in CSS
-            if (!document.querySelector('style.toast-style')) {
-                const style = document.createElement('style');
-                style.className = 'toast-style';
-                style.textContent = `
-                    .toast-message {
-                        position: fixed;
-                        bottom: 20px;
-                        right: 20px;
-                        background-color: var(--dark-color);
-                        color: white;
-                        padding: 12px 20px;
-                        border-radius: var(--border-radius);
-                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-                        z-index: 1000;
-                        opacity: 0;
-                        transform: translateY(20px);
-                        transition: all 0.3s ease;
-                    }
-                    
-                    .toast-message.show {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                `;
-                document.head.appendChild(style);
+
+    // Auto-close after 5 seconds
+    setTimeout(() => {
+        closeNotification(notification);
+    }, 5000);
+}
+
+function closeNotification(notification) {
+    notification.classList.remove('show');
+    setTimeout(() => {
+        notification.remove();
+    }, 300); // match the CSS transition time
+}
+
+// Cancel appointment
+function cancelAppointment(appointmentId) {
+    // Send request
+    fetch('appointments.php?action=cancel_appointment&appointment_id=' + appointmentId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reload page to update appointment list
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.error);
             }
-        }
-        
-        // Set message and show toast
-        toast.textContent = message;
-        toast.classList.add('show');
-        
-        // Hide toast after 3 seconds
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+}
+
+// Populate booking summary
+function populateBookingSummary() {
+    document.getElementById('summary-service').textContent = document.querySelector('#service-type option:checked').text;
+    document.getElementById('summary-doctor').textContent = document.querySelector('#doctor option:checked').text;
+    document.getElementById('summary-date').textContent = formatDate(bookingData.appointment_date);
+
+    // Parse time slot
+    const timeSlotParts = bookingData.time_slot.split('-');
+    document.getElementById('summary-time').textContent = formatTime(timeSlotParts[0]);
+
+    document.getElementById('summary-location').textContent = document.querySelector('#appointment-location option:checked').text;
+    document.getElementById('summary-reason').textContent = bookingData.notes || 'No reason provided';
+}
+
+// Validate step
+function validateStep(step) {
+    switch (step) {
+        case 1:
+            if (!bookingData.service_id) {
+                alert('Please select a service.');
+                return false;
+            }
+            return true;
+        case 2:
+            if (!bookingData.doctor_id) {
+                alert('Please select a doctor.');
+                return false;
+            }
+            return true;
+        case 3:
+            if (!bookingData.appointment_date) {
+                alert('Please select a date.');
+                return false;
+            }
+            if (!bookingData.time_slot) {
+                alert('Please select a time slot.');
+                return false;
+            }
+            return true;
+        case 4:
+            if (!bookingData.location_id) {
+                alert('Please select a location.');
+                return false;
+            }
+            return true;
+        default:
+            return true;
     }
-});
+}
+
+// Reset booking form
+function resetBookingForm() {
+    // Reset booking data
+    bookingData = {
+        service_id: null,
+        doctor_id: null,
+        appointment_date: null,
+        time_slot: null,
+        location_id: null,
+        notes: null
+    };
+
+    // Reset form fields
+    document.getElementById('service-type').value = '';
+    document.getElementById('doctor').innerHTML = '<option value="">Select a doctor</option>';
+    document.getElementById('doctor-info').style.display = 'none';
+    document.getElementById('appointment-date').value = '';
+    document.getElementById('time-slots').innerHTML = '<p>Please select a date to view available time slots.</p>';
+    document.getElementById('appointment-reason').value = '';
+
+    // Reset to first step
+    document.querySelectorAll('.booking-step').forEach((step, index) => {
+        step.style.display = index === 0 ? 'block' : 'none';
+    });
+}
+
+// Helper function: Generate star rating display
+function generateStarRating(rating) {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    let starsHTML = '';
+
+    // Add full stars
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<i class="bx bxs-star"></i>';
+    }
+
+    // Add half star if needed
+    if (halfStar) {
+        starsHTML += '<i class="bx bxs-star-half"></i>';
+    }
+
+    // Add empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<i class="bx bx-star"></i>';
+    }
+
+    return starsHTML;
+}
+
+// Helper function: Format time (24h to 12h)
+function formatTime(time) {
+    const [hours, minutes] = time.split(':');
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12;
+    return `${hours12}:${minutes} ${period}`;
+}
+
+// Helper function: Format date (YYYY-MM-DD to Month DD, YYYY)
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+}

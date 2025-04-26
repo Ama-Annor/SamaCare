@@ -1,0 +1,58 @@
+@startuml SamaCare Doctor Appointment Management
+
+actor Doctor
+participant "Doctor Dashboard" as DD
+participant "AppointmentController" as AC
+participant "PatientService" as PS
+participant "MedicalRecordService" as MRS
+database "Database" as DB
+
+Doctor -> DD: Login to dashboard
+DD -> AC: getUpcomingAppointments(doctorId)
+AC -> DB: query appointments
+DB --> AC: return appointment list
+AC --> DD: display appointments
+
+alt View Appointment Details
+  Doctor -> DD: Select appointment
+  DD -> AC: getAppointmentDetails(appointmentId)
+  AC -> DB: query appointment
+  DB --> AC: return appointment details
+  AC -> PS: getPatientInfo(patientId)
+  PS -> DB: query patient
+  DB --> PS: return patient data
+  PS --> AC: return patient information
+  AC -> MRS: getRecentRecords(patientId)
+  MRS -> DB: query records
+  DB --> MRS: return recent records
+  MRS --> AC: return medical history
+  AC --> DD: display comprehensive appointment view
+end
+
+alt Complete Appointment
+  Doctor -> DD: Mark appointment as complete
+  DD -> AC: completeAppointment(appointmentId)
+  AC -> DB: update appointment status
+  DB --> AC: confirm update
+  DD -> MRS: promptCreateRecord()
+  Doctor -> DD: Enter medical record details
+  DD -> MRS: createMedicalRecord(patientId, details)
+  MRS -> DB: save medical record
+  DB --> MRS: confirm save
+  MRS --> DD: display confirmation
+end
+
+alt Reschedule Appointment
+  Doctor -> DD: Select reschedule
+  DD -> AC: getAvailableTimeSlots(doctorId)
+  AC -> DB: query schedule
+  DB --> AC: return available slots
+  AC --> DD: display available slots
+  Doctor -> DD: Select new time
+  DD -> AC: rescheduleAppointment(appointmentId, newDateTime)
+  AC -> DB: update appointment
+  DB --> AC: confirm update
+  AC --> DD: display confirmation
+end
+
+@enduml
