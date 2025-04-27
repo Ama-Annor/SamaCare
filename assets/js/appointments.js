@@ -620,6 +620,7 @@ function formatTime(time) {
 
 
 // Submit booking
+// Submit booking
 function submitBooking() {
     // Show loading state
     const confirmButton = document.getElementById('confirm-booking');
@@ -627,14 +628,24 @@ function submitBooking() {
     confirmButton.textContent = 'Processing...';
     confirmButton.disabled = true;
 
+    // Ensure date is in YYYY-MM-DD format
+    let appointmentDate = bookingData.date;
+    if (appointmentDate instanceof Date) {
+        // Format the date as YYYY-MM-DD
+        appointmentDate = appointmentDate.toISOString().split('T')[0];
+    }
+
     // Create form data from booking data
     const formData = new FormData();
     formData.append('doctor_id', bookingData.doctor_id);
     formData.append('service_id', bookingData.service_id);
-    formData.append('appointment_date', bookingData.date);
+    formData.append('appointment_date', bookingData.appointment_date);
     formData.append('time_slot', bookingData.time_slot);
     formData.append('notes', bookingData.notes);
     formData.append('location_id', bookingData.location_id);
+
+    // For debugging
+    console.log('Submitting appointment date:', appointmentDate);
 
     // Submit booking via fetch API
     fetch('appointments.php', {
