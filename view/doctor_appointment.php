@@ -9,7 +9,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 3) {
 }
 
 // Database connection
-require_once '../assets/config/db_connect.php';
+
+require_once '../db/db_connect.php';
 
 // Get doctor information
 $doctor_id = null;
@@ -239,7 +240,7 @@ function formatAppointmentTime($time) {
             </nav>
             
             <div class="sidebar-footer">
-                <a href="../logout.php" class="logout-link">
+                <a href="../actions/logout.php" class="logout-link">
                     <i class='bx bx-log-out'></i>
                     <span>Log Out</span>
                 </a>

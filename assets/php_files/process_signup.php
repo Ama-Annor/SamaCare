@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config/db_connect.php';
+require_once '../../db/db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];

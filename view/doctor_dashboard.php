@@ -12,7 +12,8 @@ if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 3) {
 }
 
 // Database connection
-require_once '../assets/config/db_connect.php';
+
+require_once '../db/db_connect.php';
 
 
 // querry to get information 
@@ -533,7 +534,7 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
             </nav>
             
             <div class="sidebar-footer">
-                <a href="../logout.php" class="logout-link">
+                <a href="../actions/logout.php" class="logout-link">
                     <i class='bx bx-log-out'></i>
                     <span>Log Out</span>
                 </a>

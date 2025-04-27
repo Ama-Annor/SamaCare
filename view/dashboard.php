@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once '../assets/config/db_connect.php';
+
+require_once '../db/db_connect.php';
 
 // Redirect if not logged in
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {

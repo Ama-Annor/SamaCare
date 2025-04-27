@@ -18,7 +18,7 @@ header('Content-Type: application/json'); // 👈 MOVE THIS TO THE VERY TOP
 $response = ['success' => false, 'appointments' => [], 'error' => null];
 
 // Include database connection
-require_once '../config/db_connect.php';
+require_once '../../db/db_connect.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth_check.php';
 

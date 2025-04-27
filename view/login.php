@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../assets/config/db_connect.php';
+require_once '../db/db_connect.php';
 
 $email = $password_input = "";
 $email_err = $password_err = $login_err = "";
