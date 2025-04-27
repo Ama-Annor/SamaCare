@@ -347,7 +347,7 @@ function getInitials($firstName, $lastName) {
                         <!-- Doctor Card -->
                         <div class="doctor-card<?php echo $doctor['is_active'] ? '' : ' inactive'; ?>"
                              data-id="<?php echo $doctor['doctor_id']; ?>"
-                             data-specialty="<?php echo htmlspecialchars($doctor['specialty_name']); ?>"
+                             data-specialty="<?php echo $doctor['specialty_name'] !== null ? htmlspecialchars($doctor['specialty_name']) : ''; ?>"
                              data-name="<?php echo htmlspecialchars($doctor['first_name'] . ' ' . $doctor['last_name']); ?>"
                              data-email="<?php echo htmlspecialchars($doctor['email']); ?>"
                              data-status="<?php echo $doctor['is_active'] ? 'active' : 'inactive'; ?>">
@@ -361,8 +361,7 @@ function getInitials($firstName, $lastName) {
                             </div>
                             <div class="doctor-card-body">
                                 <h3 class="doctor-name">Dr. <?php echo htmlspecialchars($doctor['first_name'] . ' ' . $doctor['last_name']); ?></h3>
-                                <p class="doctor-specialty"><?php echo htmlspecialchars($doctor['specialty_name']); ?></p>
-                                <div class="doctor-contact">
+                                <p class="doctor-specialty"><?php echo $doctor['specialty_name'] !== null ? htmlspecialchars($doctor['specialty_name']) : 'No Specialty'; ?></p>                                <div class="doctor-contact">
                                     <p><i class='bx bx-envelope'></i> <?php echo htmlspecialchars($doctor['email']); ?></p>
                                     <p><i class='bx bx-phone'></i> <?php echo htmlspecialchars($doctor['phone']); ?></p>
                                 </div>
