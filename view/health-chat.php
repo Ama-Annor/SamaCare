@@ -506,7 +506,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 currentSymptoms = data.current_symptoms || currentSymptoms;
                 askedSymptoms = data.asked_symptoms || askedSymptoms;
                 
-                // Update predictions if available
+                // Update predictions if available so we will not have repeated calls to the server
                 if (data.predictions) {
                     updatePredictions(data.predictions);
                 }
