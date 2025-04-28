@@ -192,7 +192,11 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                     <label class="checkbox-container">
                         <input type="checkbox" required>
                         <span class="checkmark"></span>
-                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        <p>
+                            I agree to the 
+                            <a href="terms.html">Terms of Service</a> 
+                            and 
+                            <a href="privacy.html">Privacy Policy</a>.
                     </label>
                 </div>
 
@@ -202,9 +206,9 @@ unset($_SESSION['signup_errors'], $_SESSION['form_data']);
                 </button>
             </form>
 
-            <div class="auth-footer">
-                <p>Already have an account? <a href="login.php">Log in</a></p>
-            </div>
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.php">Log in</a></p>
+                </div>
         </div>
     </div>
 </section>
