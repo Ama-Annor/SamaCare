@@ -521,7 +521,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                     currentQuestion = null;
                     addBotMessage("Based on your symptoms, I've listed the possible conditions below. Please consult with a healthcare professional for accurate diagnosis and treatment.");
                 }
-            }, 700); // 700ms delay for better conversation flow
+            }, 700); // 700ms delay for better conversation flow so it won't feel too robotic
             
         } catch (error) {
             console.error('Error:', error);
