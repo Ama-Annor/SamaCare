@@ -120,7 +120,7 @@ function fetchAppointmentsForDate(date) {
         appointmentsContainer.innerHTML = '<div class="loading-spinner"><i class="bx bx-loader-alt bx-spin"></i><p>Loading appointments...</p></div>';
 
         // Fetch appointments via AJAX
-        fetch(`get_appointments_by_date.php?date=${date}`)
+        fetch(`../actions/get_appointments_by_date.php?date=${date}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -226,7 +226,7 @@ function updateCalendar(month, year) {
     }
 
     // Fetch calendar data for the selected month
-    fetch(`get_calendar_data.php?month=${month + 1}&year=${year}`)
+    fetch(`../actions/get_calendar_data.php?month=${month + 1}&year=${year}`)
         .then(response => response.json())
         .then(data => {
             if (calendarDays) {
@@ -263,7 +263,7 @@ function setupCalendarViewOptions() {
             urlParams.set('calendar_view', viewType);
 
             // Fetch appropriate view
-            fetch(`get_calendar_view.php?view=${viewType}&${urlParams.toString()}`)
+            fetch(`../actions/get_calendar_view.php?view=${viewType}&${urlParams.toString()}`)
                 .then(response => response.json())
                 .then(data => {
                     if (calendarContainer) {
@@ -364,7 +364,7 @@ function setupActionButtons() {
                 detailsModal.classList.add('show');
 
                 // Fetch appointment details
-                fetch(`get_appointment_details.php?id=${appointmentId}`)
+                fetch(`../actions/get_appointment_details.php?id=${appointmentId}`)
                     .then(response => response.text())
                     .then(html => {
                         contentArea.innerHTML = html;
@@ -397,7 +397,7 @@ function setupActionButtons() {
                 document.getElementById('appointment_id').value = appointmentId;
 
                 // Fetch appointment data and populate form
-                fetch(`get_appointment_data.php?id=${appointmentId}`)
+                fetch(`../actions/get_appointment_data.php?id=${appointmentId}`)
                     .then(response => response.json())
                     .then(data => {
                         // Populate form fields
@@ -503,7 +503,7 @@ function setupStatusActionButtons() {
             const appointmentId = this.closest('[data-appointment-id]').getAttribute('data-appointment-id');
 
             // Process status change
-            fetch('update_appointment_status.php', {
+            fetch('../actions/update_appointment_status.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -601,7 +601,7 @@ function setupEditModal() {
             const urlEncoded = new URLSearchParams(formData).toString();
 
             // Send data to server
-            fetch('process_appointment.php', {
+            fetch('../actions/process_appointment.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -702,7 +702,7 @@ function updateAppointmentStatus(appointmentId, action) {
     const status = statusMap[action] || action;
 
     // Send update request
-    fetch('update_appointment_status.php', {
+    fetch('../actions/update_appointment_status.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -740,7 +740,7 @@ function openRescheduleModal(appointmentId) {
         document.getElementById('appointment_id').value = appointmentId;
 
         // Fetch appointment data and populate form
-        fetch(`get_appointment_data.php?id=${appointmentId}`)
+        fetch(`../actions/get_appointment_data.php?id=${appointmentId}`)
             .then(response => response.json())
             .then(data => {
                 // Populate form fields
@@ -772,7 +772,7 @@ function openRescheduleModal(appointmentId) {
 
 // Function to send appointment reminder
 function sendAppointmentReminder(appointmentId) {
-    fetch('send_appointment_reminder.php', {
+    fetch('../actions/send_appointment_reminder.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -803,7 +803,7 @@ function setupExportButton() {
             const urlParams = new URLSearchParams(window.location.search);
 
             // Redirect to export script with filters
-            window.location.href = `export_appointments.php?${urlParams.toString()}`;
+            window.location.href = `../actions/export_appointments.php?${urlParams.toString()}`;
         });
     }
 }
