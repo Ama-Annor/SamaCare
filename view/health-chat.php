@@ -530,7 +530,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         }
     }
 }
-
+// Function to show typing indicator
         function showTypingIndicator() {
             const chatContainer = document.getElementById("chat-container");
             const typingIndicator = document.createElement("div");
