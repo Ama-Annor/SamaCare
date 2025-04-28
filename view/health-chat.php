@@ -228,31 +228,31 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             <nav class="sidebar-nav">
                 <ul>
                     <li>
-                        <a href="dashboard.html">
+                        <a href="dashboard.php">
                             <i class='bx bx-home-alt'></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="medical_records.html">
+                        <a href="medical_records.php">
                             <i class='bx bx-folder'></i>
                             <span>Medical Records</span>
                         </a>
                     </li>
                     <li>
-                        <a href="appointments.html">
+                        <a href="appointments.php">
                             <i class='bx bx-calendar'></i>
                             <span>Appointments</span>
                         </a>
                     </li>
                     <li>
-                        <a href="health_tracking.html">
+                        <a href="health_tracking.php">
                             <i class='bx bx-line-chart'></i>
                             <span>Health Tracking</span>
                         </a>
                     </li>
                     <li class="active">
-                        <a href="health-chat.html">
+                        <a href="health-chat.php">
                             <i class='bx bx-chat'></i>
                             <span>Health Assistant</span>
                         </a>
