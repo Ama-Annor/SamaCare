@@ -374,7 +374,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         let currentSymptoms = [];
         let currentQuestion = null;
         let chatHistory = [];
-        let askedSymptoms = []; // Keep track of symptoms we've already asked about
+        let askedSymptoms = []; // Keep track of symptoms we've already asked about so we dont repaeta
 
         // Format current time for message timestamp
         function getTimeString() {
