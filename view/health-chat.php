@@ -475,21 +475,13 @@ try {
                     <i class='bx bx-x'></i>
                 </button>
             </div>
-
+            
             <div class="user-profile">
                 <div class="user-avatar">
-        <span><?=
-            strtoupper(
-                substr($patientData['first_name'] ?? '', 0, 1) .
-                substr($patientData['last_name'] ?? '', 0, 1)
-            )
-            ?></span>
+                    <span>AA</span>
                 </div>
                 <div class="user-info">
-                    <h4><?= htmlspecialchars(
-                            ($patientData['first_name'] ?? '') . ' ' .
-                            ($patientData['last_name'] ?? '')
-                        ) ?></h4>
+                    <h4>Adwoa Afari</h4>
                     <p>Patient</p>
                 </div>
             </div>
@@ -497,31 +489,31 @@ try {
             <nav class="sidebar-nav">
                 <ul>
                     <li>
-                        <a href="dashboard.php">
+                        <a href="dashboard.html">
                             <i class='bx bx-home-alt'></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="medical_records.php">
+                        <a href="medical_records.html">
                             <i class='bx bx-folder'></i>
                             <span>Medical Records</span>
                         </a>
                     </li>
                     <li>
-                        <a href="appointments.php">
+                        <a href="appointments.html">
                             <i class='bx bx-calendar'></i>
                             <span>Appointments</span>
                         </a>
                     </li>
                     <li>
-                        <a href="health_tracking.php">
+                        <a href="health_tracking.html">
                             <i class='bx bx-line-chart'></i>
                             <span>Health Tracking</span>
                         </a>
                     </li>
                     <li class="active">
-                        <a href="health-chat.php">
+                        <a href="health-chat.html">
                             <i class='bx bx-chat'></i>
                             <span>Health Assistant</span>
                         </a>
@@ -564,17 +556,9 @@ try {
                         <div class="user-dropdown">
                             <button class="user-btn">
                                 <div class="user-avatar small">
-            <span><?=
-                strtoupper(
-                    substr($patientData['first_name'] ?? '', 0, 1) .
-                    substr($patientData['last_name'] ?? '', 0, 1)
-                )
-                ?></span>
+                                    <span>AA</span>
                                 </div>
-                                <span class="user-name"><?= htmlspecialchars(
-                                        ($patientData['first_name'] ?? '') . ' ' .
-                                        ($patientData['last_name'] ?? '')
-                                    ) ?></span>
+                                <span class="user-name">Adwoa Afari</span>
                                 <i class='bx bx-chevron-down'></i>
                             </button>
                         </div>
@@ -651,19 +635,20 @@ try {
         let currentSymptoms = [];
         let currentQuestion = null;
         let chatHistory = [];
-        
+        let askedSymptoms = []; // Keep track of symptoms we've already asked about
+
         // Format current time for message timestamp
         function getTimeString() {
             const now = new Date();
             return now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
+                now.getMinutes().toString().padStart(2, '0');
         }
-        
+
         // Start the conversation
         window.onload = function() {
             addBotMessage("Welcome to SamaCare Symptom Checker! What's your most noticeable symptom?");
         };
-        
+
         function addBotMessage(message) {
             const chatContainer = document.getElementById("chat-container");
             const msgElement = document.createElement("div");
@@ -682,7 +667,7 @@ try {
             chatContainer.appendChild(msgElement);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-        
+
         function addUserMessage(message) {
             const chatContainer = document.getElementById("chat-container");
             const msgElement = document.createElement("div");
@@ -701,57 +686,112 @@ try {
             chatContainer.appendChild(msgElement);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-        
+
         async function sendResponse() {
-            const userInput = document.getElementById("user-input").value.trim();
-            if (!userInput) return;
+    const userInput = document.getElementById("user-input").value.trim();
+    if (!userInput) return;
+    
+    addUserMessage(userInput);
+    document.getElementById("user-input").value = "";
+    
+    if (!currentQuestion) {
+        // First symptom input - send to new endpoint
+        showTypingIndicator();
+        try {
+            const response = await fetch(`${API_URL}/process-symptom`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'initial',
+                    current_symptoms: currentSymptoms,
+                    input_symptom: userInput
+                }),
+            });
             
-            addUserMessage(userInput);
-            document.getElementById("user-input").value = "";
+            const data = await response.json();
+            hideTypingIndicator();
             
-            if (!currentQuestion) {
-                // First symptom input
-                const capitalizedInput = userInput.charAt(0).toUpperCase() + userInput.slice(1);
-                currentSymptoms.push(capitalizedInput);
-                // Show typing indicator
-                showTypingIndicator();
-                setTimeout(() => {
-                    hideTypingIndicator();
-                    processSymptoms();
-                }, 1000);
+            if (data.valid_symptom) {
+                currentQuestion = data.symptom;
+                
+                addBotMessage(data.message);
+            } else if (data.status === 'partial_match') {
+                addBotMessage(data.message + " (Type yes to confirm, or try another symptom)");
+                // You could enhance this by handling the suggestions
             } else {
-                // Responding to a symptom question
-                if (userInput.toLowerCase() === "yes") {
-                    currentSymptoms.push(currentQuestion);
-                    showTypingIndicator();
-                    setTimeout(() => {
-                        hideTypingIndicator();
-                        addBotMessage(`✓ Added ${currentQuestion}`);
-                        processSymptoms();
-                    }, 800);
-                } else if (userInput.toLowerCase() === "no") {
-                    showTypingIndicator();
-                    setTimeout(() => {
-                        hideTypingIndicator();
-                        addBotMessage(`Okay, noted that you don't have ${currentQuestion}.`);
-                        getNextSymptom();
-                    }, 800);
-                } else if (userInput.toLowerCase() === "stop") {
-                    showTypingIndicator();
-                    setTimeout(() => {
-                        hideTypingIndicator();
-                        finishDiagnosis();
-                    }, 800);
-                } else {
-                    showTypingIndicator();
-                    setTimeout(() => {
-                        hideTypingIndicator();
-                        addBotMessage("Please answer with yes, no, or stop.");
-                    }, 500);
-                }
+                addBotMessage(data.message);
             }
+        } catch (error) {
+            console.error('Error:', error);
+            hideTypingIndicator();
+            addBotMessage("Sorry, there was an error processing your symptom. Please try again.");
         }
-        
+    } else {
+        // Responding to a symptom question
+        showTypingIndicator();
+        try {
+            const response = await fetch(`${API_URL}/process-symptom`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'response',
+                    current_symptoms: currentSymptoms,
+                    response: userInput.toLowerCase(),
+                    current_question: currentQuestion,
+                    asked_symptoms: askedSymptoms
+                }),
+            });
+            
+            const data = await response.json();
+            hideTypingIndicator();
+            
+            if (data.status === 'error') {
+                addBotMessage(data.message);
+                return;
+            }
+            
+            // First, add the acknowledgment message based on user's response
+            if (userInput.toLowerCase() === 'yes') {
+                addBotMessage(`✓ Added ${currentQuestion}`);
+            } else if (userInput.toLowerCase() === 'no') {
+                addBotMessage(`Okay, noted that you don't have ${currentQuestion}.`);
+            }
+            
+            // Small delay before showing the next message
+            setTimeout(() => {
+                // Update our local state
+                currentSymptoms = data.current_symptoms || currentSymptoms;
+                askedSymptoms = data.asked_symptoms || askedSymptoms;
+                
+                // Update predictions if available
+                if (data.predictions) {
+                    updatePredictions(data.predictions);
+                }
+                
+                // Add response message after a short delay
+                addBotMessage(data.message);
+                
+                // Handle next step based on status
+                if (data.status === 'continue') {
+                    currentQuestion = data.next_symptom;
+                } else if (data.status === 'complete') {
+                    currentQuestion = null;
+                    addBotMessage("Based on your symptoms, I've listed the possible conditions below. Please consult with a healthcare professional for accurate diagnosis and treatment.");
+                }
+            }, 700); // 700ms delay for better conversation flow
+            
+        } catch (error) {
+            console.error('Error:', error);
+            hideTypingIndicator();
+            addBotMessage("Sorry, there was an error processing your response. Please try again.");
+        }
+    }
+}
+
         function showTypingIndicator() {
             const chatContainer = document.getElementById("chat-container");
             const typingIndicator = document.createElement("div");
@@ -761,70 +801,14 @@ try {
             chatContainer.appendChild(typingIndicator);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-        
+
         function hideTypingIndicator() {
             const typingIndicator = document.getElementById("typing-indicator");
             if (typingIndicator) {
                 typingIndicator.remove();
             }
         }
-        
-        async function processSymptoms() {
-            // Get predictions based on current symptoms
-            try {
-                const response = await fetch(`${API_URL}/predict`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        symptoms: currentSymptoms,
-                        top_n: 5
-                    }),
-                });
-                
-                const data = await response.json();
-                updatePredictions(data.predictions);
-                
-                // Check if we have high confidence
-                if (data.predictions.length > 0 && data.predictions[0].probability > 0.9) {
-                    addBotMessage("High confidence diagnosis reached!");
-                    finishDiagnosis();
-                } else {
-                    getNextSymptom();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                addBotMessage("Sorry, there was an error processing your symptoms. Please try again later.");
-            }
-        }
-        
-        async function getNextSymptom() {
-            try {
-                const response = await fetch(`${API_URL}/next-symptom`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        current_symptoms: currentSymptoms
-                    }),
-                });
-                
-                const data = await response.json();
-                if (data.next_symptom) {
-                    currentQuestion = data.next_symptom;
-                    addBotMessage(`Do you have ${currentQuestion}? (yes/no/stop)`);
-                } else {
-                    addBotMessage("No more relevant symptoms to check.");
-                    finishDiagnosis();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                addBotMessage("Sorry, there was an error getting the next question.");
-            }
-        }
-        
+
         function updatePredictions(predictions) {
             const predictionsList = document.getElementById("predictions-list");
             predictionsList.innerHTML = "";
@@ -860,12 +844,7 @@ try {
                 predictionsList.appendChild(li);
             });
         }
-        
-        function finishDiagnosis() {
-            addBotMessage("Based on your symptoms, I've listed the possible conditions below. Please consult with a healthcare professional for accurate diagnosis and treatment.");
-            currentQuestion = null;
-        }
-        
+
         // Add event listener for Enter key
         document.getElementById("user-input").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -873,12 +852,12 @@ try {
                 sendResponse();
             }
         });
-        
+
         // Mobile sidebar toggle
         document.querySelector('.menu-toggle').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.add('active');
         });
-        
+
         document.querySelector('.close-sidebar').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.remove('active');
         });
