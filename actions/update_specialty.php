@@ -1,17 +1,19 @@
 <?php
 // Start session
 session_start();
+// Database connection
+require_once '../db/db_connect.php';
 
 // Check if user has right access
 if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 3) {
     // Take user back to login
-    header('Location: ../login.php');
+    header('Location: ../view/login.php');
     exit();
 }
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../doctors/doctor_dashboard.php');
+    header('Location: ../view/doctor_dashboard.php');
     exit();
 }
 
@@ -22,8 +24,7 @@ if (!isset($_POST['specialty_id']) || empty($_POST['specialty_id'])) {
     exit();
 }
 
-// Database connection
-require_once '../db/db_connect.php';
+
 
 // Get doctor_id and specialty_id
 $doctor_id = $_POST['doctor_id'];
@@ -40,7 +41,7 @@ $result = $stmt->get_result();
 if ($result->num_rows === 0) {
     // Doctor ID doesn't match this user
     $_SESSION['error'] = "Unauthorized access.";
-    header('Location: ../doctors/doctor_dashboard.php');
+    header('Location: ../view/doctor_dashboard.php');
     exit();
 }
 
@@ -60,6 +61,6 @@ $stmt->close();
 $conn->close();
 
 // Redirect back to dashboard
-header('Location: ../doctors/doctor_dashboard.php');
+header('Location: ../view/doctor_dashboard.php');
 exit();
 ?>
