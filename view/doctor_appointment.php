@@ -4,7 +4,7 @@ session_start();
 
 // Check if doctor is logged in, redirect to login page if not
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 3) {
-    header('Location: ../login.php');
+    header('Location: login.php');
     exit();
 }
 

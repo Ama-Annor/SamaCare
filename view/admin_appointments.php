@@ -12,7 +12,7 @@ require_once('../db/db_connect.php');
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 1) {
     // Redirect to login page if not logged in or not an admin
-    header('Location: ../login.php?redirect=admin');
+    header('Location: login.php');
     exit();
 }
 
