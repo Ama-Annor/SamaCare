@@ -260,10 +260,7 @@ if ($adminResult && $adminRow = mysqli_fetch_assoc($adminResult)) {
             <section class="action-bar">
                 <div class="action-filters">
                     <div class="action-left">
-                        <button class="btn primary-btn" id="add-appointment-btn">
-                            <i class='bx bx-plus'></i>
-                            <span>Schedule Appointment</span>
-                        </button>
+
 
                         <form id="filter-form" method="GET" action="">
                             <div class="filter-dropdown">
