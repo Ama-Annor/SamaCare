@@ -7,6 +7,25 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("Location: login.php");
     exit;
 }
+
+// Initialize variables
+$patientData = [];
+
+try {
+    // Fetch patient details
+    $stmt = $conn->prepare("
+            SELECT u.*, p.patient_id, p.gender, p.blood_type
+            FROM users u
+            LEFT JOIN patients p ON u.user_id = p.user_id
+            WHERE u.user_id = ?
+        ");
+    $stmt->bind_param("i", $_SESSION["user_id"]);
+    $stmt->execute();
+    $patientData = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+} catch (Exception $e) {
+    error_log("Dashboard error: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -217,10 +236,18 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             
             <div class="user-profile">
                 <div class="user-avatar">
-                    <span>AA</span>
+                    <span><?=
+                        strtoupper(
+                            substr($patientData['first_name'] ?? '', 0, 1) .
+                            substr($patientData['last_name'] ?? '', 0, 1)
+                        )
+                        ?></span>
                 </div>
                 <div class="user-info">
-                    <h4>Adwoa Afari</h4>
+                    <h4><?= htmlspecialchars(
+                            ($patientData['first_name'] ?? '') . ' ' .
+                            ($patientData['last_name'] ?? '')
+                        ) ?></h4>
                     <p>Patient</p>
                 </div>
             </div>
@@ -261,10 +288,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             </nav>
             
             <div class="sidebar-footer">
-                <a href="#" class="help-link">
-                    <i class='bx bx-help-circle'></i>
-                    <span>Help & Support</span>
-                </a>
                 <a href="../index.html" class="logout-link">
                     <i class='bx bx-log-out'></i>
                     <span>Log Out</span>
@@ -295,9 +318,17 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         <div class="user-dropdown">
                             <button class="user-btn">
                                 <div class="user-avatar small">
-                                    <span>AA</span>
+                                    <span><?=
+                                        strtoupper(
+                                            substr($patientData['first_name'] ?? '', 0, 1) .
+                                            substr($patientData['last_name'] ?? '', 0, 1)
+                                        )
+                                        ?></span>
                                 </div>
-                                <span class="user-name">Adwoa Afari</span>
+                                <span class="user-name"><?= htmlspecialchars(
+                                        ($patientData['first_name'] ?? '') . ' ' .
+                                        ($patientData['last_name'] ?? '')
+                                    ) ?></span>
                                 <i class='bx bx-chevron-down'></i>
                             </button>
                         </div>
