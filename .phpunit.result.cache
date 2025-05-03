@@ -1,0 +1,1 @@
+{"version":1,"defects":{"FunctionsTest::testIsValidTime":3},"times":{"FunctionsTest::testSanitizeInput":0.008,"FunctionsTest::testIsValidDate":0.001,"FunctionsTest::testIsValidTime":0,"FunctionsTest::testFormatDate":0,"FunctionsTest::testFormatTime":0,"FunctionsTest::testGenerateRandomString":0,"FunctionsTest::testStringContains":0,"FunctionsTest::testGetPaginationInfo":0}}
