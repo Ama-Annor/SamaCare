@@ -9,40 +9,68 @@ document.addEventListener('DOMContentLoaded', function() {
     setupDropdowns();
 });
 
+
 // Function to initialize appointments management features
 function initAppointmentsManagement() {
+    // Check if we're on the appointments page
+    const appointmentsContainer = document.querySelector('.appointments-section');
+    if (!appointmentsContainer) {
+        console.log('Not on appointments page, skipping initialization');
+        return;
+    }
+
     // View toggle (list/calendar)
     setupViewToggle();
 
     // Calendar day selection
-    setupCalendarDaySelection();
+    if (document.querySelector('.calendar-day')) {
+        setupCalendarDaySelection();
+    }
 
     // Calendar navigation
-    setupCalendarNavigation();
+    if (document.getElementById('prev-month') && document.getElementById('next-month')) {
+        setupCalendarNavigation();
+    }
 
-    // Calendar view options (month/week/day)
-    setupCalendarViewOptions();
+    // Calendar view options
+    if (document.querySelector('.calendar-view-btn')) {
+        setupCalendarViewOptions();
+    }
 
     // Pagination
-    setupPagination();
+    if (document.querySelector('.pagination')) {
+        setupPagination();
+    }
 
     // Search functionality
-    setupSearchFilter();
+    if (document.getElementById('appointment-search')) {
+        setupSearchFilter();
+    }
 
     // Action buttons
-    setupActionButtons();
+    if (document.querySelector('.action-buttons')) {
+        setupActionButtons();
+    }
 
     // Details modal
-    setupDetailsModal();
+    if (document.getElementById('appointment-details-modal')) {
+        setupDetailsModal();
+    }
 
     // Edit/Create modal
-    setupEditModal();
+    if (document.getElementById('appointment-edit-modal')) {
+        setupEditModal();
+    }
 
     // Context menu
-    setupContextMenu();
+    if (document.getElementById('appointment-actions-menu')) {
+        setupContextMenu();
+    }
 
     // Export button
-    setupExportButton();
+    if (document.getElementById('export-appointments')) {
+        setupExportButton();
+    }
 }
 
 // Function to setup view toggle (list/calendar)
@@ -632,15 +660,22 @@ function setupEditModal() {
     }
 }
 
-// Function to setup context menu
+// Function to setup context menu for appointment actions
 function setupContextMenu() {
     const contextMenu = document.getElementById('appointment-actions-menu');
-    const menuItems = contextMenu ? contextMenu.querySelectorAll('li') : [];
+    if (!contextMenu) return;
+
+    const menuItems = contextMenu.querySelectorAll('li');
+    let activeContextMenu = null;
 
     // Close context menu when clicking outside
-    document.addEventListener('click', function() {
-        if (contextMenu) {
-            contextMenu.classList.remove('show');
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#appointment-actions-menu') && 
+            !e.target.closest('.more-options')) {
+            if (contextMenu) {
+                contextMenu.classList.remove('show');
+                activeContextMenu = null;
+            }
         }
     });
 
@@ -650,43 +685,65 @@ function setupContextMenu() {
             const action = this.getAttribute('data-action');
             const appointmentId = contextMenu.dataset.appointmentId || '';
 
+            if (!appointmentId) return;
+
             // Handle different actions
             switch (action) {
                 case 'view':
-                    // Trigger the view button click for this appointment
                     const viewBtn = document.querySelector(`.view-appointment[data-id="${appointmentId}"]`);
-                    if (viewBtn) {
-                        viewBtn.click();
-                    }
+                    if (viewBtn) viewBtn.click();
                     break;
 
                 case 'edit':
-                    // Trigger the edit button click for this appointment
                     const editBtn = document.querySelector(`.edit-appointment[data-id="${appointmentId}"]`);
-                    if (editBtn) {
-                        editBtn.click();
-                    }
+                    if (editBtn) editBtn.click();
                     break;
 
                 case 'complete':
                 case 'cancel':
-                    // Update appointment status
                     updateAppointmentStatus(appointmentId, action);
                     break;
 
                 case 'reschedule':
-                    // Open edit modal in reschedule mode
                     openRescheduleModal(appointmentId);
                     break;
 
                 case 'reminder':
-                    // Send reminder to patient
                     sendAppointmentReminder(appointmentId);
                     break;
             }
 
-            // Close context menu
+            // Close context menu after action
             contextMenu.classList.remove('show');
+            activeContextMenu = null;
+        });
+    });
+
+    // Show context menu on more-options click
+    document.querySelectorAll('.more-options').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const appointmentId = this.dataset.id;
+            if (!appointmentId) return;
+
+            // Toggle menu if clicking the same button
+            if (activeContextMenu === this) {
+                contextMenu.classList.remove('show');
+                activeContextMenu = null;
+                return;
+            }
+
+            // Position the menu
+            const rect = this.getBoundingClientRect();
+            contextMenu.style.top = `${rect.bottom + window.scrollY}px`;
+            contextMenu.style.left = `${rect.left + window.scrollX - 100}px`;
+
+            // Set data and show menu
+            contextMenu.dataset.appointmentId = appointmentId;
+            contextMenu.classList.add('show');
+            activeContextMenu = this;
         });
     });
 }

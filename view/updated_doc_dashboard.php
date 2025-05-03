@@ -194,7 +194,7 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
             justify-content: center;
             z-index: 1000;
         }
-
+        
         .modal {
             background-color: white;
             border-radius: 8px;
@@ -203,31 +203,31 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
             padding: 2rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-
+        
         .modal-header {
             margin-bottom: 1.5rem;
         }
-
+        
         .modal-header h2 {
             margin: 0;
             color: #333;
             font-size: 1.5rem;
         }
-
+        
         .modal-content {
             margin-bottom: 1.5rem;
         }
-
+        
         .form-group {
             margin-bottom: 1rem;
         }
-
+        
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
-
+        
         .form-group select {
             width: 100%;
             padding: 0.75rem;
@@ -235,12 +235,12 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
             border-radius: 4px;
             font-size: 1rem;
         }
-
+        
         .modal-footer {
             display: flex;
             justify-content: flex-end;
         }
-
+        
         .btn {
             padding: 0.7rem 1.5rem;
             border-radius: 4px;
@@ -252,16 +252,16 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
             gap: 0.5rem;
             transition: background-color 0.3s;
         }
-
+        
         .primary-btn {
             background-color: #4361ee;
             color: white;
         }
-
+        
         .primary-btn:hover {
             background-color: #3a56d4;
         }
-
+        
         .btn[disabled] {
             opacity: 0.6;
             cursor: not-allowed;
@@ -479,37 +479,37 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
             </div>
         </footer>
     </main>
-
+    
     <!-- Specialty Modal -->
     <?php if (!$has_specialty): ?>
-        <div class="modal-overlay" id="specialtyModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2>Set Your Medical Specialty</h2>
-                </div>
-                <div class="modal-content">
-                    <p>Please select your medical specialty to complete your profile. This helps us tailor your experience and connect you with appropriate patients.</p>
-                    <form id="specialtyForm" action="../actions/update_specialty.php" method="POST">
-                        <input type="hidden" name="doctor_id" value="<?php echo $doctor_id; ?>">
-                        <div class="form-group">
-                            <label for="specialty">Select Specialty:</label>
-                            <select name="specialty_id" id="specialty" required>
-                                <option value="">-- Select Specialty --</option>
-                                <?php foreach($specialties as $specialty): ?>
-                                    <option value="<?php echo $specialty['specialty_id']; ?>"><?php echo $specialty['name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn primary-btn" id="saveSpecialty">
-                                <i class='bx bx-check'></i>
-                                Save Specialty
-                            </button>
-                        </div>
-                    </form>
-                </div>
+    <div class="modal-overlay" id="specialtyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Set Your Medical Specialty</h2>
+            </div>
+            <div class="modal-content">
+                <p>Please select your medical specialty to complete your profile. This helps us tailor your experience and connect you with appropriate patients.</p>
+                <form id="specialtyForm" action="../actions/update_specialty.php" method="POST">
+                    <input type="hidden" name="doctor_id" value="<?php echo $doctor_id; ?>">
+                    <div class="form-group">
+                        <label for="specialty">Select Specialty:</label>
+                        <select name="specialty_id" id="specialty" required>
+                            <option value="">-- Select Specialty --</option>
+                            <?php foreach($specialties as $specialty): ?>
+                                <option value="<?php echo $specialty['specialty_id']; ?>"><?php echo $specialty['name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn primary-btn" id="saveSpecialty">
+                            <i class='bx bx-check'></i>
+                            Save Specialty
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
     <?php endif; ?>
 </div>
 
@@ -521,7 +521,7 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
         const specialtyForm = document.getElementById('specialtyForm');
         const specialtySelect = document.getElementById('specialty');
         const saveButton = document.getElementById('saveSpecialty');
-
+        
         // Function to validate and enable/disable save button
         function validateSpecialty() {
             if (specialtySelect && specialtySelect.value) {
@@ -530,15 +530,15 @@ $initials = substr($doctor['first_name'], 0, 1) . substr($doctor['last_name'], 0
                 saveButton.setAttribute('disabled', 'disabled');
             }
         }
-
+        
         // Initialize validation on load
         if (specialtySelect) {
             validateSpecialty();
-
+            
             // Add event listener for select change
             specialtySelect.addEventListener('change', validateSpecialty);
         }
-
+        
         // Prevent closing the modal by clicking outside
         if (specialtyModal) {
             specialtyModal.addEventListener('click', function(e) {

@@ -8,7 +8,7 @@ require_once('../db/db_connect.php');
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 1) {
     // Redirect to login page if not logged in or not an admin
-    header('Location: ../login.php?redirect=admin');
+    header('Location: login.php');
     exit();
 }
 
@@ -156,51 +156,6 @@ function fetchAppointmentDistribution($conn) {
     return $distribution;
 }
 
-// Fetch appointment distribution data for chart
-//function fetchAppointmentDistribution($conn) {
-//    $distribution = [];
-//
-//    // Get appointment counts by service type
-//    $query = "SELECT
-//              s.name AS category,
-//              COUNT(*) AS count
-//              FROM appointments a
-//              JOIN services s ON a.service_id = s.service_id
-//              GROUP BY s.service_id
-//              ORDER BY count DESC
-//              LIMIT 5";
-//
-//    $result = $conn->query($query);
-//
-//    // Define an array of colors to use
-//    $colors = ['#4ade80', '#60a5fa', '#a78bfa', '#f97316', '#f43f5e'];
-//    $colorIndex = 0;
-//
-//    if ($result && $result->num_rows > 0) {
-//        while ($row = $result->fetch_assoc()) {
-//            $distribution[] = [
-//                'category' => $row['category'],
-//                'count' => (int)$row['count'],
-//                'color' => $colors[$colorIndex % count($colors)] // Cycle through colors
-//            ];
-//            $colorIndex++;
-//        }
-//    } else {
-//        // Fall back to sample data if no results
-//        $distribution = [
-//            ['category' => 'General Checkup', 'count' => 45, 'color' => '#4ade80'],
-//            ['category' => 'Specialist Consultation', 'count' => 25, 'color' => '#60a5fa'],
-//            ['category' => 'Dental Care', 'count' => 30, 'color' => '#a78bfa'],
-//            ['category' => 'Laboratory Tests', 'count' => 20, 'color' => '#f97316'],
-//            ['category' => 'Vaccination', 'count' => 15, 'color' => '#f43f5e']
-//        ];
-//    }
-//
-//    return $distribution;
-//}
-
-
-// Fetch recent activities
 // Fetch recent activities
 function fetchRecentActivities($conn) {
     // First try to get activities from the user_activities table

@@ -42,6 +42,7 @@ try {
             JOIN services s ON a.service_id = s.service_id
             JOIN locations l ON a.location_id = l.location_id
             WHERE a.patient_id = ? AND a.appointment_date >= CURDATE()
+            AND a.status = 'confirmed'
             ORDER BY a.appointment_date ASC, a.start_time ASC
             LIMIT 1
         ");

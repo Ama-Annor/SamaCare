@@ -4,7 +4,7 @@ session_start();
 
 // Check if doctor is logged in, redirect to login page if not
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 3) {
-    header('Location: ../login.php');
+    header('Location: login.php');
     exit();
 }
 
@@ -186,6 +186,111 @@ function formatAppointmentTime($time) {
     <link rel="stylesheet" href="../assets/css/admin_appointments.css">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- insert inline css -->
+     <style>
+        /* Appointment Modal Specific Styles */
+        #appointment-edit-modal.modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #appointment-edit-modal.modal.active {
+            display: flex;
+        }
+
+        #appointment-edit-modal .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px; /* Wider for the appointment form */
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            margin: 20px auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transform: translateX(0); /* Ensure modal is not affected by sidebar */
+        }
+
+        #appointment-edit-modal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #appointment-edit-modal .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        #appointment-edit-modal .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* Ensure modal appears above sidebar */
+        .sidebar {
+            z-index: 1000;
+        }
+
+        .main-content {
+            z-index: 1;
+        }
+
+                .context-menu {
+            display: none;
+            position: fixed;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 160px;
+        }
+
+        .context-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .context-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .context-menu li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .context-menu li.text-danger {
+            color: #dc3545;
+        }
+
+        .context-menu li.text-danger:hover {
+            background-color: #fff5f5;
+        }
+
+        .context-menu i {
+            font-size: 1.2em;
+        }
+     </style>
 </head>
 <body>
     <!-- Dashboard Layout -->
@@ -382,8 +487,13 @@ function formatAppointmentTime($time) {
                                             $is_past = $appointment['appointment_date'] < $current_date;
                                             $row_class = $is_past ? 'past-appointment' : '';
                                             $patient_initials = getInitials($appointment['patient_first_name'], $appointment['patient_last_name']);
+                                            $appointment_id = htmlspecialchars($appointment['appointment_id']);
                                     ?>
-                                    <tr class="<?php echo $row_class; ?>" data-appointment-id="<?php echo $appointment['appointment_id']; ?>">
+                                    <tr class="<?php echo $row_class; ?>" 
+                                        data-appointment-id="<?php echo $appointment_id; ?>"
+                                        data-patient-name="<?php echo htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']); ?>"
+                                        data-appointment-date="<?php echo htmlspecialchars($appointment['appointment_date']); ?>"
+                                        data-appointment-status="<?php echo htmlspecialchars($appointment['status']); ?>">
                                         <td>
                                             <div class="date-time">
                                                 <div class="date"><?php echo formatAppointmentDate($appointment['appointment_date']); ?></div>
@@ -401,13 +511,22 @@ function formatAppointmentTime($time) {
                                         <td><span class="status-badge <?php echo $appointment['status']; ?>"><?php echo ucfirst($appointment['status']); ?></span></td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn icon-btn sm view-appointment" title="View Details" data-id="<?php echo $appointment['appointment_id']; ?>">
+                                                <button class="btn icon-btn sm view-appointment" 
+                                                        title="View Details" 
+                                                        data-id="<?php echo $appointment_id; ?>"
+                                                        onclick="viewAppointmentDetails('<?php echo $appointment_id; ?>')">
                                                     <i class='bx bx-show'></i>
                                                 </button>
-                                                <button class="btn icon-btn sm edit-appointment" title="Edit" data-id="<?php echo $appointment['appointment_id']; ?>">
+                                                <button class="btn icon-btn sm edit-appointment" 
+                                                        title="Edit" 
+                                                        data-id="<?php echo $appointment_id; ?>"
+                                                        onclick="editAppointment('<?php echo $appointment_id; ?>')">
                                                     <i class='bx bx-edit'></i>
                                                 </button>
-                                                <button class="btn icon-btn sm more-options" title="More Options" data-id="<?php echo $appointment['appointment_id']; ?>">
+                                                <button class="btn icon-btn sm more-options" 
+                                                        title="More Options" 
+                                                        data-id="<?php echo $appointment_id; ?>"
+                                                        data-status="<?php echo htmlspecialchars($appointment['status']); ?>">
                                                     <i class='bx bx-dots-vertical-rounded'></i>
                                                 </button>
                                             </div>
@@ -593,22 +712,62 @@ function formatAppointmentTime($time) {
             <!-- Appointment Actions Context Menu -->
             <div class="context-menu" id="appointment-actions-menu">
                 <ul>
-                    <li data-action="view"><i class='bx bx-show'></i> View Details</li>
-                    <li data-action="edit"><i class='bx bx-edit'></i> Edit Appointment</li>
-                    <li data-action="complete"><i class='bx bx-check-circle'></i> Mark as Completed</li>
-                    <li data-action="reschedule"><i class='bx bx-calendar-edit'></i> Reschedule</li>
-                    <li data-action="reminder"><i class='bx bx-bell'></i> Send Reminder</li>
-                    <li class="with-divider danger" data-action="cancel"><i class='bx bx-x-circle'></i> Cancel Appointment</li>
+                <li data-action="reschedule"><i class='bx bx-calendar'></i> Reschedule</li>
+                <li data-action="cancel"><i class='bx bx-x-circle'></i> Cancel</li>
+                <li data-action="delete" class="text-danger"><i class='bx bx-trash'></i> Delete</li>
                 </ul>
             </div>
+
+            <!-- Add this before the closing </main> tag -->
+        <!-- View Appointment Modal -->
+        <div class="modal" id="appointment-view-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Appointment Details</h2>
+                    <button type="button" class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="appointment-details">
+                        <div class="detail-group">
+                            <label>Patient:</label>
+                            <span id="view-patient-name"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Service:</label>
+                            <span id="view-service"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Date:</label>
+                            <span id="view-date"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Time:</label>
+                            <span id="view-time"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Location:</label>
+                            <span id="view-location"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Status:</label>
+                            <span id="view-status"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Notes:</label>
+                            <p id="view-notes"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </main>
     </div>
     
-    <script src="../assets/js/doctors_appointment.js"></script>
-    <script src="../assets/js/admin_appointments.js"></script>
     <script src="../assets/js/dashboard.js"></script>
-    <script src="../assets/js/admin_dashboard.js"></script>
+    <script src="../assets/js/doctor_appointment.js"></script>
+    <!-- <script src="../assets/js/admin_appointments.js"></script>
     <script src="../assets/js/admin_users.js"></script>
+    <script src="../assets/js/admin_dashboard.js"></script> -->
 </body>
 </html>
 
