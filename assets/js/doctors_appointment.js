@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
         openModal(appointmentDetailsModal);
         
         // Fetch appointment details via AJAX
-        fetch(`../api/get_appointment.php?id=${appointmentId}`)
+        fetch(`../../actions/get_appointment_data.php?id=${appointmentId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -338,72 +338,109 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to open edit modal with existing appointment data
     function editAppointment(appointmentId) {
         // Close details modal if open
-        closeModal(appointmentDetailsModal);
-        
+        const detailsModal = document.getElementById('appointment-details-modal');
+        if (detailsModal) {
+            closeModal(detailsModal);
+        }
+    
         // Reset form
-        appointmentForm.reset();
-        
+        const appointmentForm = document.getElementById('appointment-form');
+        if (appointmentForm) {
+            appointmentForm.reset();
+        }
+    
         // Set form title
-        document.getElementById('appointment-modal-title').textContent = appointmentId ? 'Edit Appointment' : 'Schedule Appointment';
-        
+        const modalTitle = document.getElementById('appointment-modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = appointmentId ? 'Edit Appointment' : 'Schedule Appointment';
+        }
+    
         if (appointmentId) {
-            // Fetch appointment data
-            fetch(`../api/get_appointment.php?id=${appointmentId}`)
-                .then(response => response.json())
+            // Show loading state
+            const form = document.getElementById('appointment-form');
+            if (form) {
+                form.classList.add('loading');
+            }
+    
+            // Fetch appointment data with correct path
+            fetch(`../../actions/get_appointment_data.php?id=${appointmentId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text().then(text => {
+                        try {
+                            return JSON.parse(text);
+                        } catch (err) {
+                            console.error('Raw response:', text);
+                            throw new Error('Invalid JSON response');
+                        }
+                    });
+                })
                 .then(data => {
                     if (data.error) {
-                        alert('Error: ' + data.error);
-                        return;
+                        throw new Error(data.error);
                     }
                     
                     const appointment = data.appointment;
                     
-                    // Populate form fields
-                    document.getElementById('appointment_id').value = appointment.appointment_id;
-                    document.getElementById('patient_id').value = appointment.patient_id;
-                    document.getElementById('service_id').value = appointment.service_id;
-                    document.getElementById('location_id').value = appointment.location_id;
-                    document.getElementById('appointment_date').value = appointment.appointment_date;
-                    document.getElementById('start_time').value = appointment.start_time;
-                    document.getElementById('end_time').value = appointment.end_time;
-                    document.getElementById('status').value = appointment.status;
-                    document.getElementById('notes').value = appointment.notes || '';
+                    // Populate form fields with null checks
+                    const fields = {
+                        'appointment_id': appointment.appointment_id,
+                        'patient_id': appointment.patient_id,
+                        'service_id': appointment.service_id,
+                        'location_id': appointment.location_id,
+                        'appointment_date': appointment.appointment_date,
+                        'start_time': appointment.start_time,
+                        'end_time': appointment.end_time,
+                        'status': appointment.status,
+                        'notes': appointment.notes || ''
+                    };
+    
+                    Object.entries(fields).forEach(([id, value]) => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.value = value;
+                        }
+                    });
                     
                     // Open modal
-                    openModal(appointmentEditModal);
+                    const editModal = document.getElementById('appointment-edit-modal');
+                    if (editModal) {
+                        openModal(editModal);
+                    }
                 })
                 .catch(error => {
-                    console.error('Error fetching appointment data:', error);
-                    alert('An error occurred while loading appointment data. Please try again.');
+                    console.error('Error:', error);
+                    alert('Error loading appointment: ' + error.message);
+                })
+                .finally(() => {
+                    const form = document.getElementById('appointment-form');
+                    if (form) {
+                        form.classList.remove('loading');
+                    }
                 });
         } else {
-            // Clear appointment ID for new appointment
-            document.getElementById('appointment_id').value = '';
+            // Set default values for new appointment
+            const appointmentIdField = document.getElementById('appointment_id');
+            if (appointmentIdField) {
+                appointmentIdField.value = '';
+            }
             
-            // Set default date to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('appointment_date').value = today;
+            const dateField = document.getElementById('appointment_date');
+            if (dateField) {
+                dateField.value = new Date().toISOString().split('T')[0];
+            }
             
             // Open modal
-            openModal(appointmentEditModal);
+            const editModal = document.getElementById('appointment-edit-modal');
+            if (editModal) {
+                openModal(editModal);
+            }
         }
     }
     
-    // Attach event listeners to edit buttons
-    document.querySelectorAll('.edit-appointment').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const appointmentId = this.dataset.id;
-            editAppointment(appointmentId);
-        });
-    });
-    
-    // Add appointment button
-    if (addAppointmentBtn) {
-        addAppointmentBtn.addEventListener('click', () => {
-            editAppointment(null); // null for new appointment
-        });
-    }
-    
+    // No need for event listeners since we're using onclick in HTML
     // Make editAppointment globally accessible
     window.editAppointment = editAppointment;
     
@@ -421,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('status', status);
         formData.append('action', 'update_status');
         
-        fetch('../api/update_appointment_status.php', {
+        fetch('../../actions/get_appointment_data.php', {
             method: 'POST',
             body: formData
         })
@@ -447,109 +484,88 @@ document.addEventListener('DOMContentLoaded', function() {
     // ------------------
     // Context Menu Functions
     // ------------------
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize elements with null checks
+        const actionsMenu = document.getElementById('appointment-actions-menu');
+        let activeButton = null;
     
-    document.querySelectorAll('.more-options').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            // Get appointment ID
-            const appointmentId = this.dataset.id;
-            activeAppointmentId = appointmentId;
-            
-            // Get appointment status from the row
-            const row = this.closest('tr');
-            const statusEl = row.querySelector('.status-badge');
-            const status = statusEl ? statusEl.textContent.toLowerCase() : '';
-            
-            // Show/hide menu items based on status
-            const completeOption = actionsMenu.querySelector('[data-action="complete"]');
-            const cancelOption = actionsMenu.querySelector('[data-action="cancel"]');
-            
-            if (completeOption) {
-                completeOption.style.display = (status === 'completed' || status === 'cancelled') ? 'none' : '';
-            }
-            
-            if (cancelOption) {
-                cancelOption.style.display = (status === 'cancelled' || status === 'completed') ? 'none' : '';
-            }
-            
-            // Position and show menu
-            const rect = this.getBoundingClientRect();
-            actionsMenu.style.top = `${rect.bottom + window.scrollY}px`;
-            actionsMenu.style.left = `${rect.left + window.scrollX - actionsMenu.offsetWidth + rect.width}px`;
-            actionsMenu.classList.add('active');
-            
-            // Handle clicking outside to close menu
-            const closeContextMenu = function(event) {
-                if (!actionsMenu.contains(event.target) && event.target !== btn) {
+        // Context Menu Handler
+        if (actionsMenu) {
+            // Handle more-options button clicks
+            document.querySelectorAll('.more-options').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Get the appointment ID
+                    const appointmentId = this.dataset.id;
+    
+                    // If clicking the same button that's already active, close the menu
+                    if (activeButton === this && actionsMenu.classList.contains('active')) {
+                        actionsMenu.classList.remove('active');
+                        activeButton = null;
+                        return;
+                    }
+    
+                    // Close any previously open menu
+                    if (actionsMenu.classList.contains('active')) {
+                        actionsMenu.classList.remove('active');
+                    }
+    
+                    // Store the active button
+                    activeButton = this;
+    
+                    // Position and show menu
+                    const rect = this.getBoundingClientRect();
+                    actionsMenu.style.top = `${rect.bottom + window.scrollY}px`;
+                    actionsMenu.style.left = `${rect.left + window.scrollX - actionsMenu.offsetWidth + rect.width}px`;
+                    actionsMenu.classList.add('active');
+                    actionsMenu.dataset.appointmentId = appointmentId;
+                });
+            });
+    
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (actionsMenu.classList.contains('active') && 
+                    !actionsMenu.contains(e.target) && 
+                    !e.target.closest('.more-options')) {
                     actionsMenu.classList.remove('active');
-                    document.removeEventListener('click', closeContextMenu);
+                    activeButton = null;
                 }
-            };
-            
-            setTimeout(() => {
-                document.addEventListener('click', closeContextMenu);
-            }, 0);
-        });
+            });
+    
+            // Handle menu item clicks
+            actionsMenu.querySelectorAll('li').forEach(item => {
+                item.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    const appointmentId = actionsMenu.dataset.appointmentId;
+    
+                    // Hide menu first
+                    actionsMenu.classList.remove('active');
+                    activeButton = null;
+    
+                    // Handle the action
+                    switch(action) {
+                        case 'view':
+                            viewAppointmentDetails(appointmentId);
+                            break;
+                        case 'edit':
+                            editAppointment(appointmentId);
+                            break;
+                        case 'complete':
+                            updateAppointmentStatus(appointmentId, 'completed');
+                            break;
+                        case 'cancel':
+                            updateAppointmentStatus(appointmentId, 'cancelled');
+                            break;
+                        case 'reschedule':
+                            editAppointment(appointmentId);
+                            break;
+                    }
+                });
+            });
+        }
     });
-    
-    // Handle context menu actions
-    actionsMenu.querySelectorAll('li').forEach(item => {
-        item.addEventListener('click', function() {
-            const action = this.dataset.action;
-            
-            if (!activeAppointmentId) return;
-            
-            actionsMenu.classList.remove('active');
-            
-            switch(action) {
-                case 'view':
-                    viewAppointmentDetails(activeAppointmentId);
-                    break;
-                case 'edit':
-                    editAppointment(activeAppointmentId);
-                    break;
-                case 'complete':
-                    updateAppointmentStatus(activeAppointmentId, 'completed');
-                    break;
-                case 'cancel':
-                    updateAppointmentStatus(activeAppointmentId, 'cancelled');
-                    break;
-                case 'reschedule':
-                    // First get the appointment data, then open edit modal
-                    editAppointment(activeAppointmentId);
-                    break;
-                case 'reminder':
-                    sendAppointmentReminder(activeAppointmentId);
-                    break;
-            }
-        });
-    });
-    
-    // Function to send reminder
-    function sendAppointmentReminder(appointmentId) {
-        const formData = new FormData();
-        formData.append('appointment_id', appointmentId);
-        formData.append('action', 'send_reminder');
-        
-        fetch('../api/send_appointment_reminder.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert('Error: ' + data.error);
-            } else {
-                alert('Reminder sent successfully!');
-            }
-        })
-        .catch(error => {
-            console.error('Error sending reminder:', error);
-            alert('An error occurred while sending the reminder. Please try again.');
-        });
-    }
-    
     // ------------------
     // Calendar Functions
     // ------------------
@@ -1034,7 +1050,7 @@ document.addEventListener('DOMContentLoaded', function() {
            
            .catch(error => {
                console.error('Error loading daily appointments:', error);
-               dayAppointmentsList.innerHTML = '<div class="error-message">Error loading appointments. Please try again🤣.</div>';
+               dayAppointmentsList.innerHTML = '<div class="error-message">Error loading appointments. Please try again💓.</div>';
             
            });
    }
