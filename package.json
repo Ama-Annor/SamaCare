@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Ama-Annor/SamaCare#readme",
   "description": "",
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }
