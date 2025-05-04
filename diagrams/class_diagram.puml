@@ -1,126 +1,138 @@
 @startuml SamaCare Class Diagram
 
+' Color definitions
+skinparam class {
+    BackgroundColor<<User>> #CCE5FF
+    BackgroundColor<<Medical>> #D8F0D3
+    BackgroundColor<<System>> #FFE6CC
+    BorderColor #555555
+    ArrowColor #555555
+}
+
 ' Classes related to users
-class User {
-  -userId: String
-  -email: String
-  -password: String
-  -firstName: String
-  -lastName: String
-  -phoneNumber: String
-  -dateCreated: Date
-  +login(): boolean
-  +logout(): void
-  +updateProfile(): void
+class User <<User>> {
+    -userId: String
+    -email: String
+    -password: String
+    -firstName: String
+    -lastName: String
+    -phoneNumber: String
+    -dateCreated: Date
+    +login(): boolean
+    +logout(): void
+    +updateProfile(): void
 }
 
-class Patient {
-  -dateOfBirth: Date
-  -gender: String
-  -bloodType: String
-  -allergies: List<String>
-  -emergencyContact: String
-  +viewMedicalRecords(): List<MedicalRecord>
-  +scheduleAppointment(): Appointment
-  +trackHealthMetrics(): List<HealthMetric>
+class Patient <<User>> {
+    -dateOfBirth: Date
+    -gender: String
+    -bloodType: String
+    -allergies: List<String>
+    -emergencyContact: String
+    +viewMedicalRecords(): List<MedicalRecord>
+    +scheduleAppointment(): Appointment
+    +trackHealthMetrics(): List<HealthMetric>
 }
 
-class Doctor {
-  -specialization: String
-  -licenseNumber: String
-  -availability: Schedule
-  +viewPatients(): List<Patient>
-  +updateMedicalRecord(): void
-  +manageAppointments(): void
+class Doctor <<User>> {
+    -specialization: String
+    -licenseNumber: String
+    -availability: Schedule
+    +viewPatients(): List<Patient>
+    +updateMedicalRecord(): void
+    +manageAppointments(): void
 }
 
-class Admin {
-  -adminLevel: String
-  +manageUsers(): void
-  +generateReports(): Report
-  +configureSystems(): void
-  +manageDoctors(): void
-  +manageServices(): void
+class Admin <<User>> {
+    -adminLevel: String
+    +manageUsers(): void
+    +generateReports(): Report
+    +configureSystems(): void
+    +manageDoctors(): void
+    +manageServices(): void
 }
 
 ' Classes related to medical information
-class MedicalRecord {
-  -recordId: String
-  -patientId: String
-  -dateCreated: Date
-  -recordType: String
-  -content: String
-  -provider: String
-  +view(): void
-  +download(): void
-  +share(): void
+class MedicalRecord <<Medical>> {
+    -recordId: String
+    -patientId: String
+    -dateCreated: Date
+    -recordType: String
+    -content: String
+    -provider: String
+    +view(): void
+    +download(): void
+    +share(): void
 }
 
-class Appointment {
-  -appointmentId: String
-  -patientId: String
-  -doctorId: String
-  -appointmentDate: Date
-  -appointmentTime: Time
-  -purpose: String
-  -status: String
-  +schedule(): void
-  +reschedule(): void
-  +cancel(): void
-  +complete(): void
+class Appointment <<Medical>> {
+    -appointmentId: String
+    -patientId: String
+    -doctorId: String
+    -appointmentDate: Date
+    -appointmentTime: Time
+    -purpose: String
+    -status: String
+    +schedule(): void
+    +reschedule(): void
+    +cancel(): void
+    +complete(): void
 }
 
-class HealthMetric {
-  -metricId: String
-  -patientId: String
-  -metricType: String
-  -value: Double
-  -unit: String
-  -dateRecorded: DateTime
-  -notes: String
-  +addReading(): void
-  +trackHistory(): List<HealthMetric>
+class HealthMetric <<Medical>> {
+    -metricId: String
+    -patientId: String
+    -metricType: String
+    -value: Double
+    -unit: String
+    -dateRecorded: DateTime
+    -notes: String
+    +addReading(): void
+    +trackHistory(): List<HealthMetric>
 }
 
-class HealthChatbot {
-  -sessionId: String
-  -userId: String
-  -conversationHistory: List<Message>
-  +analyzeSymptoms(): Assessment
-  +provideGuidance(): Recommendation
-  +storeConversation(): void
+class HealthChatbot <<Medical>> {
+    -sessionId: String
+    -userId: String
+    -conversationHistory: List<Message>
+    +analyzeSymptoms(): Assessment
+    +provideGuidance(): Recommendation
+    +storeConversation(): void
 }
 
 ' Classes related to system features
-class Dashboard {
-  -userId: String
-  +displayUpcomingAppointments(): List<Appointment>
-  +showRecentActivities(): List<Activity>
-  +displayHealthMetrics(): List<HealthMetric>
+class Dashboard <<System>> {
+    -userId: String
+    +displayUpcomingAppointments(): List<Appointment>
+    +showRecentActivities(): List<Activity>
+    +displayHealthMetrics(): List<HealthMetric>
 }
 
-class Notification {
-  -notificationId: String
-  -userId: String
-  -message: String
-  -type: String
-  -dateCreated: DateTime
-  -isRead: Boolean
-  +send(): void
-  +markAsRead(): void
-  +delete(): void
+class Notification <<System>> {
+    -notificationId: String
+    -userId: String
+    -message: String
+    -type: String
+    -dateCreated: DateTime
+    -isRead: Boolean
+    +send(): void
+    +markAsRead(): void
+    +delete(): void
 }
 
-class Report {
-  -reportId: String
-  -reportType: String
-  -generatedBy: String
-  -dateGenerated: DateTime
-  -content: Object
-  +generate(): void
-  +export(): void
-  +share(): void
+class Report <<System>> {
+    -reportId: String
+    -reportType: String
+    -generatedBy: String
+    -dateGenerated: DateTime
+    -content: Object
+    +generate(): void
+    +export(): void
+    +share(): void
 }
+
+' Add a note about key relationships
+note "Key Domain Relationships:\n- Patients schedule appointments with doctors\n- Doctors create and update medical records\n- All users interact with their own dashboards\n- Health metrics are tracked and displayed on dashboards" as N1
 
 ' Relationships
 User <|-- Patient
@@ -137,11 +149,19 @@ Patient "1" -- "1" HealthChatbot : interacts with
 Doctor "many" -- "many" Appointment : manages
 Doctor "1" -- "many" MedicalRecord : creates/updates
 Doctor "1" -- "1" Dashboard : views
+Doctor "1" -- "many" Notification : receives
 
 Admin "1" -- "many" Report : generates
 Admin "1" -- "many" User : manages
 Admin "1" -- "many" Doctor : manages
 
 Appointment "0..1" -- "0..1" MedicalRecord : generates
+Appointment "many" -- "1" Notification : triggers >
 
-@enduml∂
+' Additional relationships
+HealthMetric "many" -- "1" Dashboard : displayed on >
+Notification "many" -- "1" Dashboard : shown on >
+Report "many" -- "1" Admin : viewed by >
+HealthChatbot -- Notification : generates >
+
+@enduml

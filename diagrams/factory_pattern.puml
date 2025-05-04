@@ -1,0 +1,71 @@
+@startuml Factory Pattern in SamaCare
+skinparam backgroundColor #FFFFFF
+skinparam classFontColor #333333
+skinparam classFontSize 14
+skinparam classAttributeFontColor #333333
+skinparam classAttributeFontSize 12
+skinparam classBorderColor #2a9d8f
+skinparam classBackgroundColor #def2f1
+skinparam classArrowColor #264653
+skinparam shadowing false
+skinparam stereotypeCBackgroundColor #e9c46a
+
+title Factory Pattern - Medical Record Creation in SamaCare
+
+interface MedicalRecord {
+  +getRecordId(): String
+  +getPatientId(): String
+  +getContent(): String
+  +view(): void
+  +download(): void
+  +share(): void
+}
+
+class TestResultRecord {
+  -testType: String
+  -testDate: Date
+  -labName: String
+  -results: Map<String, String>
+  +view(): void
+  +download(): void
+  +share(): void
+}
+
+class PrescriptionRecord {
+  -medicationName: String
+  -dosage: String
+  -frequency: String
+  -startDate: Date
+  -endDate: Date
+  +view(): void
+  +download(): void
+  +share(): void
+}
+
+class ConsultationRecord {
+  -doctorId: String
+  -consultationDate: Date
+  -symptoms: List<String>
+  -diagnosis: String
+  -notes: String
+  +view(): void
+  +download(): void
+  +share(): void
+}
+
+class MedicalRecordFactory {
+  +createMedicalRecord(type: String, data: Map<String, Object>): MedicalRecord
+}
+
+MedicalRecord <|.. TestResultRecord
+MedicalRecord <|.. PrescriptionRecord
+MedicalRecord <|.. ConsultationRecord
+MedicalRecordFactory ..> MedicalRecord: <<creates>>
+MedicalRecordFactory ..> TestResultRecord: <<creates>>
+MedicalRecordFactory ..> PrescriptionRecord: <<creates>>
+MedicalRecordFactory ..> ConsultationRecord: <<creates>>
+
+note "Client code requests a record\nwithout knowing concrete type" as N1
+MedicalRecordFactory .. N1
+
+@enduml

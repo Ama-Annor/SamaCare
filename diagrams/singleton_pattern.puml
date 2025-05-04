@@ -1,0 +1,54 @@
+@startuml Singleton Pattern in SamaCare
+skinparam backgroundColor #FFFFFF
+skinparam classFontColor #333333
+skinparam classFontSize 14
+skinparam classAttributeFontColor #333333
+skinparam classAttributeFontSize 12
+skinparam classBorderColor #2a9d8f
+skinparam classBackgroundColor #def2f1
+skinparam classArrowColor #264653
+skinparam shadowing false
+skinparam stereotypeCBackgroundColor #e9c46a
+
+title Singleton Pattern - Database Connection in SamaCare
+
+class DatabaseConnection {
+  -static instance: DatabaseConnection
+  -connection: Connection
+  -connectionProps: Properties
+  -DatabaseConnection()
+  +static getInstance(): DatabaseConnection
+  +executeQuery(query: String): ResultSet
+  +executeUpdate(query: String): int
+  +beginTransaction(): void
+  +commitTransaction(): void
+  +rollbackTransaction(): void
+}
+
+class PatientDAO {
+  -dbConnection: DatabaseConnection
+  +getPatient(id: String): Patient
+  +updatePatient(patient: Patient): void
+}
+
+class AppointmentDAO {
+  -dbConnection: DatabaseConnection
+  +getAppointment(id: String): Appointment
+  +createAppointment(appointment: Appointment): void
+}
+
+class MedicalRecordDAO {
+  -dbConnection: DatabaseConnection
+  +getMedicalRecords(patientId: String): List<MedicalRecord>
+  +addMedicalRecord(record: MedicalRecord): void
+}
+
+DatabaseConnection <-- PatientDAO: uses >
+DatabaseConnection <-- AppointmentDAO: uses >
+DatabaseConnection <-- MedicalRecordDAO: uses >
+DatabaseConnection --> DatabaseConnection: has single instance >
+
+note "Only one database connection\ninstance exists throughout\nthe application lifecycle" as N1
+DatabaseConnection .. N1
+
+@enduml
