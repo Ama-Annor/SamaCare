@@ -13,87 +13,88 @@ document.addEventListener('DOMContentLoaded', function() {
     const appointmentEditModal = document.getElementById('appointment-edit-modal');
     const appointmentForm = document.getElementById('appointment-form');
     const actionsMenu = document.getElementById('appointment-actions-menu');
-    
-    // Calendar elements
-    const calendarContainer = document.getElementById('calendar-container');
-    const currentMonthYearEl = document.getElementById('current-month-year');
-    const prevMonthBtn = document.getElementById('prev-month');
-    const nextMonthBtn = document.getElementById('next-month');
-    const calendarViewBtns = document.querySelectorAll('.calendar-view-btn');
-    const dayAppointmentsList = document.getElementById('day-appointments-list');
-    const selectedDateHeading = document.getElementById('selected-date-heading');
-    
-    // Current view state
-    let currentDate = new Date();
-    let currentView = 'month'; // month, week, day
-    let selectedDate = new Date();
-    let activeAppointmentId = null;
-    
+
+    // Status and service filter elements
+    const statusFilter = document.getElementById('status-filter');
+    const serviceFilter = document.getElementById('service-filter');
+    const dateStart = document.getElementById('date-start');
+    const dateEnd = document.getElementById('date-end');
+
     // ----------------
     // Sidebar Functions
     // ----------------
-    
+
     function toggleSidebar() {
         sidebar.classList.toggle('collapsed');
     }
-    
+
     if (menuToggle) {
         menuToggle.addEventListener('click', toggleSidebar);
     }
-    
+
     if (closeSidebar) {
         closeSidebar.addEventListener('click', toggleSidebar);
     }
-    
+
     // -------------------
     // Filtering Functions
     // -------------------
-    
+
+    // Add change event listeners to filters to apply them immediately
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            applyFilters();
+        });
+    }
+
+    if (serviceFilter) {
+        serviceFilter.addEventListener('change', function() {
+            applyFilters();
+        });
+    }
+
     function applyFilters() {
         const status = document.getElementById('status-filter').value;
         const service = document.getElementById('service-filter').value;
         const dateStart = document.getElementById('date-start').value;
         const dateEnd = document.getElementById('date-end').value;
-        
+
         // Build URL with query parameters
         let url = new URL(window.location.href);
         url.searchParams.set('status', status);
         url.searchParams.set('service', service);
         url.searchParams.set('date_start', dateStart);
         url.searchParams.set('date_end', dateEnd);
-        
-        // Keep the current page if it exists
-        const currentPage = new URLSearchParams(window.location.search).get('page');
-        if (currentPage) {
-            url.searchParams.set('page', currentPage);
-        }
-        
+
+        // Reset to page 1 when filters change
+        url.searchParams.set('page', 1);
+
         // Navigate to filtered URL
         window.location.href = url.toString();
     }
-    
+
     // Make the function globally accessible
     window.applyFilters = applyFilters;
-    
+
     // Pagination function
     function goToPage(page) {
         let url = new URL(window.location.href);
         url.searchParams.set('page', page);
         window.location.href = url.toString();
     }
-    
+
     // Make the function globally accessible
     window.goToPage = goToPage;
-    
+
     // ------------------
     // Search Functionality
     // ------------------
-    
+
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
             const rows = appointmentTable.querySelectorAll('tbody tr');
-            
+
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 if (text.includes(searchTerm)) {
@@ -102,11 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     row.style.display = 'none';
                 }
             });
-            
+
             // Show "no results" message if needed
             const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
             const noDataRow = appointmentTable.querySelector('.no-data');
-            
+
             if (visibleRows.length === 0 && !noDataRow) {
                 const tbody = appointmentTable.querySelector('tbody');
                 const tr = document.createElement('tr');
@@ -124,46 +125,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // ------------------
     // View Toggle Functions
     // ------------------
-    
+
     function toggleView(viewType) {
         viewBtns.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.view === viewType);
         });
-        
+
         viewSections.forEach(section => {
             section.classList.toggle('active', section.id === `${viewType}-view`);
         });
-        
+
         // If switching to calendar view, initialize or refresh the calendar
         if (viewType === 'calendar') {
             initCalendar();
         }
     }
-    
+
     viewBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             toggleView(btn.dataset.view);
         });
     });
-    
+
     // ------------------
     // Modal Functions
     // ------------------
-    
+
     function openModal(modal) {
         modal.classList.add('active');
         document.body.classList.add('modal-open');
     }
-    
+
     function closeModal(modal) {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
     }
-    
+
     // Close modal when clicking on close button or outside
     document.querySelectorAll('.modal-close').forEach(closeBtn => {
         closeBtn.addEventListener('click', function() {
@@ -171,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal(modal);
         });
     });
-    
+
     // Close modal when clicking outside content
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', function(event) {
@@ -180,161 +181,122 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     // ------------------
     // Appointment Details Modal
     // ------------------
-    
+
+    // Function to handle viewing appointment details
     function viewAppointmentDetails(appointmentId) {
-        // Show loading spinner
-        document.getElementById('appointment-details-content').innerHTML = '<div class="loading-spinner">Loading...</div>';
-        
-        // Open modal
-        openModal(appointmentDetailsModal);
-        
-        // Fetch appointment details via AJAX
-        fetch(`../../actions/get_appointment_data.php?id=${appointmentId}`)
-            .then(response => response.json())
+        // Fetch appointment data
+        fetch(`../api/get_appointment_data.php?id=${appointmentId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.error) {
-                    document.getElementById('appointment-details-content').innerHTML = `<div class="error-message">${data.error}</div>`;
+                    alert('Error: ' + data.error);
                     return;
                 }
-                
-                // Format the appointment details
+
                 const appointment = data.appointment;
-                const start = new Date(`${appointment.appointment_date}T${appointment.start_time}`);
-                const end = new Date(`${appointment.appointment_date}T${appointment.end_time}`);
-                const formattedStart = start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const formattedEnd = end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const formattedDate = start.toLocaleDateString([], {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
-                
-                let statusClass = '';
-                switch(appointment.status) {
-                    case 'confirmed': statusClass = 'confirmed'; break;
-                    case 'pending': statusClass = 'pending'; break;
-                    case 'completed': statusClass = 'completed'; break;
-                    case 'cancelled': statusClass = 'cancelled'; break;
+
+                // Populate form fields
+                document.getElementById('view_appointment_id').value = appointment.appointment_id;
+
+                // Set select element values
+                const patientSelect = document.getElementById('view_patient_id');
+                for (let i = 0; i < patientSelect.options.length; i++) {
+                    if (patientSelect.options[i].value == appointment.patient_id) {
+                        patientSelect.options[i].selected = true;
+                        break;
+                    }
                 }
-                
-                // Create HTML for appointment details
-                const detailsHTML = `
-                    <div class="appointment-detail-card">
-                        <div class="appointment-header">
-                            <div class="appointment-date-time">
-                                <h3>${formattedDate}</h3>
-                                <p>${formattedStart} - ${formattedEnd}</p>
-                            </div>
-                            <span class="status-badge ${statusClass}">${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</span>
-                        </div>
-                        
-                        <div class="appointment-section">
-                            <h4><i class='bx bx-user-circle'></i> Patient Information</h4>
-                            <div class="patient-details">
-                                <div class="patient-name">${appointment.patient_first_name} ${appointment.patient_last_name}</div>
-                                <div class="patient-info">
-                                    <p><i class='bx bx-phone'></i> ${appointment.patient_phone || 'No phone number'}</p>
-                                    <p><i class='bx bx-envelope'></i> ${appointment.patient_email || 'No email'}</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="appointment-section">
-                            <h4><i class='bx bx-info-circle'></i> Appointment Details</h4>
-                            <div class="appointment-info">
-                                <div class="info-item">
-                                    <span class="label">Service:</span>
-                                    <span class="value">${appointment.service_name}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Location:</span>
-                                    <span class="value">${appointment.location_name}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Status:</span>
-                                    <span class="value status-text ${statusClass}">${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        ${appointment.notes ? `
-                        <div class="appointment-section">
-                            <h4><i class='bx bx-notepad'></i> Notes</h4>
-                            <div class="appointment-notes">
-                                <p>${appointment.notes}</p>
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="appointment-actions">
-                            <button class="btn secondary-btn edit-btn" onclick="editAppointment(${appointment.appointment_id})">
-                                <i class='bx bx-edit'></i> Edit
-                            </button>
-                            ${appointment.status !== 'completed' ? `
-                            <button class="btn primary-btn complete-btn" onclick="updateAppointmentStatus(${appointment.appointment_id}, 'completed')">
-                                <i class='bx bx-check'></i> Mark as Completed
-                            </button>
-                            ` : ''}
-                            ${appointment.status !== 'cancelled' ? `
-                            <button class="btn danger-btn cancel-btn" onclick="updateAppointmentStatus(${appointment.appointment_id}, 'cancelled')">
-                                <i class='bx bx-x'></i> Cancel Appointment
-                            </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('appointment-details-content').innerHTML = detailsHTML;
+
+                const serviceSelect = document.getElementById('view_service_id');
+                for (let i = 0; i < serviceSelect.options.length; i++) {
+                    if (serviceSelect.options[i].value == appointment.service_id) {
+                        serviceSelect.options[i].selected = true;
+                        break;
+                    }
+                }
+
+                const locationSelect = document.getElementById('view_location_id');
+                for (let i = 0; i < locationSelect.options.length; i++) {
+                    if (locationSelect.options[i].value == appointment.location_id) {
+                        locationSelect.options[i].selected = true;
+                        break;
+                    }
+                }
+
+                const statusSelect = document.getElementById('view_status');
+                for (let i = 0; i < statusSelect.options.length; i++) {
+                    if (statusSelect.options[i].value == appointment.status) {
+                        statusSelect.options[i].selected = true;
+                        break;
+                    }
+                }
+
+                // Set input field values
+                document.getElementById('view_appointment_date').value = appointment.appointment_date;
+                document.getElementById('view_start_time').value = appointment.start_time;
+                document.getElementById('view_end_time').value = appointment.end_time;
+                document.getElementById('view_notes').value = appointment.notes || '';
+
+                // Open modal
+                const detailsModal = document.getElementById('appointment-details-modal');
+                if (detailsModal) {
+                    detailsModal.classList.add('active');
+                    document.body.classList.add('modal-open');
+                }
             })
             .catch(error => {
-                console.error('Error fetching appointment details:', error);
-                document.getElementById('appointment-details-content').innerHTML = '<div class="error-message">Error loading appointment details. Please try again.</div>';
+                console.error('Error fetching appointment data:', error);
+                alert('Error loading appointment details. Please try again.');
             });
     }
-    
-    // Attach event listeners to view buttons
-    document.querySelectorAll('.view-appointment').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const appointmentId = this.dataset.id;
-            viewAppointmentDetails(appointmentId);
-        });
-    });
-    
+
+    // Make the function globally accessible
+    window.viewAppointmentDetails = viewAppointmentDetails;
+
     // ------------------
     // Appointment Edit Modal
     // ------------------
-    
+
     // Function to handle form submission
     if (appointmentForm) {
         appointmentForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            
+
             // Get form data
             const formData = new FormData(this);
-            
+
             // Submit via fetch API
             fetch('../api/save_appointment.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    // Show error message
-                    alert('Error: ' + data.error);
-                } else {
-                    // Close modal and reload page
-                    closeModal(appointmentEditModal);
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error saving appointment:', error);
-                alert('An error occurred while saving the appointment. Please try again.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        // Show error message
+                        alert('Error: ' + data.error);
+                    } else {
+                        // Close modal and reload page
+                        closeModal(appointmentEditModal);
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving appointment:', error);
+                    alert('An error occurred while saving the appointment. Please try again.');
+                });
         });
     }
-    
+
     // Function to open edit modal with existing appointment data
     function editAppointment(appointmentId) {
         // Close details modal if open
@@ -342,28 +304,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (detailsModal) {
             closeModal(detailsModal);
         }
-    
+
         // Reset form
         const appointmentForm = document.getElementById('appointment-form');
         if (appointmentForm) {
             appointmentForm.reset();
         }
-    
+
         // Set form title
         const modalTitle = document.getElementById('appointment-modal-title');
         if (modalTitle) {
             modalTitle.textContent = appointmentId ? 'Edit Appointment' : 'Schedule Appointment';
         }
-    
+
         if (appointmentId) {
             // Show loading state
             const form = document.getElementById('appointment-form');
             if (form) {
                 form.classList.add('loading');
             }
-    
+
             // Fetch appointment data with correct path
-            fetch(`../../actions/get_appointment_data.php?id=${appointmentId}`)
+            fetch(`../api/get_appointment_data.php?id=${appointmentId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -381,9 +343,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.error) {
                         throw new Error(data.error);
                     }
-                    
+
                     const appointment = data.appointment;
-                    
+
                     // Populate form fields with null checks
                     const fields = {
                         'appointment_id': appointment.appointment_id,
@@ -396,14 +358,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         'status': appointment.status,
                         'notes': appointment.notes || ''
                     };
-    
+
                     Object.entries(fields).forEach(([id, value]) => {
                         const element = document.getElementById(id);
                         if (element) {
                             element.value = value;
                         }
                     });
-                    
+
                     // Open modal
                     const editModal = document.getElementById('appointment-edit-modal');
                     if (editModal) {
@@ -426,12 +388,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (appointmentIdField) {
                 appointmentIdField.value = '';
             }
-            
+
             const dateField = document.getElementById('appointment_date');
             if (dateField) {
                 dateField.value = new Date().toISOString().split('T')[0];
             }
-            
+
             // Open modal
             const editModal = document.getElementById('appointment-edit-modal');
             if (editModal) {
@@ -439,745 +401,92 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
+
     // No need for event listeners since we're using onclick in HTML
     // Make editAppointment globally accessible
     window.editAppointment = editAppointment;
-    
+
     // ------------------
     // Status Update Function
     // ------------------
-    
+
     function updateAppointmentStatus(appointmentId, status) {
         if (!confirm(`Are you sure you want to mark this appointment as ${status}?`)) {
             return;
         }
-        
+
         const formData = new FormData();
         formData.append('appointment_id', appointmentId);
         formData.append('status', status);
         formData.append('action', 'update_status');
-        
-        fetch('../../actions/get_appointment_data.php', {
+
+        fetch('../api/update_appointment_status.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert('Error: ' + data.error);
-            } else {
-                // Close modal and reload page
-                closeModal(appointmentDetailsModal);
-                window.location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Error updating appointment status:', error);
-            alert('An error occurred while updating the appointment status. Please try again.');
-        });
-    }
-    
-    // Make updateAppointmentStatus globally accessible
-    window.updateAppointmentStatus = updateAppointmentStatus;
-    
-    // ------------------
-    // Context Menu Functions
-    // ------------------
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize elements with null checks
-        const actionsMenu = document.getElementById('appointment-actions-menu');
-        let activeButton = null;
-    
-        // Context Menu Handler
-        if (actionsMenu) {
-            // Handle more-options button clicks
-            document.querySelectorAll('.more-options').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    // Get the appointment ID
-                    const appointmentId = this.dataset.id;
-    
-                    // If clicking the same button that's already active, close the menu
-                    if (activeButton === this && actionsMenu.classList.contains('active')) {
-                        actionsMenu.classList.remove('active');
-                        activeButton = null;
-                        return;
-                    }
-    
-                    // Close any previously open menu
-                    if (actionsMenu.classList.contains('active')) {
-                        actionsMenu.classList.remove('active');
-                    }
-    
-                    // Store the active button
-                    activeButton = this;
-    
-                    // Position and show menu
-                    const rect = this.getBoundingClientRect();
-                    actionsMenu.style.top = `${rect.bottom + window.scrollY}px`;
-                    actionsMenu.style.left = `${rect.left + window.scrollX - actionsMenu.offsetWidth + rect.width}px`;
-                    actionsMenu.classList.add('active');
-                    actionsMenu.dataset.appointmentId = appointmentId;
-                });
-            });
-    
-            // Close menu when clicking outside
-            document.addEventListener('click', function(e) {
-                if (actionsMenu.classList.contains('active') && 
-                    !actionsMenu.contains(e.target) && 
-                    !e.target.closest('.more-options')) {
-                    actionsMenu.classList.remove('active');
-                    activeButton = null;
-                }
-            });
-    
-            // Handle menu item clicks
-            actionsMenu.querySelectorAll('li').forEach(item => {
-                item.addEventListener('click', function() {
-                    const action = this.dataset.action;
-                    const appointmentId = actionsMenu.dataset.appointmentId;
-    
-                    // Hide menu first
-                    actionsMenu.classList.remove('active');
-                    activeButton = null;
-    
-                    // Handle the action
-                    switch(action) {
-                        case 'view':
-                            viewAppointmentDetails(appointmentId);
-                            break;
-                        case 'edit':
-                            editAppointment(appointmentId);
-                            break;
-                        case 'complete':
-                            updateAppointmentStatus(appointmentId, 'completed');
-                            break;
-                        case 'cancel':
-                            updateAppointmentStatus(appointmentId, 'cancelled');
-                            break;
-                        case 'reschedule':
-                            editAppointment(appointmentId);
-                            break;
-                    }
-                });
-            });
-        }
-    });
-    // ------------------
-    // Calendar Functions
-    // ------------------
-    
-    function initCalendar() {
-        updateCalendarHeader();
-        renderCalendar();
-        
-        // Load appointments for the selected date
-        loadDailyAppointments(formatDate(selectedDate));
-    }
-    
-    function updateCalendarHeader() {
-        const monthNames = ["January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December"];
-        
-        if (currentMonthYearEl) {
-            currentMonthYearEl.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-        }
-    }
-    
-    function renderCalendar() {
-        if (!calendarContainer) return;
-        
-        // Clear calendar
-        calendarContainer.innerHTML = '';
-        
-        if (currentView === 'month') {
-            renderMonthView();
-        } else if (currentView === 'week') {
-            renderWeekView();
-        } else if (currentView === 'day') {
-            renderDayView();
-        }
-    }
-    
-    function renderMonthView() {
-        // Get first day of the month
-        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        
-        // Create day names header
-        const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const daysHeader = document.createElement('div');
-        daysHeader.className = 'calendar-days-header';
-        
-        dayNames.forEach(day => {
-            const dayEl = document.createElement('div');
-            dayEl.className = 'day-name';
-            dayEl.textContent = day;
-            daysHeader.appendChild(dayEl);
-        });
-        
-        calendarContainer.appendChild(daysHeader);
-        
-        // Create calendar grid
-        const calendarGrid = document.createElement('div');
-        calendarGrid.className = 'calendar-grid';
-        
-        // Add empty cells for days before the first of the month
-        let dayOfWeek = firstDay.getDay();
-        for (let i = 0; i < dayOfWeek; i++) {
-            const emptyCell = document.createElement('div');
-            emptyCell.className = 'calendar-day empty';
-            calendarGrid.appendChild(emptyCell);
-        }
-        
-        // Add cells for each day of the month
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        for (let i = 1; i <= lastDay.getDate(); i++) {
-            const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
-            const dayCell = document.createElement('div');
-            dayCell.className = 'calendar-day';
-            dayCell.dataset.date = formatDate(dayDate);
-            
-            // Mark today
-            if (dayDate.getTime() === today.getTime()) {
-                dayCell.classList.add('today');
-            }
-            
-            // Mark selected day
-            if (selectedDate && dayDate.getTime() === selectedDate.getTime()) {
-                dayCell.classList.add('selected');
-            }
-            
-            // Add day number
-            const dayNumber = document.createElement('div');
-            dayNumber.className = 'day-number';
-            dayNumber.textContent = i;
-            dayCell.appendChild(dayNumber);
-            
-            // Add appointment indicators container
-            const appointmentIndicators = document.createElement('div');
-            appointmentIndicators.className = 'appointment-indicators';
-            dayCell.appendChild(appointmentIndicators);
-            
-            // Add click event to select date
-            dayCell.addEventListener('click', () => {
-                // Remove selected class from previous selection
-                document.querySelectorAll('.calendar-day.selected').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                
-                // Add selected class to clicked day
-                dayCell.classList.add('selected');
-                
-                // Update selected date
-                selectedDate = dayDate;
-                
-                // Load appointments for selected date
-                loadDailyAppointments(formatDate(selectedDate));
-            });
-            
-            calendarGrid.appendChild(dayCell);
-        }
-        
-        calendarContainer.appendChild(calendarGrid);
-        
-        // Load appointment indicators for the current month
-        loadMonthAppointments();
-    }
-    
-    function renderWeekView() {
-        // Determine the week start (Sunday) and end (Saturday)
-        const current = new Date(currentDate);
-        const dayOfWeek = current.getDay();
-        const weekStart = new Date(current);
-        weekStart.setDate(current.getDate() - dayOfWeek);
-        
-        const weekContainer = document.createElement('div');
-        weekContainer.className = 'week-view';
-        
-        // Create day headers
-        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        for (let i = 0; i < 7; i++) {
-            const dayDate = new Date(weekStart);
-            dayDate.setDate(weekStart.getDate() + i);
-            
-            const dayCol = document.createElement('div');
-            dayCol.className = 'week-day-column';
-            dayCol.dataset.date = formatDate(dayDate);
-            
-            // Day header
-            const dayHeader = document.createElement('div');
-            dayHeader.className = 'week-day-header';
-            
-            // Mark today
-            if (dayDate.getTime() === today.getTime()) {
-                dayHeader.classList.add('today');
-            }
-            
-            // Mark selected day
-            if (selectedDate && dayDate.getTime() === selectedDate.getTime()) {
-                dayHeader.classList.add('selected');
-            }
-            
-            const dayNameEl = document.createElement('div');
-            dayNameEl.className = 'day-name';
-            dayNameEl.textContent = dayNames[i];
-            
-            const dayNumberEl = document.createElement('div');
-            dayNumberEl.className = 'day-number';
-            dayNumberEl.textContent = dayDate.getDate();
-            
-            dayHeader.appendChild(dayNameEl);
-            dayHeader.appendChild(dayNumberEl);
-            dayCol.appendChild(dayHeader);
-            
-            // Day content for appointments
-            const dayContent = document.createElement('div');
-            dayContent.className = 'week-day-content';
-            dayContent.id = `day-content-${formatDate(dayDate)}`;
-            dayCol.appendChild(dayContent);
-            
-            // Add click event to select date
-            dayHeader.addEventListener('click', () => {
-                // Remove selected class from previous selection
-                document.querySelectorAll('.week-day-header.selected').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                
-                // Add selected class to clicked day
-                dayHeader.classList.add('selected');
-                
-                // Update selected date
-                selectedDate = dayDate;
-                
-                // Load appointments for selected date
-                loadDailyAppointments(formatDate(selectedDate));
-            });
-            
-            weekContainer.appendChild(dayCol);
-        }
-        
-        calendarContainer.appendChild(weekContainer);
-        
-        // Load appointments for the week
-        loadWeekAppointments(formatDate(weekStart), formatDate(new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000)));
-    }
-    
-    function renderDayView() {
-        const dayContainer = document.createElement('div');
-        dayContainer.className = 'day-view';
-        
-        // Create time slots from 8 AM to 5 PM
-        const startHour = 8;
-        const endHour = 17;
-        
-        for (let hour = startHour; hour <= endHour; hour++) {
-            const timeSlot = document.createElement('div');
-            timeSlot.className = 'day-time-slot';
-            
-            const timeLabel = document.createElement('div');
-            timeLabel.className = 'time-label';
-            timeLabel.textContent = hour > 12 ? `${hour - 12}:00 PM` : hour === 12 ? '12:00 PM' : `${hour}:00 AM`;
-            timeSlot.appendChild(timeLabel);
-            
-            const slotContent = document.createElement('div');
-            slotContent.className = 'slot-content';
-            slotContent.dataset.hour = hour;
-            timeSlot.appendChild(slotContent);
-            
-            dayContainer.appendChild(timeSlot);
-        }
-        
-        calendarContainer.appendChild(dayContainer);
-        
-        // Load appointments for the day
-        loadDayViewAppointments(formatDate(selectedDate));
-    }
-    
-    function loadMonthAppointments() {
-        // Get first and last day of the month
-        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        
-        fetch(`../api/get_calendar_appointments.php?start_date=${formatDate(firstDay)}&end_date=${formatDate(lastDay)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    console.error('Error loading appointments:', data.error);
-                    return;
+                    alert('Error: ' + data.error);
+                } else {
+                    // Close modal and reload page
+                    closeModal(appointmentDetailsModal);
+                    window.location.reload();
                 }
-                
-                // Group appointments by date
-                const appointmentsByDate = {};
-                
-                data.appointments.forEach(appointment => {
-                    const date = appointment.appointment_date;
-                    if (!appointmentsByDate[date]) {
-                        appointmentsByDate[date] = [];
-                    }
-                    appointmentsByDate[date].push(appointment);
-                });
-                
-                // Add indicators to calendar cells
-                Object.keys(appointmentsByDate).forEach(date => {
-                    const dayCell = document.querySelector(`.calendar-day[data-date="${date}"]`);
-                    if (dayCell) {
-                        const indicators = dayCell.querySelector('.appointment-indicators');
-                        const count = appointmentsByDate[date].length;
-                        
-                        // Add count indicator
-                        const countIndicator = document.createElement('div');
-                        countIndicator.className = 'appointment-count';
-                        countIndicator.textContent = count > 0 ? `${count} appts` : 'No appts';
-                        indicators.appendChild(countIndicator);
-                        
-                       // Add status indicators (max 3)
-                       const statuses = {};
-                       appointmentsByDate[date].forEach(appointment => {
-                           if (!statuses[appointment.status]) {
-                               statuses[appointment.status] = 0;
-                           }
-                           statuses[appointment.status]++;
-                       });
-                       
-                       const statusContainer = document.createElement('div');
-                       statusContainer.className = 'status-indicators';
-                       
-                       Object.keys(statuses).slice(0, 3).forEach(status => {
-                           const statusDot = document.createElement('div');
-                           statusDot.className = `status-dot ${status}`;
-                           statusDot.title = `${statuses[status]} ${status}`;
-                           statusContainer.appendChild(statusDot);
-                       });
-                       
-                       indicators.appendChild(statusContainer);
-                   }
-               });
-           })
-           .catch(error => {
-               console.error('Error loading month appointments:', error);
-           });
-   }
-   
-   function loadWeekAppointments(startDate, endDate) {
-       fetch(`../api/get_calendar_appointments.php?start_date=${startDate}&end_date=${endDate}`)
-           .then(response => response.json())
-           .then(data => {
-               if (data.error) {
-                   console.error('Error loading appointments:', data.error);
-                   return;
-               }
-               
-               // Group appointments by date
-               const appointmentsByDate = {};
-               
-               data.appointments.forEach(appointment => {
-                   const date = appointment.appointment_date;
-                   if (!appointmentsByDate[date]) {
-                       appointmentsByDate[date] = [];
-                   }
-                   appointmentsByDate[date].push(appointment);
-               });
-               
-               // Add appointment blocks to week columns
-               Object.keys(appointmentsByDate).forEach(date => {
-                   const dayColumn = document.querySelector(`.week-day-column[data-date="${date}"] .week-day-content`);
-                   if (dayColumn) {
-                       appointmentsByDate[date].forEach(appointment => {
-                           // Create appointment block
-                           const apptBlock = document.createElement('div');
-                           apptBlock.className = `appointment-block ${appointment.status}`;
-                           apptBlock.dataset.id = appointment.appointment_id;
-                           
-                           const startTime = appointment.start_time.substring(0, 5);
-                           const endTime = appointment.end_time.substring(0, 5);
-                           
-                           apptBlock.innerHTML = `
-                               <div class="appointment-time">${startTime} - ${endTime}</div>
-                               <div class="appointment-title">${appointment.service_name}</div>
-                               <div class="appointment-patient">${appointment.patient_first_name} ${appointment.patient_last_name}</div>
-                           `;
-                           
-                           // Add click handler to view details
-                           apptBlock.addEventListener('click', () => {
-                               viewAppointmentDetails(appointment.appointment_id);
-                           });
-                           
-                           dayColumn.appendChild(apptBlock);
-                       });
-                   }
-               });
-           })
-           .catch(error => {
-               console.error('Error loading week appointments:', error);
-               
-           });
-   }
-   
-   function loadDayViewAppointments(date) {
-       fetch(`../api/get_calendar_appointments.php?start_date=${date}&end_date=${date}`)
-       
-           .then(response => response.json())
-           .then(data => {
-               if (data.error) {
-                   console.error('Error loading appointments:', data.error);
-                   return;
-               }
-            
-               
-               // Clear any existing appointments
-               document.querySelectorAll('.appointment-block').forEach(el => el.remove());
-               
-               // Add appointment blocks to time slots
-               data.appointments.forEach(appointment => {
-                   // Parse times
-                   const startHour = parseInt(appointment.start_time.split(':')[0]);
-                   const endHour = parseInt(appointment.end_time.split(':')[0]);
-                   const startMinute = parseInt(appointment.start_time.split(':')[1]);
-                   const endMinute = parseInt(appointment.end_time.split(':')[1]);
-                   
-                   // Find appropriate time slot
-                   const timeSlot = document.querySelector(`.slot-content[data-hour="${startHour}"]`);
-                   if (timeSlot) {
-                       // Create appointment block
-                       const apptBlock = document.createElement('div');
-                       apptBlock.className = `appointment-block ${appointment.status}`;
-                       apptBlock.dataset.id = appointment.appointment_id;
-                       
-                       // Calculate duration in minutes
-                       const durationMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
-                       // Set height based on duration (assume 1 hour = 60px)
-                       apptBlock.style.height = `${durationMinutes}px`;
-                       // Set top offset based on start minute (assume 1 minute = 1px)
-                       apptBlock.style.top = `${startMinute}px`;
-                       
-                       const startTimeStr = appointment.start_time.substring(0, 5);
-                       const endTimeStr = appointment.end_time.substring(0, 5);
-                       
-                       apptBlock.innerHTML = `
-                           <div class="appointment-time">${startTimeStr} - ${endTimeStr}</div>
-                           <div class="appointment-title">${appointment.service_name}</div>
-                           <div class="appointment-patient">${appointment.patient_first_name} ${appointment.patient_last_name}</div>
-                       `;
-                       
-                       // Add click handler to view details
-                       apptBlock.addEventListener('click', () => {
-                           viewAppointmentDetails(appointment.appointment_id);
-                       });
-                       
-                       timeSlot.appendChild(apptBlock);
-                   }
-               });
-           })
-           .catch(error => {
-               console.error('Error loading day appointments:', error);
-           });
-   }
-   
-   function loadDailyAppointments(date) {
-       if (!dayAppointmentsList || !selectedDateHeading) return;
-       
-       // Update heading
-       const formattedDate = new Date(date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-       selectedDateHeading.textContent = `Appointments for ${formattedDate}`;
-       
-       // Show loading indicator
-       dayAppointmentsList.innerHTML = '<div class="loading-spinner">Loading appointments...</div>';
-       
-       
-       // Fetch appointments for the selected date
-       fetch(`../api/get_calendar_appointments.php?start_date=${date}&end_date=${date}`)
-           .then(response => response.json())
-           .then(data => {
-               if (data.error) {
-                   dayAppointmentsList.innerHTML = `<div class="error-message">${data.error}</div>`;
-                   return;
-               }
-               
-               const appointments = data.appointments;
-               
-               if (appointments.length === 0) {
-                   dayAppointmentsList.innerHTML = '<div class="no-data">No appointments scheduled for this day.</div>';
-                   return;
-               }
-               
-               // Sort appointments by time
-               appointments.sort((a, b) => {
-                   return a.start_time.localeCompare(b.start_time);
-               });
-               
-               // Generate HTML for each appointment
-               let html = '';
-               appointments.forEach(appointment => {
-                   const startTime = appointment.start_time.substring(0, 5);
-                   const endTime = appointment.end_time.substring(0, 5);
-                   
-                   html += `
-                       <div class="day-appointment-item ${appointment.status}" data-id="${appointment.appointment_id}">
-                           <div class="appointment-time">${startTime} - ${endTime}</div>
-                           <div class="appointment-details">
-                               <div class="appointment-title">${appointment.service_name}</div>
-                               <div class="appointment-patient">
-                                   <div class="user-avatar small">${getInitials(appointment.patient_first_name, appointment.patient_last_name)}</div>
-                                   ${appointment.patient_first_name} ${appointment.patient_last_name}
-                               </div>
-                           </div>
-                           <div class="appointment-status">
-                               <span class="status-badge ${appointment.status}">${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</span>
-                           </div>
-                           <div class="appointment-actions">
-                               <button class="btn icon-btn sm" title="View Details" onclick="viewAppointmentDetails(${appointment.appointment_id})">
-                                   <i class='bx bx-show'></i>
-                               </button>
-                               <button class="btn icon-btn sm" title="Edit" onclick="editAppointment(${appointment.appointment_id})">
-                                   <i class='bx bx-edit'></i>
-                               </button>
-                           </div>
-                       </div>
-                   `;
-               });
-               
-               dayAppointmentsList.innerHTML = html;
-           })
-           
-           .catch(error => {
-               console.error('Error loading daily appointments:', error);
-               dayAppointmentsList.innerHTML = '<div class="error-message">Error loading appointments. Please try again💓.</div>';
-            
-           });
-   }
-   
-   // Helper function to get initials
-   function getInitials(firstName, lastName) {
-       return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
-   }
-   
-   // Helper function to format date as YYYY-MM-DD
-   function formatDate(date) {
-       const d = new Date(date);
-       let month = '' + (d.getMonth() + 1);
-       let day = '' + d.getDate();
-       const year = d.getFullYear();
-       
-       if (month.length < 2) month = '0' + month;
-       if (day.length < 2) day = '0' + day;
-       
-       return [year, month, day].join('-');
-   }
-   
-   // Calendar navigation buttons
-   if (prevMonthBtn) {
-       prevMonthBtn.addEventListener('click', () => {
-           if (currentView === 'month') {
-               currentDate.setMonth(currentDate.getMonth() - 1);
-           } else if (currentView === 'week') {
-               currentDate.setDate(currentDate.getDate() - 7);
-           } else if (currentView === 'day') {
-               currentDate.setDate(currentDate.getDate() - 1);
-               selectedDate = new Date(currentDate);
-           }
-           
-           updateCalendarHeader();
-           renderCalendar();
-       });
-   }
-   
-   if (nextMonthBtn) {
-       nextMonthBtn.addEventListener('click', () => {
-           if (currentView === 'month') {
-               currentDate.setMonth(currentDate.getMonth() + 1);
-           } else if (currentView === 'week') {
-               currentDate.setDate(currentDate.getDate() + 7);
-           } else if (currentView === 'day') {
-               currentDate.setDate(currentDate.getDate() + 1);
-               selectedDate = new Date(currentDate);
-           }
-           
-           updateCalendarHeader();
-           renderCalendar();
-       });
-   }
-   
-   // Calendar view toggles
-   calendarViewBtns.forEach(btn => {
-       btn.addEventListener('click', () => {
-           // Remove active class from all buttons
-           calendarViewBtns.forEach(b => b.classList.remove('active'));
-           // Add active class to clicked button
-           btn.classList.add('active');
-           
-           // Update current view
-           currentView = btn.dataset.view;
-           
-           // If switching to day view, set currentDate to selectedDate
-           if (currentView === 'day') {
-               currentDate = new Date(selectedDate);
-           }
-           
-           // Re-render calendar
-           updateCalendarHeader();
-           renderCalendar();
-       });
-   });
-   
-   // ------------------
-   // Export Function
-   // ------------------
-   
-   function exportAppointments() {
-       // Get current filter parameters
-       const status = document.getElementById('status-filter').value;
-       const service = document.getElementById('service-filter').value;
-       const dateStart = document.getElementById('date-start').value;
-       const dateEnd = document.getElementById('date-end').value;
-       
-       // Create URL with parameters
-       let url = `../api/export_appointments.php?status=${status}&service=${service}&date_start=${dateStart}&date_end=${dateEnd}`;
-       
-       // Open download in new tab/window
-       window.open(url, '_blank');
-   }
-   
-   // Make exportAppointments globally accessible
-   window.exportAppointments = exportAppointments;
-   
-   // ------------------
-   // Initialize on load
-   // ------------------
-   
-   // Initialize default view
-   if (document.querySelector('.view-btn[data-view="list"]').classList.contains('active')) {
-       // List view is active by default, nothing to do
-   } else if (document.querySelector('.view-btn[data-view="calendar"]').classList.contains('active')) {
-       // Initialize calendar if calendar view is active
-       initCalendar();
-   }
-   
-   // Set min/max dates for date inputs
-   const today = new Date().toISOString().split('T')[0];
-   const dateStartInput = document.getElementById('date-start');
-   const dateEndInput = document.getElementById('date-end');
-   
-   if (dateStartInput && dateEndInput) {
-       // Ensure date end is at least equal to date start
-       dateStartInput.addEventListener('change', function() {
-           if (dateEndInput.value < this.value) {
-               dateEndInput.value = this.value;
-           }
-       });
-       
-       dateEndInput.addEventListener('change', function() {
-           if (dateStartInput.value > this.value) {
-               dateStartInput.value = this.value;
-           }
-       });
-   }
+            })
+            .catch(error => {
+                console.error('Error updating appointment status:', error);
+                alert('An error occurred while updating the appointment status. Please try again.');
+            });
+    }
+
+    // Make updateAppointmentStatus globally accessible
+    window.updateAppointmentStatus = updateAppointmentStatus;
+
+    // ------------------
+    // Initialize on load
+    // ------------------
+
+    // Initialize default view
+    if (document.querySelector('.view-btn[data-view="list"]').classList.contains('active')) {
+        // List view is active by default, nothing to do
+    } else if (document.querySelector('.view-btn[data-view="calendar"]').classList.contains('active')) {
+        // Initialize calendar if calendar view is active
+        initCalendar();
+    }
+
+    // Set min/max dates for date inputs
+    const today = new Date().toISOString().split('T')[0];
+    const dateStartInput = document.getElementById('date-start');
+    const dateEndInput = document.getElementById('date-end');
+
+    if (dateStartInput && dateEndInput) {
+        // Ensure date end is at least equal to date start
+        dateStartInput.addEventListener('change', function() {
+            if (dateEndInput.value < this.value) {
+                dateEndInput.value = this.value;
+            }
+        });
+
+        dateEndInput.addEventListener('change', function() {
+            if (dateStartInput.value > this.value) {
+                dateStartInput.value = this.value;
+            }
+        });
+    }
+
+    // Add event listener for add appointment button
+    if (addAppointmentBtn) {
+        addAppointmentBtn.addEventListener('click', function() {
+            editAppointment(); // Call without ID to create new appointment
+        });
+    }
+
+    // Add event listener for cancel button
+    const cancelBtn = document.getElementById('cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            closeModal(appointmentEditModal);
+        });
+    }
 });

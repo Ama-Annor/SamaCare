@@ -1,0 +1,51 @@
+@startuml Strategy Pattern in SamaCare
+skinparam backgroundColor #FFFFFF
+skinparam classFontColor #333333
+skinparam classFontSize 14
+skinparam classAttributeFontColor #333333
+skinparam classAttributeFontSize 12
+skinparam classBorderColor #2a9d8f
+skinparam classBackgroundColor #def2f1
+skinparam classArrowColor #264653
+skinparam shadowing false
+skinparam stereotypeCBackgroundColor #e9c46a
+
+title Strategy Pattern - Authentication Methods in SamaCare
+
+interface AuthenticationStrategy {
+  +authenticate(credentials: Map<String, String>): boolean
+}
+
+class PasswordAuthentication {
+  -passwordEncoder: PasswordEncoder
+  +authenticate(credentials: Map<String, String>): boolean
+  -verifyPassword(plainPassword: String, hashedPassword: String): boolean
+}
+
+class BiometricAuthentication {
+  -biometricService: BiometricService
+  +authenticate(credentials: Map<String, String>): boolean
+  -verifyBiometric(biometricData: byte[], storedTemplate: byte[]): boolean
+}
+
+class OTPAuthentication {
+  -otpService: OTPService
+  +authenticate(credentials: Map<String, String>): boolean
+  -verifyOTP(userId: String, otpCode: String): boolean
+}
+
+class AuthenticationContext {
+  -strategy: AuthenticationStrategy
+  +setStrategy(strategy: AuthenticationStrategy): void
+  +executeAuthentication(credentials: Map<String, String>): boolean
+}
+
+AuthenticationStrategy <|.. PasswordAuthentication
+AuthenticationStrategy <|.. BiometricAuthentication
+AuthenticationStrategy <|.. OTPAuthentication
+AuthenticationContext o--> AuthenticationStrategy
+
+note "Client can switch authentication\nstrategies at runtime based on\nuser preference or security needs" as N1
+AuthenticationContext .. N1
+
+@enduml

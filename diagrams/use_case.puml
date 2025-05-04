@@ -1,0 +1,118 @@
+@startuml SamaCare Use Case Diagram
+skinparam backgroundColor #FFFFFF
+skinparam useCaseBorderColor #2a9d8f
+skinparam useCaseBackgroundColor #def2f1
+skinparam actorBorderColor #264653
+skinparam actorBackgroundColor #e9c46a
+skinparam useCaseFontSize 14
+skinparam actorFontSize 14
+skinparam packageStyle rectangle
+skinparam packageBorderColor #2a9d8f
+
+' Set orientation to portrait
+left to right direction
+
+title SamaCare Healthcare Application - Use Case Diagram
+
+' Actors on the left side
+actor "Patient" as patient
+actor "Doctor" as doctor
+actor "Admin" as admin
+actor "Health Assistant AI" as ai
+
+' Systems
+rectangle SamaCare {
+  ' Use cases arranged in vertical groups
+  
+  package "Authentication" {
+    usecase "Register/Login" as UC1
+    usecase "Manage Profile" as UC2
+  }
+  
+  package "Patient Functions" {
+    usecase "Book Appointment" as UC3
+    usecase "View Medical Records" as UC4
+    usecase "Track Health Metrics" as UC5
+    usecase "Receive Notifications" as UC6
+    usecase "Use Health Assistant" as UC7
+    usecase "Manage Medications" as UC8
+  }
+  
+  package "Doctor Functions" {
+    usecase "View Patient Information" as UC9
+    usecase "Update Medical Records" as UC10
+    usecase "Manage Appointments" as UC11
+    usecase "View Patient Health Metrics" as UC12
+    usecase "Write Prescriptions" as UC13
+    usecase "Set Availability" as UC14
+  }
+  
+  package "Admin Functions" {
+    usecase "Manage Users" as UC15
+    usecase "Generate Reports" as UC16
+    usecase "Configure System" as UC17
+    usecase "Manage Doctors" as UC18
+    usecase "Manage Services" as UC19
+  }
+  
+  package "AI Functions" {
+    usecase "Analyze Symptoms" as UC20
+    usecase "Provide Guidance" as UC21
+  }
+
+  ' Relationships between use cases
+  UC7 <.> UC20 : includes
+  UC7 <.> UC21 : includes
+  UC3 <.. UC14 : extends
+  UC10 <.. UC13 : extends
+  UC8 <.. UC13 : extends
+}
+
+' Actor Relationships
+patient -- UC1
+patient -- UC2
+patient -- UC3
+patient -- UC4
+patient -- UC5
+patient -- UC6
+patient -- UC7
+patient -- UC8
+
+doctor -- UC1
+doctor -- UC2
+doctor -- UC9
+doctor -- UC10
+doctor -- UC11
+doctor -- UC12
+doctor -- UC13
+doctor -- UC14
+
+admin -- UC1
+admin -- UC15
+admin -- UC16
+admin -- UC17
+admin -- UC18
+admin -- UC19
+
+ai -- UC20
+ai -- UC21
+
+' Notes
+note bottom of UC1
+  All users must login
+  before accessing the system
+end note
+
+note bottom of UC5
+  Health metrics can include
+  blood pressure, weight,
+  glucose levels, etc.
+end note
+
+note bottom of UC20
+  AI provides preliminary
+  guidance based on
+  symptom analysis
+end note
+
+@enduml

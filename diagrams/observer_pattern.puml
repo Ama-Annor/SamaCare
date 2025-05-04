@@ -1,0 +1,74 @@
+@startuml Observer Pattern in SamaCare
+skinparam backgroundColor #FFFFFF
+skinparam classFontColor #333333
+skinparam classFontSize 14
+skinparam classAttributeFontColor #333333
+skinparam classAttributeFontSize 12
+skinparam classBorderColor #2a9d8f
+skinparam classBackgroundColor #def2f1
+skinparam classArrowColor #264653
+skinparam shadowing false
+skinparam stereotypeCBackgroundColor #e9c46a
+
+title Observer Pattern - Notification System in SamaCare
+
+interface NotificationObserver {
+  +update(event: NotificationEvent): void
+}
+
+interface NotificationSubject {
+  +registerObserver(observer: NotificationObserver): void
+  +removeObserver(observer: NotificationObserver): void
+  +notifyObservers(): void
+}
+
+class AppointmentManager {
+  -observers: List<NotificationObserver>
+  -appointments: List<Appointment>
+  +scheduleAppointment(appointment: Appointment): void
+  +cancelAppointment(appointmentId: String): void
+  +rescheduleAppointment(appointment: Appointment): void
+  +registerObserver(observer: NotificationObserver): void
+  +removeObserver(observer: NotificationObserver): void
+  +notifyObservers(): void
+}
+
+class EmailNotifier {
+  -emailService: EmailService
+  +update(event: NotificationEvent): void
+  -sendEmail(recipient: String, subject: String, body: String): void
+}
+
+class SMSNotifier {
+  -smsService: SMSService
+  +update(event: NotificationEvent): void
+  -sendSMS(phoneNumber: String, message: String): void
+}
+
+class AppNotifier {
+  -pushNotificationService: PushService
+  +update(event: NotificationEvent): void
+  -sendPushNotification(userId: String, title: String, body: String): void
+}
+
+class NotificationEvent {
+  -type: String
+  -userId: String
+  -message: String
+  -data: Map<String, Object>
+}
+
+NotificationSubject <|.. AppointmentManager
+NotificationObserver <|.. EmailNotifier
+NotificationObserver <|.. SMSNotifier
+NotificationObserver <|.. AppNotifier
+AppointmentManager --> NotificationObserver: notifies >
+AppointmentManager ..> NotificationEvent: creates >
+NotificationEvent --> EmailNotifier: passed to >
+NotificationEvent --> SMSNotifier: passed to >
+NotificationEvent --> AppNotifier: passed to >
+
+note "When appointments change,\nall registered notification\nservices are automatically\nupdated" as N1
+AppointmentManager .. N1
+
+@enduml

@@ -45,8 +45,8 @@ if ($result->num_rows > 0) {
 // Get appointment data with filters
 $status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 $service_filter = isset($_GET['service']) ? $_GET['service'] : 'all';
-$date_start = isset($_GET['date_start']) ? $_GET['date_start'] : date('Y-m-d');
-$date_end = isset($_GET['date_end']) ? $_GET['date_end'] : date('Y-m-d', strtotime('+30 days'));
+$date_start = isset($_GET['date_start']) ? $_GET['date_start'] : '';
+$date_end = isset($_GET['date_end']) ? $_GET['date_end'] : '';
 
 // Base query for selecting patient data
 $query = "SELECT a.*, 
@@ -79,10 +79,20 @@ if ($service_filter != 'all') {
     $types .= "i";
 }
 
-$query .= " AND a.appointment_date BETWEEN ? AND ?";
-$params[] = $date_start;
-$params[] = $date_end;
-$types .= "ss";
+if (!empty($date_start) && !empty($date_end)) {
+    $query .= " AND a.appointment_date BETWEEN ? AND ?";
+    $params[] = $date_start;
+    $params[] = $date_end;
+    $types .= "ss";
+} elseif (!empty($date_start)) {
+    $query .= " AND a.appointment_date >= ?";
+    $params[] = $date_start;
+    $types .= "s";
+} elseif (!empty($date_end)) {
+    $query .= " AND a.appointment_date <= ?";
+    $params[] = $date_end;
+    $types .= "s";
+}
 
 $query .= " ORDER BY a.appointment_date ASC, a.start_time ASC";
 
@@ -110,7 +120,13 @@ if ($service_filter != 'all') {
     $count_query .= " AND a.service_id = ?";
 }
 
-$count_query .= " AND a.appointment_date BETWEEN ? AND ?";
+if (!empty($date_start) && !empty($date_end)) {
+    $count_query .= " AND a.appointment_date BETWEEN ? AND ?";
+} elseif (!empty($date_start)) {
+    $count_query .= " AND a.appointment_date >= ?";
+} elseif (!empty($date_end)) {
+    $count_query .= " AND a.appointment_date <= ?";
+}
 
 // Now prepare and execute the count query
 $stmt = $conn->prepare($count_query);
@@ -410,9 +426,9 @@ function formatAppointmentTime($time) {
                             <i class='bx bx-plus'></i>
                             <span>Schedule Appointment</span>  
                         </button>
-                        
+
                         <div class="filter-dropdown">
-                            <select class="filter-select" id="status-filter" onchange="applyFilters()">
+                            <select class="filter-select" id="status-filter">
                                 <option value="all" <?php echo $status_filter == 'all' ? 'selected' : ''; ?>>All Status</option>
                                 <option value="confirmed" <?php echo $status_filter == 'confirmed' ? 'selected' : ''; ?>>Confirmed</option>
                                 <option value="pending" <?php echo $status_filter == 'pending' ? 'selected' : ''; ?>>Pending</option>
@@ -420,16 +436,15 @@ function formatAppointmentTime($time) {
                                 <option value="cancelled" <?php echo $status_filter == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
                             </select>
                         </div>
-                        
+
                         <div class="filter-dropdown">
-                            <select class="filter-select" id="service-filter" onchange="applyFilters()">
+                            <select class="filter-select" id="service-filter">
                                 <option value="all" <?php echo $service_filter == 'all' ? 'selected' : ''; ?>>All Services</option>
                                 <?php foreach ($services as $service): ?>
-                                <option value="<?php echo $service['service_id']; ?>" <?php echo $service_filter == $service['service_id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($service['name']); ?></option>
+                                    <option value="<?php echo $service['service_id']; ?>" <?php echo $service_filter == $service['service_id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($service['name']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                    </div>
                     
                     <div class="action-right">
                         <div class="date-filter">
@@ -439,16 +454,14 @@ function formatAppointmentTime($time) {
                                 <input type="date" id="date-end" class="date-input" value="<?php echo $date_end; ?>">
                                 <button class="btn apply-date-btn" onclick="applyFilters()">Apply</button>
                             </div>
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="list">
+                                    <i class='bx bx-list-ul'></i>
+                                </button>
+                            </div>
                         </div>
                         
-                        <div class="view-toggle">
-                            <button class="view-btn active" data-view="list">
-                                <i class='bx bx-list-ul'></i>
-                            </button>
-                            <button class="view-btn" data-view="calendar">
-                                <i class='bx bx-calendar'></i>
-                            </button>
-                        </div>
+
                     </div>
                 </section>
                 
@@ -457,14 +470,6 @@ function formatAppointmentTime($time) {
                     <div class="content-card">
                         <div class="card-header with-actions">
                             <h3>All Appointments</h3>
-                            <div class="header-actions">
-                                <button class="btn icon-btn" onclick="window.location.reload()">
-                                    <i class='bx bx-refresh'></i>
-                                </button>
-                                <button class="btn icon-btn" onclick="exportAppointments()">
-                                    <i class='bx bx-download'></i>
-                                </button>
-                            </div>
                         </div>
                         
                         <div class="table-container">
@@ -494,6 +499,7 @@ function formatAppointmentTime($time) {
                                         data-patient-name="<?php echo htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']); ?>"
                                         data-appointment-date="<?php echo htmlspecialchars($appointment['appointment_date']); ?>"
                                         data-appointment-status="<?php echo htmlspecialchars($appointment['status']); ?>">
+<<<<<<< HEAD
                                         <!-- Find this section in your table and replace it -->
                                     <td>
                                         <div class="date-time">
@@ -529,6 +535,39 @@ function formatAppointmentTime($time) {
                                             </button>
                                         </div>
                                     </td>
+=======
+                                        <td>
+                                            <div class="date-time">
+                                                <div class="date"><?php echo formatAppointmentDate($appointment['appointment_date']); ?></div>
+                                                <div class="time"><?php echo formatAppointmentTime($appointment['start_time']); ?></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="user-info">
+                                                <div class="user-avatar"><?php echo htmlspecialchars($patient_initials); ?></div>
+                                                <span><?php echo htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']); ?></span>
+                                            </div>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($appointment['service_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($appointment['location_name']); ?></td>
+                                        <td><span class="status-badge <?php echo $appointment['status']; ?>"><?php echo ucfirst($appointment['status']); ?></span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn icon-btn sm view-appointment"
+                                                        title="View Details"
+                                                        data-id="<?php echo $appointment_id; ?>"
+                                                        onclick="viewAppointmentDetails('<?php echo $appointment_id; ?>')">
+                                                    <i class='bx bx-show'></i>
+                                                </button>
+                                                <button class="btn icon-btn sm edit-appointment"
+                                                        title="Edit"
+                                                        data-id="<?php echo $appointment_id; ?>"
+                                                        onclick="editAppointment('<?php echo $appointment_id; ?>')">
+                                                    <i class='bx bx-edit'></i>
+                                                </button>
+                                            </div>
+                                        </td>
+>>>>>>> 5223378338a2e67ff9d906e9a90026021a4734b1
                                     </tr>
                                     <?php 
                                         endwhile;
@@ -565,42 +604,9 @@ function formatAppointmentTime($time) {
                         <?php endif; ?>
                     </div>
                 </section>
-                
-                <!-- Appointments Calendar View -->
-                <section class="appointments-section view-section" id="calendar-view">
-                    <div class="content-card">
-                        <div class="calendar-header">
-                            <div class="calendar-navigation">
-                                <button class="calendar-nav-btn" id="prev-month">
-                                    <i class='bx bx-chevron-left'></i>
-                                </button>
-                                <h3 id="current-month-year">
-                                    <?php echo date('F Y'); ?>
-                                </h3>
-                                <button class="calendar-nav-btn" id="next-month">
-                                    <i class='bx bx-chevron-right'></i>
-                                </button>
-                            </div>
-                            <div class="calendar-view-options">
-                                <button class="calendar-view-btn active" data-view="month">Month</button>
-                                <button class="calendar-view-btn" data-view="week">Week</button>
-                                <button class="calendar-view-btn" data-view="day">Day</button>
-                            </div>
-                        </div>
 
-                        <!-- Calendar will be populated via JavaScript -->
-                        <div class="calendar-container" id="calendar-container"></div>
-                        
-                        <div class="selected-date-appointments">
-                            <h4 id="selected-date-heading">Loading appointments...</h4>
-                            <div class="day-appointments-list" id="day-appointments-list">
-                                <!-- Daily appointments will be loaded here via AJAX -->
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
-            
+
             <!-- Appointment Details Modal -->
             <div class="modal" id="appointment-details-modal">
                 <div class="modal-content">
@@ -608,9 +614,87 @@ function formatAppointmentTime($time) {
                         <h2>Appointment Details</h2>
                         <button class="modal-close"><i class='bx bx-x'></i></button>
                     </div>
-                    <div class="modal-body" id="appointment-details-content">
-                        <!-- Will be populated via AJAX -->
-                        <div class="loading-spinner">Loading...</div>
+                    <div class="modal-body">
+                        <form id="appointment-details-form">
+                            <input type="hidden" name="appointment_id" id="view_appointment_id" value="">
+                            <input type="hidden" name="doctor_id" id="view_doctor_id" value="<?php echo $doctor_id; ?>">
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Patient</label>
+                                    <select class="form-control" id="view_patient_id" disabled>
+                                        <option value="">Select Patient</option>
+                                        <?php foreach ($patients as $patient): ?>
+                                            <option value="<?php echo $patient['patient_id']; ?>"><?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Doctor</label>
+                                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($doctor_name); ?>" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Service</label>
+                                    <select class="form-control" id="view_service_id" disabled>
+                                        <option value="">Select Service</option>
+                                        <?php foreach ($services as $service): ?>
+                                            <option value="<?php echo $service['service_id']; ?>"><?php echo htmlspecialchars($service['name']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Location</label>
+                                    <select class="form-control" id="view_location_id" disabled>
+                                        <option value="">Select Location</option>
+                                        <?php foreach ($locations as $location): ?>
+                                            <option value="<?php echo $location['location_id']; ?>"><?php echo htmlspecialchars($location['name']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" class="form-control" id="view_appointment_date" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Start Time</label>
+                                    <input type="time" class="form-control" id="view_start_time" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>End Time</label>
+                                    <input type="time" class="form-control" id="view_end_time" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select class="form-control" id="view_status" disabled>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea class="form-control" id="view_notes" readonly></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn secondary-btn modal-close">Close</button>
+                                <button type="button" class="btn primary-btn" id="edit-from-view-btn" onclick="editAppointment(document.getElementById('view_appointment_id').value)">Edit Appointment</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -756,9 +840,6 @@ function formatAppointmentTime($time) {
     
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/doctor_appointment.js"></script>
-    <!-- <script src="../assets/js/admin_appointments.js"></script>
-    <script src="../assets/js/admin_users.js"></script>
-    <script src="../assets/js/admin_dashboard.js"></script> -->
 </body>
 </html>
 
