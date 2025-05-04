@@ -265,7 +265,7 @@ function formatAppointmentTime($time) {
         .main-content {
             z-index: 1;
         }
-
+/* 
                 .context-menu {
             display: none;
             position: fixed;
@@ -305,7 +305,7 @@ function formatAppointmentTime($time) {
 
         .context-menu i {
             font-size: 1.2em;
-        }
+        } */
      </style>
 </head>
 <body>
@@ -479,7 +479,7 @@ function formatAppointmentTime($time) {
                                         <th>Date & Time</th>
                                         <th>Patient</th>
                                         <th>Service</th>
-                                        <th>Location</th>
+                                        <th>Time</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -499,6 +499,43 @@ function formatAppointmentTime($time) {
                                         data-patient-name="<?php echo htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']); ?>"
                                         data-appointment-date="<?php echo htmlspecialchars($appointment['appointment_date']); ?>"
                                         data-appointment-status="<?php echo htmlspecialchars($appointment['status']); ?>">
+
+                                        <!-- Find this section in your table and replace it -->
+                                    <td>
+                                        <div class="date-time">
+                                            <div class="date"><?php echo formatAppointmentDate($appointment['appointment_date']); ?></div>
+                                            <div class="time"><?php echo formatAppointmentTime($appointment['start_time']); ?></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar"><?php echo htmlspecialchars($patient_initials); ?></div>
+                                            <span><?php echo htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']); ?></span>
+                                        </div>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($appointment['service_name']); ?></td>
+                                    <td><?php 
+                                        // Changed from location_name to time range
+                                        echo formatAppointmentTime($appointment['start_time']) . ' - ' . formatAppointmentTime($appointment['end_time']); 
+                                    ?></td>
+                                    <td><span class="status-badge <?php echo $appointment['status']; ?>"><?php echo ucfirst($appointment['status']); ?></span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn icon-btn sm view-appointment" 
+                                                    title="View Details" 
+                                                    data-id="<?php echo $appointment_id; ?>"
+                                                    onclick="viewAppointmentDetails('<?php echo $appointment_id; ?>')">
+                                                <i class='bx bx-show'></i>
+                                            </button>
+                                            <button class="btn icon-btn sm edit-appointment" 
+                                                    title="Edit" 
+                                                    data-id="<?php echo $appointment_id; ?>"
+                                                    onclick="editAppointment('<?php echo $appointment_id; ?>')">
+                                                <i class='bx bx-edit'></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
                                         <td>
                                             <div class="date-time">
                                                 <div class="date"><?php echo formatAppointmentDate($appointment['appointment_date']); ?></div>
@@ -753,14 +790,7 @@ function formatAppointmentTime($time) {
                 </div>
             </div>
             
-            <!-- Appointment Actions Context Menu -->
-            <div class="context-menu" id="appointment-actions-menu">
-                <ul>
-                <li data-action="reschedule"><i class='bx bx-calendar'></i> Reschedule</li>
-                <li data-action="cancel"><i class='bx bx-x-circle'></i> Cancel</li>
-                <li data-action="delete" class="text-danger"><i class='bx bx-trash'></i> Delete</li>
-                </ul>
-            </div>
+
 
             <!-- Add this before the closing </main> tag -->
         <!-- View Appointment Modal -->

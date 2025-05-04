@@ -69,7 +69,6 @@ samacare/
 ├── requirements.txt                 # Project dependencies
 └── SamaCareDB.sql                   # SQL database schema and initial data
 
-
 ## Development
 
 The application uses:
