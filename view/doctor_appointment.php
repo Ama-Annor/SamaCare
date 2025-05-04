@@ -499,7 +499,7 @@ function formatAppointmentTime($time) {
                                         data-patient-name="<?php echo htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']); ?>"
                                         data-appointment-date="<?php echo htmlspecialchars($appointment['appointment_date']); ?>"
                                         data-appointment-status="<?php echo htmlspecialchars($appointment['status']); ?>">
-<<<<<<< HEAD
+
                                         <!-- Find this section in your table and replace it -->
                                     <td>
                                         <div class="date-time">
@@ -535,7 +535,7 @@ function formatAppointmentTime($time) {
                                             </button>
                                         </div>
                                     </td>
-=======
+
                                         <td>
                                             <div class="date-time">
                                                 <div class="date"><?php echo formatAppointmentDate($appointment['appointment_date']); ?></div>
@@ -567,7 +567,6 @@ function formatAppointmentTime($time) {
                                                 </button>
                                             </div>
                                         </td>
->>>>>>> 5223378338a2e67ff9d906e9a90026021a4734b1
                                     </tr>
                                     <?php 
                                         endwhile;
