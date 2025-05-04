@@ -6,10 +6,15 @@ skinparam actorBorderColor #264653
 skinparam actorBackgroundColor #e9c46a
 skinparam useCaseFontSize 14
 skinparam actorFontSize 14
+skinparam packageStyle rectangle
+skinparam packageBorderColor #2a9d8f
+
+' Set orientation to portrait
+left to right direction
 
 title SamaCare Healthcare Application - Use Case Diagram
 
-' Actors
+' Actors on the left side
 actor "Patient" as patient
 actor "Doctor" as doctor
 actor "Admin" as admin
@@ -17,36 +22,45 @@ actor "Health Assistant AI" as ai
 
 ' Systems
 rectangle SamaCare {
-  ' Patient Use Cases
-  usecase "Register/Login" as UC1
-  usecase "Manage Profile" as UC2
-  usecase "Book Appointment" as UC3
-  usecase "View Medical Records" as UC4
-  usecase "Track Health Metrics" as UC5
-  usecase "Receive Notifications" as UC6
-  usecase "Use Health Assistant" as UC7
-  usecase "Manage Medications" as UC8
+  ' Use cases arranged in vertical groups
   
-  ' Doctor Use Cases
-  usecase "View Patient Information" as UC9
-  usecase "Update Medical Records" as UC10
-  usecase "Manage Appointments" as UC11
-  usecase "View Patient Health Metrics" as UC12
-  usecase "Write Prescriptions" as UC13
-  usecase "Set Availability" as UC14
+  package "Authentication" {
+    usecase "Register/Login" as UC1
+    usecase "Manage Profile" as UC2
+  }
   
-  ' Admin Use Cases
-  usecase "Manage Users" as UC15
-  usecase "Generate Reports" as UC16
-  usecase "Configure System" as UC17
-  usecase "Manage Doctors" as UC18
-  usecase "Manage Services" as UC19
+  package "Patient Functions" {
+    usecase "Book Appointment" as UC3
+    usecase "View Medical Records" as UC4
+    usecase "Track Health Metrics" as UC5
+    usecase "Receive Notifications" as UC6
+    usecase "Use Health Assistant" as UC7
+    usecase "Manage Medications" as UC8
+  }
   
-  ' AI Use Cases
-  usecase "Analyze Symptoms" as UC20
-  usecase "Provide Guidance" as UC21
+  package "Doctor Functions" {
+    usecase "View Patient Information" as UC9
+    usecase "Update Medical Records" as UC10
+    usecase "Manage Appointments" as UC11
+    usecase "View Patient Health Metrics" as UC12
+    usecase "Write Prescriptions" as UC13
+    usecase "Set Availability" as UC14
+  }
+  
+  package "Admin Functions" {
+    usecase "Manage Users" as UC15
+    usecase "Generate Reports" as UC16
+    usecase "Configure System" as UC17
+    usecase "Manage Doctors" as UC18
+    usecase "Manage Services" as UC19
+  }
+  
+  package "AI Functions" {
+    usecase "Analyze Symptoms" as UC20
+    usecase "Provide Guidance" as UC21
+  }
 
-  ' Relationships
+  ' Relationships between use cases
   UC7 <.> UC20 : includes
   UC7 <.> UC21 : includes
   UC3 <.. UC14 : extends
@@ -84,13 +98,21 @@ ai -- UC20
 ai -- UC21
 
 ' Notes
-note "All users must login\nbefore accessing the system" as N1
-N1 .. UC1
+note bottom of UC1
+  All users must login
+  before accessing the system
+end note
 
-note "Health metrics can include\nblood pressure, weight,\nglucose levels, etc." as N2
-N2 .. UC5
+note bottom of UC5
+  Health metrics can include
+  blood pressure, weight,
+  glucose levels, etc.
+end note
 
-note "AI provides preliminary\nguidance based on\nsymptom analysis" as N3
-N3 .. UC20
+note bottom of UC20
+  AI provides preliminary
+  guidance based on
+  symptom analysis
+end note
 
 @enduml
