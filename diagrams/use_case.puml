@@ -1,0 +1,96 @@
+@startuml SamaCare Use Case Diagram
+skinparam backgroundColor #FFFFFF
+skinparam useCaseBorderColor #2a9d8f
+skinparam useCaseBackgroundColor #def2f1
+skinparam actorBorderColor #264653
+skinparam actorBackgroundColor #e9c46a
+skinparam useCaseFontSize 14
+skinparam actorFontSize 14
+
+title SamaCare Healthcare Application - Use Case Diagram
+
+' Actors
+actor "Patient" as patient
+actor "Doctor" as doctor
+actor "Admin" as admin
+actor "Health Assistant AI" as ai
+
+' Systems
+rectangle SamaCare {
+  ' Patient Use Cases
+  usecase "Register/Login" as UC1
+  usecase "Manage Profile" as UC2
+  usecase "Book Appointment" as UC3
+  usecase "View Medical Records" as UC4
+  usecase "Track Health Metrics" as UC5
+  usecase "Receive Notifications" as UC6
+  usecase "Use Health Assistant" as UC7
+  usecase "Manage Medications" as UC8
+  
+  ' Doctor Use Cases
+  usecase "View Patient Information" as UC9
+  usecase "Update Medical Records" as UC10
+  usecase "Manage Appointments" as UC11
+  usecase "View Patient Health Metrics" as UC12
+  usecase "Write Prescriptions" as UC13
+  usecase "Set Availability" as UC14
+  
+  ' Admin Use Cases
+  usecase "Manage Users" as UC15
+  usecase "Generate Reports" as UC16
+  usecase "Configure System" as UC17
+  usecase "Manage Doctors" as UC18
+  usecase "Manage Services" as UC19
+  
+  ' AI Use Cases
+  usecase "Analyze Symptoms" as UC20
+  usecase "Provide Guidance" as UC21
+
+  ' Relationships
+  UC7 <.> UC20 : includes
+  UC7 <.> UC21 : includes
+  UC3 <.. UC14 : extends
+  UC10 <.. UC13 : extends
+  UC8 <.. UC13 : extends
+}
+
+' Actor Relationships
+patient -- UC1
+patient -- UC2
+patient -- UC3
+patient -- UC4
+patient -- UC5
+patient -- UC6
+patient -- UC7
+patient -- UC8
+
+doctor -- UC1
+doctor -- UC2
+doctor -- UC9
+doctor -- UC10
+doctor -- UC11
+doctor -- UC12
+doctor -- UC13
+doctor -- UC14
+
+admin -- UC1
+admin -- UC15
+admin -- UC16
+admin -- UC17
+admin -- UC18
+admin -- UC19
+
+ai -- UC20
+ai -- UC21
+
+' Notes
+note "All users must login\nbefore accessing the system" as N1
+N1 .. UC1
+
+note "Health metrics can include\nblood pressure, weight,\nglucose levels, etc." as N2
+N2 .. UC5
+
+note "AI provides preliminary\nguidance based on\nsymptom analysis" as N3
+N3 .. UC20
+
+@enduml
