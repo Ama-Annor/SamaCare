@@ -1,115 +1,99 @@
 <?php
-session_start();
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['error' => 'Unauthorized access']);
-    exit();
-}
-
+session_start();
 require_once('../db/db_connect.php');
 
-// Get POST data
-$appointmentId = isset($_POST['appointment_id']) ? intval($_POST['appointment_id']) : null;
-$patientId = isset($_POST['patient_id']) ? intval($_POST['patient_id']) : null;
-$doctorId = isset($_POST['doctor_id']) ? intval($_POST['doctor_id']) : null;
-$serviceId = isset($_POST['service_id']) ? intval($_POST['service_id']) : null;
-$locationId = isset($_POST['location_id']) ? intval($_POST['location_id']) : null;
-$appointmentDate = isset($_POST['appointment_date']) ? $_POST['appointment_date'] : null;
-$startTime = isset($_POST['start_time']) ? $_POST['start_time'] : null;
-$endTime = isset($_POST['end_time']) ? $_POST['end_time'] : null;
-$notes = isset($_POST['notes']) ? trim($_POST['notes']) : '';
-$status = isset($_POST['status']) ? $_POST['status'] : 'scheduled';
+// Check authentication
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    exit;
+}
 
 try {
-    // Input validation
-    if (!$patientId || !$doctorId || !$serviceId || !$locationId || !$appointmentDate || !$startTime || !$endTime) {
-        throw new Exception('Missing required fields');
-    }
-
-    // Validate date format
-    if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $appointmentDate)) {
-        throw new Exception('Invalid date format');
-    }
-
-    // Validate time format
-    if (!preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $startTime) || 
-        !preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $endTime)) {
-        throw new Exception('Invalid time format');
-    }
+    // Validate and sanitize inputs
+    $appointmentId = filter_var($_POST['appointment_id'], FILTER_VALIDATE_INT);
+    $patientId = filter_var($_POST['patient_id'], FILTER_VALIDATE_INT);
+    $serviceId = filter_var($_POST['service_id'], FILTER_VALIDATE_INT);
+    $locationId = filter_var($_POST['location_id'], FILTER_VALIDATE_INT);
+    $appointmentDate = filter_var($_POST['appointment_date'], FILTER_SANITIZE_STRING);
+    $startTime = filter_var($_POST['start_time'], FILTER_SANITIZE_STRING);
+    $endTime = filter_var($_POST['end_time'], FILTER_SANITIZE_STRING);
+    $status = filter_var($_POST['status'], FILTER_SANITIZE_STRING);
+    $notes = isset($_POST['notes']) ? filter_var($_POST['notes'], FILTER_SANITIZE_STRING) : '';
 
     // Begin transaction
     $conn->begin_transaction();
 
-    // Check for scheduling conflicts
-    $conflictSql = "SELECT COUNT(*) as conflict_count FROM appointments 
-                    WHERE doctor_id = ? 
-                    AND appointment_date = ? 
-                    AND ((start_time <= ? AND end_time > ?) 
-                    OR (start_time < ? AND end_time >= ?))
-                    AND status != 'cancelled'";
-    
-    if ($appointmentId) {
-        $conflictSql .= " AND appointment_id != ?";
-    }
+    if ($appointmentId == 0) {
+        // INSERT new appointment
+        $query = "INSERT INTO appointments (
+            patient_id, service_id, location_id, 
+            appointment_date, start_time, end_time,
+            status, notes, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
-    $conflictStmt = $conn->prepare($conflictSql);
-    
-    if ($appointmentId) {
-        $conflictStmt->bind_param("issssssi", $doctorId, $appointmentDate, $endTime, $startTime, $endTime, $startTime, $appointmentId);
-    } else {
-        $conflictStmt->bind_param("isssss", $doctorId, $appointmentDate, $endTime, $startTime, $endTime, $startTime);
-    }
-    
-    $conflictStmt->execute();
-    $conflictResult = $conflictStmt->get_result()->fetch_assoc();
-    
-    if ($conflictResult['conflict_count'] > 0) {
-        throw new Exception('Time slot is not available');
-    }
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
 
-    if ($appointmentId) {
-        // Update existing appointment
-        $sql = "UPDATE appointments SET 
-                patient_id = ?, 
-                doctor_id = ?,
-                service_id = ?,
-                location_id = ?,
-                appointment_date = ?,
-                start_time = ?,
-                end_time = ?,
-                notes = ?,
-                status = ?,
-                updated_at = CURRENT_TIMESTAMP
-                WHERE appointment_id = ?";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iiiisssssi", $patientId, $doctorId, $serviceId, $locationId, 
-                         $appointmentDate, $startTime, $endTime, $notes, $status, $appointmentId);
+        $stmt->bind_param("iiisssss", 
+            $patientId,
+            $serviceId,
+            $locationId,
+            $appointmentDate,
+            $startTime,
+            $endTime,
+            $status,
+            $notes
+        );
     } else {
-        // Insert new appointment
-        $sql = "INSERT INTO appointments (patient_id, doctor_id, service_id, location_id, 
-                appointment_date, start_time, end_time, notes, status, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iiiiissss", $patientId, $doctorId, $serviceId, $locationId, 
-                         $appointmentDate, $startTime, $endTime, $notes, $status);
+        // UPDATE existing appointment
+        $query = "UPDATE appointments SET 
+            patient_id = ?,
+            service_id = ?,
+            location_id = ?,
+            appointment_date = ?,
+            start_time = ?,
+            end_time = ?,
+            status = ?,
+            notes = ?,
+            updated_at = NOW()
+            WHERE appointment_id = ?";
+
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
+        $stmt->bind_param("iiisssssi", 
+            $patientId,
+            $serviceId,
+            $locationId,
+            $appointmentDate,
+            $startTime,
+            $endTime,
+            $status,
+            $notes,
+            $appointmentId
+        );
     }
 
     if (!$stmt->execute()) {
-        throw new Exception("Failed to save appointment: " . $stmt->error);
+        throw new Exception("Execute failed: " . $stmt->error);
     }
 
-    // Commit transaction
-    $conn->commit();
+    // Get the appointment ID (for new insertions)
+    if ($appointmentId == 0) {
+        $appointmentId = $conn->insert_id;
+    }
 
-
-
-    // After successful save, fetch the complete appointment data
-    // After successful save, fetch the complete appointment data
-    $appointmentSql = "SELECT 
+    // Get updated appointment data
+    $selectQuery = "SELECT 
         a.*,
         CONCAT(up.first_name, ' ', up.last_name) as patient_name,
         up.first_name as patient_first_name,
@@ -123,37 +107,53 @@ try {
         LEFT JOIN locations l ON a.location_id = l.location_id
         WHERE a.appointment_id = ?";
 
-    $fetchStmt = $conn->prepare($appointmentSql);
-    $fetchId = $appointmentId ?? $stmt->insert_id;
-    $fetchStmt->bind_param("i", $fetchId);
-    $fetchStmt->execute();
-    $appointmentData = $fetchStmt->get_result()->fetch_assoc();
-    $fetchStmt->close();
+    $stmt = $conn->prepare($selectQuery);
+    if (!$stmt) {
+        throw new Exception("Select prepare failed: " . $conn->error);
+    }
 
-    // Send single JSON response with all data
+    $stmt->bind_param("i", $appointmentId);
+    
+    if (!$stmt->execute()) {
+        throw new Exception("Select execute failed: " . $stmt->error);
+    }
+
+    $result = $stmt->get_result();
+    $appointment = $result->fetch_assoc();
+
+    if (!$appointment) {
+        throw new Exception("Could not find updated appointment");
+    }
+
+    // Commit transaction
+    $conn->commit();
+
+    // Send success response
     echo json_encode([
         'success' => true,
-        'message' => $appointmentId ? 'Appointment updated successfully' : 'Appointment scheduled successfully',
-        'appointment' => $appointmentData
+        'message' => 'Appointment ' . ($appointmentId == 0 ? 'created' : 'updated') . ' successfully',
+        'appointment' => $appointment
     ]);
+
 } catch (Exception $e) {
     // Rollback transaction on error
-    if ($conn->connect_errno != 0) {
+    if (isset($conn) && $conn->ping()) {
         $conn->rollback();
     }
+
+    error_log("Save appointment error: " . $e->getMessage());
     
-    error_log($e->getMessage());
+    http_response_code(500);
     echo json_encode([
-        'error' => $e->getMessage()
+        'success' => false,
+        'message' => $e->getMessage()
     ]);
 
 } finally {
-    // Clean up
     if (isset($stmt)) {
         $stmt->close();
     }
-    if (isset($conflictStmt)) {
-        $conflictStmt->close();
+    if (isset($conn)) {
+        $conn->close();
     }
-    $conn->close();
 }
