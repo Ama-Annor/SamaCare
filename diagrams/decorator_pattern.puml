@@ -1,0 +1,81 @@
+@startuml Decorator Pattern in SamaCare
+skinparam backgroundColor #FFFFFF
+skinparam classFontColor #333333
+skinparam classFontSize 14
+skinparam classAttributeFontColor #333333
+skinparam classAttributeFontSize 12
+skinparam classBorderColor #2a9d8f
+skinparam classBackgroundColor #def2f1
+skinparam classArrowColor #264653
+skinparam shadowing false
+skinparam stereotypeCBackgroundColor #e9c46a
+
+title Decorator Pattern - Medical Report Generation in SamaCare
+
+interface MedicalReport {
+  +generateReport(): String
+  +getTitle(): String
+  +getPatientId(): String
+}
+
+class BasicMedicalReport {
+  -patientId: String
+  -reportDate: Date
+  -doctorId: String
+  -basicInfo: Map<String, String>
+  +generateReport(): String
+  +getTitle(): String
+  +getPatientId(): String
+}
+
+abstract class MedicalReportDecorator {
+  -wrappedReport: MedicalReport
+  +MedicalReportDecorator(report: MedicalReport)
+  +generateReport(): String
+  +getTitle(): String
+  +getPatientId(): String
+}
+
+class VitalSignsDecorator {
+  -vitalSigns: Map<String, String>
+  +VitalSignsDecorator(report: MedicalReport, vitalSigns: Map<String, String>)
+  +generateReport(): String
+  +getVitalSigns(): Map<String, String>
+}
+
+class MedicationHistoryDecorator {
+  -medications: List<Medication>
+  +MedicationHistoryDecorator(report: MedicalReport, medications: List<Medication>)
+  +generateReport(): String
+  +getMedications(): List<Medication>
+}
+
+class LabResultsDecorator {
+  -labResults: List<LabResult>
+  +LabResultsDecorator(report: MedicalReport, labResults: List<LabResult>)
+  +generateReport(): String
+  +getLabResults(): List<LabResult>
+}
+
+class DiagnosticImagesDecorator {
+  -images: List<DiagnosticImage>
+  +DiagnosticImagesDecorator(report: MedicalReport, images: List<DiagnosticImage>)
+  +generateReport(): String
+  +getImages(): List<DiagnosticImage>
+}
+
+MedicalReport <|.. BasicMedicalReport
+MedicalReport <|.. MedicalReportDecorator
+MedicalReportDecorator <|-- VitalSignsDecorator
+MedicalReportDecorator <|-- MedicationHistoryDecorator
+MedicalReportDecorator <|-- LabResultsDecorator
+MedicalReportDecorator <|-- DiagnosticImagesDecorator
+MedicalReportDecorator o--> MedicalReport
+
+note "The client can dynamically add\nvarious components to the report\nbased on what information is\navailable or relevant" as N1
+MedicalReportDecorator .. N1
+
+note "Example usage:\nnew DiagnosticImagesDecorator(\n  new LabResultsDecorator(\n    new VitalSignsDecorator(\n      new BasicMedicalReport(...)\n    )\n  )\n)" as N2
+DiagnosticImagesDecorator .. N2
+
+@enduml
