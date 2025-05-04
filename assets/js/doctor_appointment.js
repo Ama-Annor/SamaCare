@@ -183,7 +183,6 @@ function setupEventListeners() {
 }
 
 
-// Add this new function to load doctor's appointments
 function loadDoctorAppointments() {
     const tableBody = document.querySelector('.appointments-table tbody');
     if (!tableBody) return;
@@ -195,14 +194,19 @@ function loadDoctorAppointments() {
         method: 'GET',
         credentials: 'same-origin'
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
+    .then(async response => {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
+        } else {
+            const text = await response.text();
+            throw new Error(`Server returned invalid response: ${text}`);
+        }
     })
     .then(data => {
         if (data.success && data.appointments) {
             if (data.appointments.length === 0) {
-                tableBody.innerHTML = '<tr class="no-data"><td colspan="6">No appointments found.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6" class="no-data">No appointments found.</td></tr>';
                 return;
             }
 
@@ -211,8 +215,8 @@ function loadDoctorAppointments() {
 
             // Add each appointment to the table
             data.appointments.forEach(appointment => {
-                const newRow = createAppointmentRow(appointment);
-                tableBody.appendChild(newRow);
+                const row = createAppointmentRow(appointment);
+                tableBody.appendChild(row);
             });
         } else {
             throw new Error(data.message || 'Failed to load appointments');
@@ -220,44 +224,11 @@ function loadDoctorAppointments() {
     })
     .catch(error => {
         console.error('Error loading appointments:', error);
-        tableBody.innerHTML = '<tr class="error"><td colspan="6">Failed to load appointments. Please try again.</td></tr>';
+        showNotification('error', 'Failed to load appointments');
+        tableBody.innerHTML = '<tr><td colspan="6" class="error">Failed to load appointments. Please try again.</td></tr>';
     });
 }
 
-
-// Helper function to create appointment row
-function createAppointmentRow(appointment) {
-    const row = document.createElement('tr');
-    row.dataset.appointmentId = appointment.appointment_id;
-    
-    const appointmentDate = formatDate(appointment.appointment_date);
-    const startTime = formatTime(appointment.start_time);
-    const endTime = formatTime(appointment.end_time);
-    
-    row.innerHTML = `
-        <td>${appointmentDate}</td>
-        <td>${appointment.patient_first_name} ${appointment.patient_last_name}</td>
-        <td>${appointment.service_name}</td>
-        <td>${startTime} - ${endTime}</td>
-        <td><span class="status-badge ${appointment.status.toLowerCase()}">${appointment.status}</span></td>
-        <td class="actions">
-            <button class="btn icon-btn view-appointment" data-id="${appointment.appointment_id}">
-                <i class='bx bx-show'></i>
-            </button>
-            <button class="btn icon-btn edit-appointment" data-id="${appointment.appointment_id}">
-                <i class='bx bx-edit'></i>
-            </button>
-            <button class="btn icon-btn more-options" data-id="${appointment.appointment_id}">
-                <i class='bx bx-dots-vertical-rounded'></i>
-            </button>
-        </td>
-    `;
-
-    // Attach event listeners to the new row
-    attachRowEventListeners(row);
-    
-    return row;
-}
 /**
  * Set up modal-related event listeners
  */
@@ -591,134 +562,261 @@ function populateAppointmentForm(appointment) {
     document.getElementById('notes').value = appointment.notes || '';
 }
 
-/**
- * Handle appointment form submission
- * @param {Event} e - The submit event
- */
+
+function saveAppointment(formData) {
+    return new Promise((resolve, reject) => {
+        // Get submit button and save original text
+        const submitBtn = document.querySelector('#appointment-form button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Saving...';
+        submitBtn.disabled = true;
+
+        // Log form data for debugging
+        console.log('Form data being sent:', Object.fromEntries(formData));
+
+        fetch('/SamaCare/actions/save_appointment.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+        .then(async response => {
+            // Log raw response for debugging
+            const responseText = await response.text();
+            console.log('Raw server response:', responseText);
+
+            try {
+                // Try to parse the response as JSON
+                const data = JSON.parse(responseText);
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to save appointment');
+                }
+                return data;
+            } catch (e) {
+                throw new Error(`Server error: ${responseText}`);
+            }
+        })
+        .then(data => {
+            showNotification('success', 'Appointment saved successfully');
+            
+            if (data.appointment) {
+                updateAppointmentsList(data.appointment);
+            } else {
+                // If no appointment data returned, refresh the page
+                window.location.reload();
+            }
+            
+            closeModal('appointment-edit-modal');
+            resolve(data);
+        })
+        .catch(error => {
+            console.error('Error saving appointment:', error);
+            showNotification('error', error.message);
+            reject(error);
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+}
+
 function handleAppointmentFormSubmit(e) {
     e.preventDefault();
     
-    const form = e.target;
-    const formData = new FormData(form);
-    
-    // Show loading state
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Saving...';
-    submitBtn.disabled = true;
-    
-    fetch('/SamaCare/actions/save_appointment.php', {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    try {
+        const form = e.target;
+        const formData = new FormData(form);
+
+        // Add required fields if missing
+        if (!formData.get('appointment_id')) {
+            formData.append('appointment_id', '0'); // Use 0 for new appointments
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            showNotification('success', data.message || 'Appointment saved successfully.');
-            closeModal('appointment-edit-modal');
-            
-            // Reload the page after successful save
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+        
+        // Validate required fields
+        const requiredFields = ['patient_id', 'service_id', 'location_id', 
+                              'appointment_date', 'start_time', 'end_time', 'status'];
+        
+        for (const field of requiredFields) {
+            if (!formData.get(field)) {
+                throw new Error(`${field.replace('_', ' ')} is required`);
+            }
+        }
+
+        // Save appointment
+        saveAppointment(formData)
+            .then(() => {
+                console.log('Appointment saved successfully');
+            })
+            .catch(error => {
+                console.error('Form submission error:', error);
+                showNotification('error', error.message);
+            });
+
+    } catch (error) {
+        console.error('Form validation error:', error);
+        showNotification('error', error.message);
+    }
+}
+
+function editAppointment(appointmentId = null, focusDateTime = false) {
+    // Get modal elements
+    const modal = document.getElementById('appointment-edit-modal');
+    const form = document.getElementById('appointment-form');
+    
+    // First check if modal exists
+    if (!modal) {
+        console.error('Modal not found');
+        return;
+    }
+
+    // Find modal title - try different possible selectors
+    const modalTitle = modal.querySelector('.modal-title') || 
+                      modal.querySelector('#appointment-modal-title') ||
+                      modal.querySelector('h3');
+
+    if (!modalTitle) {
+        console.error('Modal title element not found');
+        return;
+    }
+
+    // Reset form if it exists
+    if (form) {
+        form.reset();
+    } else {
+        console.error('Form not found');
+        return;
+    }
+
+    if (appointmentId) {
+        // Edit existing appointment
+        modalTitle.textContent = 'Edit Appointment';
+        
+        const appointmentIdInput = document.getElementById('appointment_id');
+        if (appointmentIdInput) {
+            appointmentIdInput.value = appointmentId;
+        }
+
+        // Fetch appointment data
+        fetch(`/SamaCare/actions/get_appointment_data.php?id=${appointmentId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    populateAppointmentForm(data.appointment);
+                    if (focusDateTime) {
+                        const dateInput = document.getElementById('appointment_date');
+                        if (dateInput) {
+                            dateInput.focus();
+                        }
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to load appointment data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', error.message);
+            });
+    } else {
+        // New appointment
+        modalTitle.textContent = 'Schedule New Appointment';
+        
+        const appointmentIdInput = document.getElementById('appointment_id');
+        if (appointmentIdInput) {
+            appointmentIdInput.value = '0';
+        }
+        
+        // Set default values for new appointment
+        const today = new Date();
+        const dateInput = document.getElementById('appointment_date');
+        const statusInput = document.getElementById('status');
+        
+        if (dateInput) {
+            dateInput.value = formatDateForInput(today);
+        }
+        if (statusInput) {
+            statusInput.value = 'pending';
+        }
+    }
+
+    openModal('appointment-edit-modal');
+}
+
+// Add event listener for form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const appointmentForm = document.getElementById('appointment-form');
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', handleAppointmentFormSubmit);
+    }
+});
+
+/**
+ * Update appointments list with new data
+ * @param {Object} appointment - The updated appointment data
+ */
+function updateAppointmentsList(appointment) {
+    try {
+        console.log('Updating appointment row with data:', appointment);
+
+        if (!appointment || !appointment.appointment_id) {
+            throw new Error('Invalid appointment data');
+        }
+
+        const newRow = createAppointmentRow(appointment);
+
+        // Find and replace existing row
+        const existingRow = document.querySelector(`tr[data-appointment-id="${appointment.appointment_id}"]`);
+        if (existingRow) {
+            existingRow.replaceWith(newRow);
+            console.log('Row replaced successfully');
         } else {
-            throw new Error(data.message || 'Failed to save appointment.');
+            // If no existing row, insert at the beginning
+            const tableBody = document.querySelector('.appointments-table tbody');
+            if (tableBody) {
+                tableBody.insertBefore(newRow, tableBody.firstChild);
+            }
         }
-    })
-    .catch(error => {
-        console.error('Error saving appointment:', error);
-        showNotification('error', 'Failed to save appointment. Please try again.');
-    })
-    .finally(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+
+    } catch (error) {
+        console.error('Error in updateAppointmentsList:', error);
+        showNotification('error', 'Failed to update appointments list');
+    }
+}
+/**
+ * Get initials from first and last name
+ * @param {string} firstName
+ * @param {string} lastName
+ * @returns {string} Initials
+ */
+function getInitials(firstName, lastName) {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+}
+
+/**
+ * Format date for display
+ * @param {string} dateStr
+ * @returns {string} Formatted date
+ */
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
     });
 }
 
 /**
- * Update the appointments list with new/edited appointment
- * @param {Object} appointment - The appointment data
+ * Format time for display
+ * @param {string} timeStr
+ * @returns {string} Formatted time
  */
-function updateAppointmentsList(appointment) {
-    // Detailed validation of appointment data
-    if (!appointment) {
-        console.error('No appointment data provided');
-        return;
-    }
-
-    if (!appointment.appointment_id) {
-        console.error('Missing appointment ID');
-        return;
-    }
-
-    const requiredFields = ['appointment_date', 'patient_first_name', 'patient_last_name', 'service_name', 'start_time', 'end_time', 'status'];
-    const missingFields = requiredFields.filter(field => !appointment[field]);
-    
-    if (missingFields.length > 0) {
-        console.error('Missing required fields:', missingFields);
-        return;
-    }
-
-    const tableBody = document.querySelector('.appointments-table tbody');
-    if (!tableBody) {
-        console.error('Appointments table not found');
-        return;
-    }
-
-    try {
-        // Create new row with proper error handling
-        const newRow = document.createElement('tr');
-        newRow.dataset.appointmentId = appointment.appointment_id;
-        
-        const appointmentDate = formatDate(appointment.appointment_date);
-        const startTime = formatTime(appointment.start_time);
-        const endTime = formatTime(appointment.end_time);
-        
-        newRow.innerHTML = `
-            <td>${appointmentDate}</td>
-            <td>${appointment.patient_first_name} ${appointment.patient_last_name}</td>
-            <td>${appointment.service_name}</td>
-            <td>${startTime} - ${endTime}</td>
-            <td><span class="status-badge ${appointment.status.toLowerCase()}">${appointment.status}</span></td>
-            <td class="actions">
-                <button class="btn icon-btn view-appointment" data-id="${appointment.appointment_id}">
-                    <i class='bx bx-show'></i>
-                </button>
-                <button class="btn icon-btn edit-appointment" data-id="${appointment.appointment_id}">
-                    <i class='bx bx-edit'></i>
-                </button>
-                <button class="btn icon-btn more-options" data-id="${appointment.appointment_id}">
-                    <i class='bx bx-dots-vertical-rounded'></i>
-                </button>
-            </td>
-        `;
-
-        // Remove existing row if it exists
-        const existingRow = document.querySelector(`tr[data-appointment-id="${appointment.appointment_id}"]`);
-        if (existingRow) {
-            existingRow.remove();
-        }
-
-        // Add new row at the top
-        if (tableBody.firstChild) {
-            tableBody.insertBefore(newRow, tableBody.firstChild);
-        } else {
-            tableBody.appendChild(newRow);
-        }
-
-        // Reattach event listeners
-        attachRowEventListeners(newRow);
-
-    } catch (error) {
-        console.error('Error updating appointments list:', error);
-        showNotification('error', 'Failed to update appointments list');
-    }
+function formatTime(timeStr) {
+    const date = new Date(`2000-01-01T${timeStr}`);
+    return date.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+    });
 }
 /**
  * Show a confirmation dialog for cancelling an appointment
@@ -731,44 +829,6 @@ function confirmCancelAppointment(appointmentId) {
 }
 
 
-/**
- * Update appointment status and refresh UI
- * @param {string} appointmentId - The appointment ID
- * @param {string} newStatus - The new status
- */
-function updateAppointmentStatus(appointmentId, newStatus) {
-    const formData = new FormData();
-    formData.append('appointment_id', appointmentId);
-    formData.append('status', newStatus);
-
-    fetch('/SamaCare/actions/update_status.php', {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin'
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            showNotification('success', 'Status updated successfully');
-            
-            // Update UI immediately
-            const statusBadge = document.querySelector(`tr[data-appointment-id="${appointmentId}"] .status-badge`);
-            if (statusBadge) {
-                statusBadge.className = `status-badge ${newStatus.toLowerCase()}`;
-                statusBadge.textContent = newStatus;
-            }
-        } else {
-            throw new Error(data.message || 'Failed to update status');
-        }
-    })
-    .catch(error => {
-        console.error('Error updating status:', error);
-        showNotification('error', 'Failed to update status');
-    });
-}
 
 
 
@@ -1239,7 +1299,6 @@ function deleteAppointment(appointmentId) {
     });
 }
 
-// Update the createAppointmentRow function
 function createAppointmentRow(appointment) {
     const row = document.createElement('tr');
     row.dataset.appointmentId = appointment.appointment_id;
@@ -1247,78 +1306,55 @@ function createAppointmentRow(appointment) {
     const appointmentDate = formatDate(appointment.appointment_date);
     const startTime = formatTime(appointment.start_time);
     const endTime = formatTime(appointment.end_time);
+    const timeRange = `${startTime} - ${endTime}`;
     
     row.innerHTML = `
-        <td>${appointmentDate}</td>
-        <td>${appointment.patient_first_name} ${appointment.patient_last_name}</td>
-        <td>${appointment.service_name}</td>
-        <td>${startTime} - ${endTime}</td>
         <td>
-            <div class="status-dropdown">
-                <span class="status-badge ${appointment.status.toLowerCase()}" data-id="${appointment.appointment_id}">
-                    ${appointment.status}
-                </span>
-                <div class="status-options">
-                    <div class="status-option pending" data-status="pending">Pending</div>
-                    <div class="status-option confirmed" data-status="confirmed">Confirmed</div>
-                    <div class="status-option completed" data-status="completed">Completed</div>
-                    <div class="status-option cancelled" data-status="cancelled">Cancelled</div>
-                </div>
+            <div class="date-time">
+                <div class="date">${appointmentDate}</div>
+                <div class="time">${startTime}</div>
             </div>
         </td>
-        <td class="actions">
-            <button class="btn icon-btn view-appointment" data-id="${appointment.appointment_id}">
-                <i class='bx bx-show'></i>
-            </button>
-            <button class="btn icon-btn edit-appointment" data-id="${appointment.appointment_id}">
-                <i class='bx bx-edit'></i>
-            </button>
-            <button class="btn icon-btn more-options" data-id="${appointment.appointment_id}">
-                <i class='bx bx-dots-vertical-rounded'></i>
-            </button>
+        <td>
+            <div class="user-info">
+                <div class="user-avatar">${getInitials(appointment.patient_first_name, appointment.patient_last_name)}</div>
+                <span>${appointment.patient_first_name} ${appointment.patient_last_name}</span>
+            </div>
+        </td>
+        <td>${appointment.service_name}</td>
+        <td>${timeRange}</td>
+        <td><span class="status-badge ${appointment.status.toLowerCase()}">${appointment.status}</span></td>
+        <td>
+            <div class="action-buttons">
+                <button class="btn icon-btn sm view-appointment" 
+                        title="View Details" 
+                        data-id="${appointment.appointment_id}">
+                    <i class='bx bx-show'></i>
+                </button>
+                <button class="btn icon-btn sm edit-appointment" 
+                        title="Edit" 
+                        data-id="${appointment.appointment_id}">
+                    <i class='bx bx-edit'></i>
+                </button>
+            </div>
         </td>
     `;
 
-        // Attach status click handler
-        const statusBadge = row.querySelector('.status-badge');
-        const statusOptions = row.querySelector('.status-options');
-        
-        statusBadge.addEventListener('click', (e) => {
-            e.stopPropagation();
-            // Hide all other status options
-            document.querySelectorAll('.status-options').forEach(opt => {
-                if (opt !== statusOptions) {
-                    opt.style.display = 'none';
-                }
-            });
-            // Toggle current status options
-            statusOptions.style.display = statusOptions.style.display === 'none' ? 'block' : 'none';
-        });
+    // Attach event listeners
+    const viewBtn = row.querySelector('.view-appointment');
+    if (viewBtn) {
+        viewBtn.addEventListener('click', () => viewAppointmentDetails(appointment.appointment_id));
+    }
 
-        // Add click handlers for status options
-        statusOptions.querySelectorAll('.status-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const newStatus = option.dataset.status;
-                updateAppointmentStatus(appointment.appointment_id, newStatus);
-                statusOptions.style.display = 'none';
-                
-                // Update badge immediately
-                statusBadge.className = `status-badge ${newStatus.toLowerCase()}`;
-                statusBadge.textContent = newStatus;
-            });
-        });
-
-        // Close status options when clicking outside
-        document.addEventListener('click', () => {
-            statusOptions.style.display = 'none';
-        });
-
-        // Attach other event listeners
-        attachRowEventListeners(row);
-            
+    const editBtn = row.querySelector('.edit-appointment');
+    if (editBtn) {
+        editBtn.addEventListener('click', () => editAppointment(appointment.appointment_id));
+    }
+    
     return row;
 }
+
+
 
 function attachStatusEventListeners(row) {
     const statusDropdown = row.querySelector('.status-dropdown');
