@@ -1,0 +1,70 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam activityDiamondBackgroundColor #2a9d8f
+skinparam activityBackgroundColor #def2f1
+skinparam activityBorderColor #2a9d8f
+skinparam activityBorderThickness 2
+skinparam arrowColor #264653
+skinparam activityDiamondFontColor #FFFFFF
+skinparam activityFontColor #264653
+
+title User Journey - SamaCare Healthcare Application
+
+|#def2f1|Patient|
+start
+:Register/Login to SamaCare App;
+
+|#e9c46a|Dashboard|
+:View Dashboard Overview;
+
+|#def2f1|Patient|
+partition "Health Assessment" {
+  :Use AI Health Assistant;
+  :Enter symptoms;
+  :Receive preliminary guidance;
+  if (Needs medical attention?) then (yes)
+    :Decide to book appointment;
+  else (no)
+    :Follow self-care recommendations;
+    stop
+  endif
+}
+
+partition "Appointment Booking" {
+  :Select service type;
+  :Choose doctor;
+  :Select date and time;
+  :Provide additional information;
+  :Review and confirm booking;
+  :Receive confirmation;
+}
+
+partition "Pre-appointment" {
+  :Receive appointment reminder;
+  :Update health metrics;
+  :Upload relevant medical records;
+}
+
+partition "Post-appointment" {
+  :Visit doctor;
+  :Receive post-visit summary;
+  :Access and review medical records;
+  :Track prescribed medications;
+  :Monitor health metrics;
+  if (Follow-up required?) then (yes)
+    :Schedule follow-up appointment;
+    note right: Returns to appointment booking process
+  else (no)
+    :Continue health monitoring;
+  endif
+}
+
+|#e9c46a|Dashboard|
+:Update health information;
+:View health analytics;
+
+|#def2f1|Patient|
+stop
+
+@enduml
